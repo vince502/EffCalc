@@ -2,6 +2,7 @@
 
 #include "EffCalc.h"
 #include "Reader.cc"
+#include <vector>
 
 EffCalc::EffCalc( std::string name_file_hlt, std::string name_file_onia ) : hltData( name_file_hlt ), oniaData( name_file_onia) {
 };
@@ -13,13 +14,13 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 	isL1 = _isL1;
 	rap = ( getDimu ) ? "y" : "eta" ;
 	map_eff =  {
-					{"pt", TEfficiency("pt", "", size(pt_bins), pt_bins) },
-					{rap.c_str(), TEfficiency(rap.c_str(), "", size(rap_bins), rap_bins) },
-					{"cent", TEfficiency("cent", "", size(cent_bins), cent_bins) },
+					{"pt", TEfficiency("pt", "", pt_bins.size(), &pt_bins) },
+					{rap.c_str(), TEfficiency(rap.c_str(), "", rap_bins.size(), &rap_bins) },
+					{"cent", TEfficiency("cent", "", cent_bins.size(), &cent_bins) },
 				};
 	if (hltData.isDerived){
 		for( auto cut : derivedPtCuts ){
-			map_eff.insert({Form("pt_%.1f", cut), TEfficiency(Form("pt_%.1f", cut), "", size(pt_bins), pt_bins ) });
+			map_eff.insert({Form("pt_%.1f", cut), TEfficiency(Form("pt_%.1f", cut), "", pt_bins.size(), &&pt_bins ) });
 		}
 	}
 	

@@ -11,8 +11,8 @@
 static int UseNCores = 40;
 
 void calculateEff(){
-	string file_name_hlt = "";
-	string file_name_onia = "";
+	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoL1IONoSPClimit_v1230_v8.root";
+	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
 
 	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
