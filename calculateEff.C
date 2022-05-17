@@ -8,7 +8,7 @@
 #include "Reader.cc"
 #include "EffCalc.cc"
 
-static int UseNCores = 20;
+static int UseNCores = 40;
 
 void calculateEff(){
 	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoL1IONoSPClimit_v1230_v8.root";
@@ -17,12 +17,12 @@ void calculateEff(){
 	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
-	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v","HLT_HIL2Mu0_L1DoubleMu0_v"};
+	std::vector<std::pair<std::string, std::string> > v_names = { { "HLT_HIL1DoubleMuOpen_v", "L1DoubleMuOpen"}, {"HLT_HIL1DoubleMuOpen_v", ""}, {"HLT_HIL2Mu0_L1DoubleMu0_v", ""}};
 	std::vector<std::string> v_names2 = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 	auto trigAttr = [v_names](int idx){
 		bool l1 = false;
 		bool dmu =false;
-		std::string _trig = v_names[idx];
+		std::string _trig = v_names[idx].first;
 		if( _trig.find("Double") != std::string::npos) dmu = true;
 		if( _trig.find("HIL1") != std::string::npos) l1 = true;
 		return std::make_pair(dmu, l1);
@@ -41,11 +41,11 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	int max_events = 1e+7;
+	int max_events = 1e+8;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia );
-		calc.setTrigger(v_names[idx]);
+		calc.setTrigger(v_names[idx].first, v_names[idx].second);
 		calc.init(trigAttr(idx));
 		calc.evalAll(max_events);
 		std::cout << "init done Loop!" << std::endl;

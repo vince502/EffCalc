@@ -51,21 +51,24 @@ class readerHlt : public readerBase
 		~readerHlt();
 		readerHlt( std::string name_file );
 		
-		void registerTrig( std::string name_trig, std::string name_base_trig = "" );
+		void registerTrig( std::string _name_base_trig, std::string _name_trig = "" );
 	
 		std::vector<EventData> getEventContent();
 		EventData getEventPrimitive();
 //		EventData getCandsContent();
 		UInt_t GetEventNb(){ return eventNb; };
 		int GetEntry( int idx ){
+			base.map_tree[nickname]->GetEntry(idx);
 			return base.map_tree["HltTree"]->GetEntry(idx);
 		};
 
 		bool isDerived;
+		std::string nickname;
 	protected :
 
 
 	private :
+		std::string name_base_trig;
 		bool triggered;
 		std::vector<Float_t> *pts, *etas, *phis, *masses;
 		Float_t pt, eta, phi, mass;

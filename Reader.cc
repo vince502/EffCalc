@@ -31,18 +31,18 @@ readerHlt::readerHlt( std::string name_file ) : base( name_file) {
 
 readerHlt::~readerHlt(){};
 
-void readerHlt::registerTrig( std::string name_base_trig, std::string name_trig = "" ){
+void readerHlt::registerTrig( std::string _name_base_trig, std::string _name_trig = "" ){
 
-	std::string working_tree = (name_trig.empty()) ? name_base_trig : name_trig;
-	base.setTree( Form("hltobject/%s", name_base_trig.c_str()) , working_tree );
-	isDerived = (bool) name_trig.empty();
-	std::cout << base.map_tree[working_tree]->GetName() << std::endl;
-	base.map_tree[working_tree]->SetBranchAddress("pt", &pts);
-	base.map_tree[working_tree]->SetBranchAddress("eta", &etas );
-	base.map_tree[working_tree]->SetBranchAddress("phi", &phis);
-	base.map_tree[working_tree]->SetBranchAddress("mass", &masses);
+	name_base_trig = _name_base_trig;
+	nickname = ( _name_trig.empty() ) ? _name_base_trig : _name_trig;
+	base.setTree( Form("hltobject/%s", _name_base_trig.c_str()) , nickname );
+	isDerived = !((bool) _name_trig.empty());
+	base.map_tree[nickname]->SetBranchAddress("pt", &pts);
+	base.map_tree[nickname]->SetBranchAddress("eta", &etas );
+	base.map_tree[nickname]->SetBranchAddress("phi", &phis);
+	base.map_tree[nickname]->SetBranchAddress("mass", &masses);
 
-	base.map_tree["HltTree"]->SetBranchAddress(name_base_trig.c_str(), &triggered );
+	base.map_tree["HltTree"]->SetBranchAddress(_name_base_trig.c_str(), &triggered );
 };
 
 std::vector<EventData> readerHlt::getEventContent(){ 

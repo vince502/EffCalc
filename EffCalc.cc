@@ -37,8 +37,8 @@ void EffCalc::init( std::pair<bool, bool> dp){
 
 void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = "" ){
 	std::cout << "Registering Trigger " << name_trig.c_str() << std::endl;
-	registered_trigger = name_trig;
 	hltData.registerTrig( name_trig, name_base_trig ); 
+	registered_trigger = hltData.nickname;
 };
 
 //bool EffCalc::indexMatched(EventData &headHlt, EventData &headOnia){
@@ -81,6 +81,7 @@ void EffCalc::evalAll(int maxEvents = -1){
 	int totEntries = hltData.base.map_tree["HltTree"]->GetEntries();
 	unsigned int iEntries = (maxEvents > 0 ) ? std::min( maxEvents, totEntries ) : totEntries;
 	for( auto iEvt : ROOT::TSeqI(iEntries) ){
+		if( ( iEvt % 1000 ) == 0 ) std::cout << "Processing event " << iEvt << std::endl;
 		eval(iEvt);
 	}
 	std::cout << "Done " << std::endl;
@@ -163,16 +164,62 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt ){
 	std::vector<EventData> d_cpy_pass = {onia[0]};
 	std::vector<EventData> d_cpy_fail = {onia[0]};
-	auto match_dR = [=](){
+	auto match_dR = [=](EventData base, double cut){
+		if( getDimu ){
+			double oeta1 = base["dbmu"].mu.Eta();
+			double ophi1 = base["dbmu"].mu.Phi();
+			double oeta2 = base["dbmu"].mu2.Eta();
+			double ophi2 = base["dbmu"].mu2.Phi();
+			bool pass1, pass2;
+			for( auto cont : hlt ){
+				double heta = cont["mu"].mu.Eta();
+				double hphi = cont["mu"].mu.Phi();
+				if( !pass1 )pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) < cut;
+				if( !pass2 )pass2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2)) < cut;
+			}
+			return (pass1 && pass2);
+		}
+		if( !getDimu ){
+			double oeta1 = base["mu"].mu.Eta();
+			double ophi1 = base["mu"].mu.Phi();
+			bool pass1;
+			for( auto cont : hlt ){
+				double heta = cont["mu"].mu.Eta();
+				double hphi = cont["mu"].mu.Phi();
+				if( !pass1 ) pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ),2)) < cut;
+			}
+			return (pass1);
+		}
 		return true;
 	};
-	auto match_dPt = [=](){
+	auto match_dPt = [=](EventData base, double cut){
+		if( getDimu ){
+			double opt1 = base["dbmu"].mu.Pt();
+			double opt2 = base["dbmu"].mu2.Pt();
+			bool pass1, pass2;
+			for( auto cont : hlt ){
+				double hpt = cont["mu"].mu.Pt();
+				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
+				if( !pass2 ) pass2 =  (fabs(hpt - opt2) / opt2)< cut;
+			}
+			return (pass1 && pass2);
+		}
+		if( !getDimu ){
+			double opt1 = base["mu"].mu.Pt();
+			bool pass1, pass2;
+			for( auto cont : hlt ){
+				double hpt = cont["mu"].mu.Pt();
+				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
+			}
+			return (pass1);
+		}
 		return true;
 	};
+
 	bool ofront  =true;
 	for( auto cont : onia ){
 		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
-		if( match_dR() && match_dPt() ) d_cpy_pass.push_back(cont);
+		if( match_dR(cont, 0.3) && match_dPt(cont, 0.1) ) d_cpy_pass.push_back(cont);
 		else d_cpy_fail.push_back(cont);
 	}
 	return std::make_pair(d_cpy_pass, d_cpy_fail);
