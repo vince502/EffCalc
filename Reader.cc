@@ -23,28 +23,39 @@ readerHlt::readerHlt( std::string name_file ) : base( name_file) {
 	base.setTree( "hltanalysis/HltTree", "HltTree");
 	base.map_tree["HltTree"]->SetBranchAddress("Run", &runNb);
 	base.map_tree["HltTree"]->SetBranchAddress("Event", &eventNb);
+	pts = new std::vector<Float_t>;
+	etas = new std::vector<Float_t>;
+	phis = new std::vector<Float_t>;
+	masses = new std::vector<Float_t>;
 };
 
 readerHlt::~readerHlt(){};
 
 void readerHlt::registerTrig( std::string name_base_trig, std::string name_trig = "" ){
-	base.setTree( Form("hltobject/%s", name_base_trig.c_str()) , name_trig );
+
 	std::string working_tree = (name_trig.empty()) ? name_base_trig : name_trig;
+	base.setTree( Form("hltobject/%s", name_base_trig.c_str()) , working_tree );
+	std::cout << "Init tree" << std::endl;
 	isDerived = (bool) name_trig.empty();
+	std::cout << "Checked Drived" << std::endl;
+	std::cout << base.map_tree[working_tree]->GetName() << std::endl;
 	base.map_tree[working_tree]->SetBranchAddress("pt", &pts);
 	base.map_tree[working_tree]->SetBranchAddress("eta", &etas );
 	base.map_tree[working_tree]->SetBranchAddress("pho", &phis);
 	base.map_tree[working_tree]->SetBranchAddress("mass", &masses);
+	std::cout << "BranchSet Obj" << std::endl;
+
 
 	base.map_tree["HltTree"]->SetBranchAddress(name_base_trig.c_str(), &triggered );
+	std::cout << "BranchSet Bits" << std::endl;
 };
 
 std::vector<EventData> readerHlt::getEventContent(){ 
-	size_t sz = pts.size();
+	size_t sz = pts->size();
 	std::vector<EventData> t;
 	t.push_back(getEventPrimitive() );
 	for( auto idx : ROOT::TSeqI(sz) ){
-		t.push_back( EventData{{"mu", content{0, TLorentzVector(pts[idx], etas[idx], phis[idx], masses[idx])}}});
+		t.push_back( EventData{{"mu", content{0, TLorentzVector(pts->at(idx), etas->at(idx), phis->at(idx), masses->at(idx))}}});
 	}
 	return t;
 };
@@ -58,11 +69,13 @@ EventData readerHlt::getEventPrimitive(){
 //};
 
 readerOnia::readerOnia( std::string name_file ) : base( name_file ){
+	std::cout << "initializing Onia" << std::endl;
 	base.setTree( "hionia/myTree", "myTree" );
-	Reco_mu_4mom = new TClonesArray("TLorentVector");
-	Reco_QQ_4mom = new TClonesArray("TLorentVector");
-	Reco_mu_L1_4mom = new TClonesArray("TLorentVector");
 
+	Reco_mu_4mom = new TClonesArray("TLorentzVector");
+	Reco_QQ_4mom = new TClonesArray("TLorentzVector");
+	Reco_mu_L1_4mom = new TClonesArray("TLorentzVector");
+	std::cout << "initialized Onia" << std::endl;
 	base.map_tree["myTree"]->SetBranchAddress("eventNb", &eventNb);
 	base.map_tree["myTree"]->SetBranchAddress("Centrality", &Centrality);
 	base.map_tree["myTree"]->SetBranchAddress("SumET_HF", &SumET_HF);
@@ -77,9 +90,9 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_dxy", &Reco_mu_dxy);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_dz", &Reco_mu_dz);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_VtxProb", &Reco_QQ_VtxProb);
-	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_4mom", &Reco_mu_4mom);
-	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_L1_4mom", &Reco_mu_L1_4mom);
-	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_4mom", &Reco_QQ_4mom);
+	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_4mom", &(Reco_mu_4mom));
+	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_L1_4mom", &(Reco_mu_L1_4mom));
+	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_4mom", &(Reco_QQ_4mom));
 //	base.map_tree["myTree"]->SetBranchAddress(&ZX, "ZX");
 
 	base.map_tree["myTree"]->BuildIndex("eventNb");

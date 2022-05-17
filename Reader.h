@@ -63,7 +63,7 @@ class readerHlt : public readerBase
 
 	private :
 		bool triggered;
-		std::vector<Float_t> pts, etas, phis, masses;
+		std::vector<Float_t> *pts, *etas, *phis, *masses;
 		Float_t pt, eta, phi, mass;
 		Int_t runNb;
 		ULong64_t eventNb;
@@ -86,7 +86,7 @@ class readerOnia : public readerBase
 		static constexpr int maxArraySize = 100;
 
 	private :
-		ULong64_t eventNb;
+		UInt_t eventNb;
 		Int_t Centrality;
 		Float_t SumET_HF;
 

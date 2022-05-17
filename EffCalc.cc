@@ -14,13 +14,13 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 	isL1 = _isL1;
 	rap = ( getDimu ) ? "y" : "eta" ;
 	map_eff =  {
-					{"pt", TEfficiency("pt", "", pt_bins.size(), &pt_bins) },
-					{rap.c_str(), TEfficiency(rap.c_str(), "", rap_bins.size(), &rap_bins) },
-					{"cent", TEfficiency("cent", "", cent_bins.size(), &cent_bins) },
+					{"pt", TEfficiency("pt", "", pt_bins.size(), &pt_bins[0]) },
+					{rap.c_str(), TEfficiency(rap.c_str(), "", rap_bins.size(), &rap_bins[0]) },
+					{"cent", TEfficiency("cent", "", cent_bins.size(), &cent_bins[0]) },
 				};
 	if (hltData.isDerived){
 		for( auto cut : derivedPtCuts ){
-			map_eff.insert({Form("pt_%.1f", cut), TEfficiency(Form("pt_%.1f", cut), "", pt_bins.size(), &&pt_bins ) });
+			map_eff.insert({Form("pt_%.1f", cut), TEfficiency(Form("pt_%.1f", cut), "", pt_bins.size(), &pt_bins[0] ) });
 		}
 	}
 	
@@ -31,6 +31,7 @@ void EffCalc::init( std::pair<bool, bool> dp){
 };
 
 void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = "" ){
+	std::cout << "Registering Trigger " << name_trig.c_str() << std::endl;
 	hltData.registerTrig( name_trig, name_base_trig ); 
 };
 
