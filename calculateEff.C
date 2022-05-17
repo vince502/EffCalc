@@ -41,7 +41,7 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	int max_events = 1e+3;
+	int max_events = 1e+7;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia );

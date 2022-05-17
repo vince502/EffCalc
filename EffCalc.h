@@ -27,11 +27,12 @@ class EffCalc : public readerHlt, readerOnia
 		EffMap generateHist( std::string );
 		bool indexMatched( double iHlt, double iOnia);
 		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
-		std::vector<EventData> matchedData( std::vector<EventData> onia, std::vector<EventData> hlt );
+		std::vector<EventData> filterHltData( std::vector<EventData> hltCont, double cut );
+		std::pair<std::vector<EventData>, std::vector<EventData> > matchedData( std::vector<EventData> onia, std::vector<EventData> hlt );
 		void requestHist( std::string types );
 		void fillProjHist( TEfficiency hist_eff, std::string type );
 		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
-		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, std::vector<EventData> hltData );
+		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 		void eval(int idx);
 		void evalAll(int maxEvents);
 		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();

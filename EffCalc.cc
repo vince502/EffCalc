@@ -25,7 +25,7 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 				};
 	if (hltData.isDerived){
 		for( auto cut : derivedPtCuts ){
-			map_eff.insert({Form("pt_%.1f", cut), new TEfficiency(Form("pt_%.1f", cut), "", pt_bins.size()-1, &pt_bins[0] ) });
+			map_eff.insert({Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut ))), new TEfficiency(Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
 		}
 	}
 	
@@ -56,11 +56,23 @@ void EffCalc::eval(int idx){
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
 	if( !((bool) hltPrim["passed"].val) ){
 		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
+		if( hltData.isDerived ){
+			for( auto cut : derivedPtCuts ){
+				fillDerivedHist(std::vector<EventData>{oniaCont[0]}, oniaCont, cut );
+			}
+		}
 		return;
 	}
-	auto passed_oniaCont = matchedData( oniaCont, hltCont );
-	fillHist(passed_oniaCont, oniaCont);
-	fillDerivedHist(passed_oniaCont, oniaCont, hltCont );
+	auto pair_oniaCont = matchedData( oniaCont, hltCont );
+	fillHist(pair_oniaCont.first, pair_oniaCont.second);
+	if( hltData.isDerived ){
+		for( auto cut : derivedPtCuts ){
+			hltCont = filterHltData(hltCont, cut);
+			pair_oniaCont = matchedData( oniaCont, hltCont);
+			fillDerivedHist(pair_oniaCont.first, pair_oniaCont.second, cut );
+		}
+
+	}
 	return;
 
 };
@@ -72,6 +84,16 @@ void EffCalc::evalAll(int maxEvents = -1){
 		eval(iEvt);
 	}
 	std::cout << "Done " << std::endl;
+};
+
+std::vector<EventData> EffCalc::filterHltData( std::vector<EventData> hltCont, double cut ){
+	std::vector<EventData> d_cpy = {hltCont[0]};
+	bool ofront  =true;
+	for( auto cont : hltCont ){
+		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
+		if( cont["mu"].mu.Pt() > cut ) d_cpy.push_back(cont);
+	}
+	return d_cpy;
 };
 
 std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont ){
@@ -138,8 +160,9 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	return d_cpy;
 };
 
-std::vector<EventData> EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt ){
-	std::vector<EventData> d_cpy = {onia[0]};
+std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt ){
+	std::vector<EventData> d_cpy_pass = {onia[0]};
+	std::vector<EventData> d_cpy_fail = {onia[0]};
 	auto match_dR = [=](){
 		return true;
 	};
@@ -149,9 +172,10 @@ std::vector<EventData> EffCalc::matchedData( std::vector<EventData> onia, std::v
 	bool ofront  =true;
 	for( auto cont : onia ){
 		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
-		if( match_dR() && match_dPt() ) d_cpy.push_back(cont);
+		if( match_dR() && match_dPt() ) d_cpy_pass.push_back(cont);
+		else d_cpy_fail.push_back(cont);
 	}
-	return d_cpy;
+	return std::make_pair(d_cpy_pass, d_cpy_fail);
 };
 
 
@@ -179,24 +203,24 @@ void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> 
 	}
 };
 
-void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal, std::vector<EventData> hltData ){
+void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal, double cut){
 	std::string objName = ( getDimu ) ? "dbmu" : "mu";
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
-			map_eff["pt"]->Fill(pass, oniaObj[objName].dmu.Pt());
+			map_eff[Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut )))]->Fill(pass, oniaObj[objName].dmu.Pt());
 		}
 		if(!getDimu){
-			map_eff["pt"]->Fill(pass, oniaObj[objName].mu.Pt());
+			map_eff[Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut )))]->Fill(pass, oniaObj[objName].mu.Pt());
 		}
 		return;
 	};
 
 	for( auto item : oniaTotal ){
-		if(item["front"].val == 1)  continue;}
+		if(item["front"].val == 1)  continue;
 		fn_fill(false, item);
 	}
 	for( auto item : oniaPass ){
-		if(item["front"].val == 1)  continue;}
+		if(item["front"].val == 1)  continue;
 		fn_fill(true, item);
 	}
 };
