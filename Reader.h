@@ -28,7 +28,6 @@ class readerBase
 //			file = _file; 
 //		};
 
-
 		void setTree( std::string name_tree, std::string name_alias ="" );
 
 	protected :
@@ -45,8 +44,9 @@ class readerBase
 
 class readerHlt : public readerBase 
 {
-		readerBase base;
+
 	public :
+		readerBase base;
 		readerHlt() : readerBase() {};
 		~readerHlt();
 		readerHlt( std::string name_file );
@@ -56,6 +56,10 @@ class readerHlt : public readerBase
 		std::vector<EventData> getEventContent();
 		EventData getEventPrimitive();
 //		EventData getCandsContent();
+		UInt_t GetEventNb(){ return eventNb; };
+		int GetEntry( int idx ){
+			return base.map_tree["HltTree"]->GetEntry(idx);
+		};
 
 		bool isDerived;
 	protected :
@@ -71,24 +75,19 @@ class readerHlt : public readerBase
 
 class readerOnia : public readerBase 
 {
-		readerBase base;
-	public :
-		readerOnia() : readerBase() {};
-		~readerOnia();
-		readerOnia( std::string name_file );
 
-//		void init;
-
-		std::vector<EventData> getEventContent( bool getDimu, bool isL1 );
-		std::vector<EventData> getMuonsContent( bool getDimu, bool isL1 );
 	protected :
 
 		static constexpr int maxArraySize = 100;
+		static constexpr int maxCloneArraySize = 32000;
 
-	private :
+	public :
+
 		UInt_t eventNb;
 		Int_t Centrality;
 		Float_t SumET_HF;
+
+		long totQQ = 0;
 
 		Short_t Reco_mu_size;
 		Short_t Reco_mu_whichGen[maxArraySize];
@@ -100,10 +99,33 @@ class readerOnia : public readerBase
 		Int_t Reco_mu_SelectionType[maxArraySize];
 		Float_t Reco_mu_dxy[maxArraySize];
 		Float_t Reco_mu_dz[maxArraySize];
-		Float_t* Reco_QQ_VtxProb;
+		Float_t Reco_QQ_VtxProb[maxArraySize];
+		TClonesArray* Reco_QQ_4mom;
 		TClonesArray* Reco_mu_4mom;
 		TClonesArray* Reco_mu_L1_4mom;
-		TClonesArray* Reco_QQ_4mom;
+//			Reco_mu_4mom = new TClonesArray("TLorentzVector", maxArraySize);
+//			Reco_QQ_4mom = new TClonesArray("TLorentzVector", maxArraySize);
+//			Reco_mu_L1_4mom = new TClonesArray("TLorentzVector", maxArraySize);
+
+		readerBase base;
+		readerOnia() : readerBase() {};
+		~readerOnia();
+		readerOnia( std::string name_file );
+
+		int GetEntryWithIndex( int evtNb ) {
+//			if(Reco_mu_4mom == nullptr)Reco_mu_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
+//			if(Reco_QQ_4mom == nullptr)Reco_QQ_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
+//			if(Reco_mu_L1_4mom == nullptr)Reco_mu_L1_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
+			int x = base.map_tree["myTree"]->GetEntryWithIndex(evtNb);
+			return x;
+		};
+//		void init;
+
+		std::vector<EventData> getEventContent( bool getDimu, bool isL1 );
+		std::vector<EventData> getMuonsContent( bool getDimu, bool isL1 );
+
+		void checkArray( );
+
 
 };
 

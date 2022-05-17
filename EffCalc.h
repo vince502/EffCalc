@@ -11,9 +11,10 @@ using MatchData=std::map<std::pair<string,double>,EventData>;
 
 class EffCalc : public readerHlt, readerOnia
 {
+	public :
+
 		readerHlt hltData;
 		readerOnia oniaData;
-	public :
 		EffCalc() : hltData(), oniaData() {};
 		~EffCalc();
 		EffCalc( std::string name_file_hlt, std::string name_file_onia );
@@ -26,19 +27,26 @@ class EffCalc : public readerHlt, readerOnia
 		EffMap generateHist( std::string );
 		bool indexMatched( double iHlt, double iOnia);
 		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
-		std::vector<EventData> matchedData( std::vector<EventData> &onia, std::vector<EventData> &hlt );
+		std::vector<EventData> matchedData( std::vector<EventData> onia, std::vector<EventData> hlt );
 		void requestHist( std::string types );
 		void fillProjHist( TEfficiency hist_eff, std::string type );
 		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
+		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, std::vector<EventData> hltData );
 		void eval(int idx);
 		void evalAll(int maxEvents);
-		std::unordered_map<std::string, TEfficiency> getEfficiencies();
+		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();
 //		void writeOutput();
+		
+//		void check;
+		std::unordered_map<std::string, TEfficiency*> map_eff;
+		std::string registered_trigger;
+	protected :
 
 	private :
 		TFile* file_output;
 //		std::unordered_map<string, bool> map_hlt;
-		std::unordered_map<std::string, TEfficiency> map_eff;
+
+
 		bool getDimu, isL1;
 		std::string rap;
 };
