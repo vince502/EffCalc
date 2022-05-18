@@ -34,6 +34,7 @@ class EffCalc : public readerHlt, readerOnia
 		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
 		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 		void eval(int idx);
+		void eval(int idx, double cut);
 		void evalAll(int maxEvents);
 		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();
 //		void writeOutput();

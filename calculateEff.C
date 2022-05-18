@@ -11,13 +11,23 @@
 static int UseNCores = 40;
 
 void calculateEff(){
-	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoL1IONoSPClimit_v1230_v8.root";
+//	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoL1IONoSPClimit_v1230_v8.root";
+	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoSPClimit_v1230_v8.root";
 	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
 
 	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
-	std::vector<std::pair<std::string, std::string> > v_names = { { "HLT_HIL1DoubleMuOpen_v", "L1DoubleMuOpen"}, {"HLT_HIL1DoubleMuOpen_v", ""}, {"HLT_HIL2Mu0_L1DoubleMu0_v", ""}};
+	std::vector<std::pair<std::string, std::string> > v_names = { 
+		{ "HLT_HIL1DoubleMuOpen_v", "L1DoubleMuOpen"}, 
+		{ "HLT_HIL2Mu0_L1DoubleMuOpen_v", "L2DoubleMuOpen"}, 
+		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", "L3DoubleMuOpen"}, 
+		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", ""}, 
+		{ "HLT_HIL3Mu0L1SingleMuOpen_v", "L1SingleMuOpen"}, 
+		{"HLT_HIL1DoubleMuOpen_v", ""},
+		{"HLT_HIL2Mu0_L1DoubleMu0_v", ""},
+		{"HLT_Mu12_v", ""},
+	};
 	std::vector<std::string> v_names2 = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 	auto trigAttr = [v_names](int idx){
 		bool l1 = false;
@@ -41,14 +51,14 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	int max_events = 1e+4;
+	int max_events = 1.5e+7;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia );
 		calc.setTrigger(v_names[idx].first, v_names[idx].second);
 		calc.init(trigAttr(idx));
 		calc.evalAll(max_events);
-		std::cout << "init done Loop!" << std::endl;
+		std::cout << Form("Done trigger [%s]", v_names[idx].first.c_str()) << std::endl;
 		
 		return calc.getEfficiencies();
 	};
@@ -62,7 +72,7 @@ void calculateEff(){
 //	auto res= extractEffs(0);
 
 	std::cout << "Run Fin" << std::endl;
-	TFile* output = new TFile("output.root", "recreate");
+	TFile* output = new TFile("output_noSPC.root", "recreate");
 	output->cd();
 	for( auto idx : res ){
 		output->mkdir(idx.first.c_str());
@@ -77,6 +87,6 @@ void calculateEff(){
 	
 
 	std::cout << "Draw" << std::endl;
-	result_map["HLT_HIL1DoubleMuOpen_v"]["pt"]->Draw();
+//	result_map["HLT_HIL1DoubleMuOpen_v"]["pt"]->Draw();
 
 };

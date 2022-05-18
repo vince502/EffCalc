@@ -58,7 +58,11 @@ std::vector<EventData> readerHlt::getEventContent(){
 };
 
 EventData readerHlt::getEventPrimitive(){
-	return EventData{{"Event", content{static_cast<double>(eventNb)}}, {"passed", content{static_cast<double>(triggered)}}};
+	return EventData{
+		{"front", content{0} },
+		{"Event", content{static_cast<double>(eventNb)}}, 
+		{"passed", content{static_cast<double>(triggered)}}
+	};
 };
 
 //EventData readerHlt::getCandsContent(){
@@ -102,7 +106,12 @@ readerOnia::~readerOnia(){
 
 std::vector<EventData> readerOnia::getEventContent(bool getDimu, bool isL1){
 	std::vector<EventData> t, s;
-	EventData tfront = {{"front", content{1}}, {"eventNb", content{static_cast<double>(eventNb)}}, {"Centrality", content{static_cast<double>(Centrality)}}, {"SumET_HF", content{SumET_HF}}, {"Reco_mu_size", content{static_cast<double>(Reco_mu_size)}}, {"Reco_QQ_size", content{static_cast<double>(Reco_QQ_size)} } };
+	EventData tfront = {{"front", content{1}}, {"eventNb", content{static_cast<double>(eventNb)}}, 
+		{"Centrality", content{static_cast<double>(Centrality)}},
+		{"SumET_HF", content{SumET_HF}},
+		{"Reco_mu_size", content{static_cast<double>(Reco_mu_size)}},
+		{"Reco_QQ_size", content{static_cast<double>(Reco_QQ_size)} }
+	};
 	t.push_back(tfront);
 	s = getMuonsContent(getDimu, isL1);
 	t.insert(t.end(), std::make_move_iterator(s.begin()), std::make_move_iterator(s.end()) );
@@ -117,24 +126,33 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 		totQQ += (int) Reco_QQ_size;
 		for( auto idx : ROOT::TSeqI( Reco_QQ_size ) ){
 			t.push_back( EventData{{"dbmu", content{0, 
-				TLorentzVector(*((TLorentzVector*) mu_4mom->At(Reco_QQ_mupl_idx[idx]))),
-				TLorentzVector(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx]))), 
-				TLorentzVector(*((TLorentzVector*)Reco_QQ_4mom->At(idx)))}
-			}, 
-			{"Trk1", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mupl_idx[idx]])}}, 
-			{"Trk2", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mumi_idx[idx]])}}, 
-			{"Pix1", content{static_cast<double>(Reco_mu_nPixWMea[Reco_QQ_mupl_idx[idx]])}}, 
-			{"Pix2", content{static_cast<double>(Reco_mu_nPixWMea[Reco_QQ_mumi_idx[idx]])}}, 
-			{"dxy1", content{Reco_mu_dxy[Reco_QQ_mupl_idx[idx]]}}, 
-			{"dxy2", content{Reco_mu_dxy[Reco_QQ_mupl_idx[idx]]}}, 
-			{"dz1", content{Reco_mu_dz[Reco_QQ_mupl_idx[idx]]}}, 
-			{"dz2", content{Reco_mu_dz[Reco_QQ_mumi_idx[idx]]}} } 
+					TLorentzVector(*((TLorentzVector*) mu_4mom->At(Reco_QQ_mupl_idx[idx]))),
+					TLorentzVector(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx]))), 
+					TLorentzVector(*((TLorentzVector*)Reco_QQ_4mom->At(idx)))}
+				}, 
+				{"Trk1", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mupl_idx[idx]])}}, 
+				{"Trk2", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mumi_idx[idx]])}}, 
+				{"Pix1", content{static_cast<double>(Reco_mu_nPixWMea[Reco_QQ_mupl_idx[idx]])}}, 
+				{"Pix2", content{static_cast<double>(Reco_mu_nPixWMea[Reco_QQ_mumi_idx[idx]])}}, 
+				{"dxy1", content{Reco_mu_dxy[Reco_QQ_mupl_idx[idx]]}}, 
+				{"dxy2", content{Reco_mu_dxy[Reco_QQ_mumi_idx[idx]]}}, 
+				{"dz1", content{Reco_mu_dz[Reco_QQ_mupl_idx[idx]]}}, 
+				{"dz2", content{Reco_mu_dz[Reco_QQ_mumi_idx[idx]]}}, 
+				{"QQVtxProb", content{Reco_QQ_VtxProb[idx]}} 
+			} 
 			);
 		}
 	}
 	else {
 		for( auto idx : ROOT::TSeqI(Reco_mu_size) ){
-			t.push_back( EventData{{"mu", content{0, TLorentzVector(*((TLorentzVector*)mu_4mom->At(idx)))}}, {"Trk1", content{static_cast<double>(Reco_mu_nTrkWMea[idx])}}, {"Pix1", content{static_cast<double>(Reco_mu_nPixWMea[idx])}}, {"dxy1", content{Reco_mu_dxy[idx]}}, {"dz1", content{Reco_mu_dz[idx]}}} 
+			t.push_back( EventData{{"mu", content{0, 
+					TLorentzVector(*((TLorentzVector*)mu_4mom->At(idx)))}
+				}, 
+				{"Trk1", content{static_cast<double>(Reco_mu_nTrkWMea[idx])}},
+				{"Pix1", content{static_cast<double>(Reco_mu_nPixWMea[idx])}},
+				{"dxy1", content{Reco_mu_dxy[idx]}},
+				{"dz1", content{Reco_mu_dz[idx]}}
+			} 
 			);
 		}
 	};

@@ -52,8 +52,8 @@ void EffCalc::eval(int idx){
 	auto hltPrim = hltData.getEventPrimitive( );
 	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
 	if( chksum < 0 ) return;
-	auto hltCont = hltData.getEventContent();
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
+//	std::cout << "HLT Pass : " << hltPrim["passed"].val << ", mu : " << oniaCont.size() -1 << ", hlt mu" << hltCont.size()-1 << std::endl;
 	if( !((bool) hltPrim["passed"].val) ){
 		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
 		if( hltData.isDerived ){
@@ -63,6 +63,7 @@ void EffCalc::eval(int idx){
 		}
 		return;
 	}
+	auto hltCont = hltData.getEventContent();
 	auto pair_oniaCont = matchedData( oniaCont, hltCont );
 	fillHist(pair_oniaCont.first, pair_oniaCont.second);
 	if( hltData.isDerived ){
@@ -71,7 +72,6 @@ void EffCalc::eval(int idx){
 			pair_oniaCont = matchedData( oniaCont, hltCont);
 			fillDerivedHist(pair_oniaCont.first, pair_oniaCont.second, cut );
 		}
-
 	}
 	return;
 
@@ -91,7 +91,7 @@ std::vector<EventData> EffCalc::filterHltData( std::vector<EventData> hltCont, d
 	std::vector<EventData> d_cpy = {hltCont[0]};
 	bool ofront  =true;
 	for( auto cont : hltCont ){
-		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
+		if( ofront ) {if( cont.find("front") != cont.end() ) ofront = false; continue; }
 		if( cont["mu"].mu.Pt() > cut ) d_cpy.push_back(cont);
 	}
 	return d_cpy;
@@ -102,10 +102,10 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	auto passQuality = [=](EventData d){
 		if( getDimu ){
 			return (
-				d["Pix1"].val > 0 &&
-				d["Pix2"].val > 0 && 
-				d["Trk1"].val > 5 &&
-				d["Trk2"].val > 5 &&
+				((int) d["Pix1"].val) > 0 &&
+				((int) d["Pix2"].val) > 0 && 
+				((int) d["Trk1"].val) > 5 &&
+				((int) d["Trk2"].val) > 5 &&
 				d["dxy1"].val < 0.3 &&
 				d["dxy2"].val < 0.3 &&
 				d["dz1"].val  < 20 &&
@@ -113,8 +113,8 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 		}
 		else {
 			return (
-				d["Pix1"].val > 0 &&
-				d["Trk1"].val > 5 &&
+				((int) d["Pix1"].val) > 0 &&
+				((int) d["Trk1"].val) > 5 &&
 				d["dxy1"].val < 0.3 &&
 				d["dz1"].val  < 20 );
 		}
@@ -127,7 +127,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 				(fabs(mu1.Eta()) < 2.4) &&
 				(
 					(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5) ||
-					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) )||
+					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && ( mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) ) )||
 					(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5)
 				)
 			);
@@ -140,13 +140,13 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 				(fabs(mu1.Eta()) < 2.4) &&
 				(
 					(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5) ||
-					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) )||
+					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && (mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta())) )||
 					(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5)
 				) &&
 				(fabs(mu2.Eta()) < 2.4) &&
 				(
 					(fabs(mu2.Eta()) < 1.2 && mu2.Pt() > 3.5) ||
-					(fabs(mu2.Eta()) > 1.2 && fabs(mu2.Eta()) < 2.1  && mu2.Pt() >= 5.47 - 1.89 * fabs(mu2.Eta()) )||
+					(fabs(mu2.Eta()) > 1.2 && fabs(mu2.Eta()) < 2.1  && (mu2.Pt() >= 5.47 - 1.89 * fabs(mu2.Eta())) )||
 					(fabs(mu2.Eta()) > 2.1 && fabs(mu2.Eta()) < 2.4 && mu2.Pt() > 1.5)
 				)
 			);
@@ -155,8 +155,11 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	};
 	bool ofront  =true;
 	for( auto cont : oniaCont ){
-		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
-		if( passQuality(cont) && passAcceptance(cont) ) d_cpy.push_back(cont);
+		if( ofront ) {if( cont.find("front") != cont.end() ) ofront = false; continue; }
+		if( false || (passQuality(cont) && passAcceptance(cont)) ){
+//			std::cout <<Form( "cont : pix %.1f, trk%.1f, dxy %.2f, dz %.2f, eta %.3f, pt %.3f " , 
+//			cont["Pix1"].val, cont["Trk1"].val, cont["dxy1"].val, cont["dz"].val, cont["mu"].mu.Eta(), cont["mu"].mu.Pt() ) << std::endl; 
+		}d_cpy.push_back(cont);
 	}
 	return d_cpy;
 };
@@ -178,7 +181,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 				if( !pass1 )pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) < cut;
 				if( !pass2 )pass2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2)) < cut;
 			}
-			return (pass1 && true );//pass2);
+			return (pass1 && pass2 );
 		}
 		if( !getDimu ){
 			double oeta1 = base["mu"].mu.Eta();
@@ -220,14 +223,14 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 	bool ofront  =true;
 	for( auto cont : onia ){
 		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
-		if( match_dR(cont, 0.3) && match_dPt(cont, 999.0) ) d_cpy_pass.push_back(cont);
+		if( false ||( match_dR(cont, 0.3) && match_dPt(cont, 99999.) ) ) d_cpy_pass.push_back(cont);
 		else d_cpy_fail.push_back(cont);
 	}
 	return std::make_pair(d_cpy_pass, d_cpy_fail);
 };
 
 
-void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal){
+void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaFail){
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
 			map_eff["pt"]->Fill(pass, oniaObj["dbmu"].dmu.Pt());
@@ -240,17 +243,17 @@ void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> 
 		return;
 	};
 
-	for( auto item : oniaTotal ){
-		if(item["front"].val == 1) {if( oniaTotal.size() > 1 ){ map_eff["pt"]->Fill(false, item["Centrality"].val); } continue;}
+	for( auto item : oniaFail ){
+		if(item.find("front") != item.end()) {if( oniaFail.size() > 1 ){ map_eff["cent"]->Fill(false, item["Centrality"].val); } continue;}
 		fn_fill(false, item);
 	}
 	for( auto item : oniaPass ){
-		if(item["front"].val == 1) {if( oniaPass.size() > 1 ){ map_eff["pt"]->Fill(true, item["Centrality"].val); } continue;}
+		if(item.find("front") != item.end()) {if( oniaPass.size() > 1 ){ map_eff["cent"]->Fill(true, item["Centrality"].val); } continue;}
 		fn_fill(true, item);
 	}
 };
 
-void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal, double cut){
+void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaFail, double cut){
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
 			map_eff[Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut )))]->Fill(pass, oniaObj["dbmu"].dmu.Pt());
@@ -261,12 +264,12 @@ void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<Even
 		return;
 	};
 
-	for( auto item : oniaTotal ){
-		if(item["front"].val == 1)  continue;
+	for( auto item : oniaFail ){
+		if(item.find("front") != item.end() )  continue;
 		fn_fill(false, item);
 	}
 	for( auto item : oniaPass ){
-		if(item["front"].val == 1)  continue;
+		if(item.find("front") != item.end() )  continue;
 		fn_fill(true, item);
 	}
 };
