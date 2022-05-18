@@ -171,21 +171,22 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			double oeta2 = base["dbmu"].mu2.Eta();
 			double ophi2 = base["dbmu"].mu2.Phi();
 			bool pass1, pass2;
-			for( auto cont : hlt ){
-				double heta = cont["mu"].mu.Eta();
-				double hphi = cont["mu"].mu.Phi();
+			for( auto hltcont : hlt ){
+				double heta = hltcont["mu"].mu.Eta();
+				double hphi = hltcont["mu"].mu.Phi();
+//				std::cout << 	sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) << std::endl;
 				if( !pass1 )pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) < cut;
 				if( !pass2 )pass2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2)) < cut;
 			}
-			return (pass1 && pass2);
+			return (pass1 && true );//pass2);
 		}
 		if( !getDimu ){
 			double oeta1 = base["mu"].mu.Eta();
 			double ophi1 = base["mu"].mu.Phi();
 			bool pass1;
-			for( auto cont : hlt ){
-				double heta = cont["mu"].mu.Eta();
-				double hphi = cont["mu"].mu.Phi();
+			for( auto hltcont : hlt ){
+				double heta = hltcont["mu"].mu.Eta();
+				double hphi = hltcont["mu"].mu.Phi();
 				if( !pass1 ) pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ),2)) < cut;
 			}
 			return (pass1);
@@ -197,8 +198,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			double opt1 = base["dbmu"].mu.Pt();
 			double opt2 = base["dbmu"].mu2.Pt();
 			bool pass1, pass2;
-			for( auto cont : hlt ){
-				double hpt = cont["mu"].mu.Pt();
+			for( auto hltcont : hlt ){
+				double hpt = hltcont["mu"].mu.Pt();
 				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
 				if( !pass2 ) pass2 =  (fabs(hpt - opt2) / opt2)< cut;
 			}
@@ -206,9 +207,9 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 		}
 		if( !getDimu ){
 			double opt1 = base["mu"].mu.Pt();
-			bool pass1, pass2;
-			for( auto cont : hlt ){
-				double hpt = cont["mu"].mu.Pt();
+			bool pass1;
+			for( auto hltcont : hlt ){
+				double hpt = hltcont["mu"].mu.Pt();
 				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
 			}
 			return (pass1);
@@ -219,7 +220,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 	bool ofront  =true;
 	for( auto cont : onia ){
 		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
-		if( match_dR(cont, 0.3) && match_dPt(cont, 0.1) ) d_cpy_pass.push_back(cont);
+		if( match_dR(cont, 0.3) && match_dPt(cont, 999.0) ) d_cpy_pass.push_back(cont);
 		else d_cpy_fail.push_back(cont);
 	}
 	return std::make_pair(d_cpy_pass, d_cpy_fail);
@@ -227,15 +228,14 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 
 
 void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal){
-	std::string objName = ( getDimu ) ? "dbmu" : "mu";
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
-			map_eff["pt"]->Fill(pass, oniaObj[objName].dmu.Pt());
-			map_eff[rap]->Fill(pass, oniaObj[objName].dmu.Y());
+			map_eff["pt"]->Fill(pass, oniaObj["dbmu"].dmu.Pt());
+			map_eff[rap]->Fill(pass, oniaObj["dbmu"].dmu.Y());
 		}
 		if(!getDimu){
-			map_eff["pt"]->Fill(pass, oniaObj[objName].mu.Pt());
-			map_eff[rap]->Fill(pass, oniaObj[objName].mu.Eta());
+			map_eff["pt"]->Fill(pass, oniaObj["mu"].mu.Pt());
+			map_eff[rap]->Fill(pass, oniaObj["mu"].mu.Eta());
 		}
 		return;
 	};
@@ -251,13 +251,12 @@ void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> 
 };
 
 void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal, double cut){
-	std::string objName = ( getDimu ) ? "dbmu" : "mu";
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
-			map_eff[Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut )))]->Fill(pass, oniaObj[objName].dmu.Pt());
+			map_eff[Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut )))]->Fill(pass, oniaObj["dbmu"].dmu.Pt());
 		}
 		if(!getDimu){
-			map_eff[Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut )))]->Fill(pass, oniaObj[objName].mu.Pt());
+			map_eff[Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut )))]->Fill(pass, oniaObj["mu"].mu.Pt());
 		}
 		return;
 	};

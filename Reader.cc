@@ -49,8 +49,10 @@ std::vector<EventData> readerHlt::getEventContent(){
 	size_t sz = pts->size();
 	std::vector<EventData> t;
 	t.push_back(getEventPrimitive() );
+	TLorentzVector tv;
 	for( auto idx : ROOT::TSeqI(sz) ){
-		t.push_back( EventData{{"mu", content{0, TLorentzVector(pts->at(idx), etas->at(idx), phis->at(idx), masses->at(idx))}}});
+		tv.SetPtEtaPhiM( pts->at(idx), etas->at(idx), phis->at(idx), masses->at(idx));
+		t.push_back( EventData{{"mu", content{0, tv}}});
 	}
 	return t;
 };
@@ -114,7 +116,11 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 	if( getDimu ){
 		totQQ += (int) Reco_QQ_size;
 		for( auto idx : ROOT::TSeqI( Reco_QQ_size ) ){
-			t.push_back( EventData{{"dbmu", content{0, TLorentzVector(*((TLorentzVector*) mu_4mom->At(Reco_QQ_mupl_idx[idx]))), TLorentzVector(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx]))), TLorentzVector(*((TLorentzVector*)Reco_QQ_4mom->At(idx)))}}, 
+			t.push_back( EventData{{"dbmu", content{0, 
+				TLorentzVector(*((TLorentzVector*) mu_4mom->At(Reco_QQ_mupl_idx[idx]))),
+				TLorentzVector(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx]))), 
+				TLorentzVector(*((TLorentzVector*)Reco_QQ_4mom->At(idx)))}
+			}, 
 			{"Trk1", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mupl_idx[idx]])}}, 
 			{"Trk2", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mumi_idx[idx]])}}, 
 			{"Pix1", content{static_cast<double>(Reco_mu_nPixWMea[Reco_QQ_mupl_idx[idx]])}}, 
