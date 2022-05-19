@@ -3,6 +3,7 @@
 #include "EffCalc.h"
 #include "Reader.cc"
 #include <vector>
+#include <chrono>
 
 EffCalc::EffCalc( std::string name_file_hlt, std::string name_file_onia ) : hltData( name_file_hlt ), oniaData( name_file_onia) {
 };
@@ -48,11 +49,15 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 //};
 
 void EffCalc::eval(int idx){
+	auto start = std::chrono::steady_clock::now();
 	hltData.GetEntry(idx);
+	std::vector<std::chrono::steady_clock::time_point> v_end;
 	auto hltPrim = hltData.getEventPrimitive( );
 	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
 	if( chksum < 0 ) return;
+//	/* 1 */v_end.push_back(std::chrono::steady_clock::now());
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
+//	/* 2 */v_end.push_back(std::chrono::steady_clock::now());
 //	std::cout << "HLT Pass : " << hltPrim["passed"].val << ", mu : " << oniaCont.size() -1 << ", hlt mu" << hltCont.size()-1 << std::endl;
 	if( !((bool) hltPrim["passed"].val) ){
 		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
@@ -63,16 +68,32 @@ void EffCalc::eval(int idx){
 		}
 		return;
 	}
+//	/* 3 */v_end.push_back(std::chrono::steady_clock::now());
 	auto hltCont = hltData.getEventContent();
 	auto pair_oniaCont = matchedData( oniaCont, hltCont );
 	fillHist(pair_oniaCont.first, pair_oniaCont.second);
+//	/* 4 */v_end.push_back(std::chrono::steady_clock::now());
 	if( hltData.isDerived ){
-		for( auto cut : derivedPtCuts ){
-			hltCont = filterHltData(hltCont, cut);
-			pair_oniaCont = matchedData( oniaCont, hltCont);
-			fillDerivedHist(pair_oniaCont.first, pair_oniaCont.second, cut );
-		}
+		std::for_each( 
+			derivedPtCuts.begin(), derivedPtCuts.end(),
+			[&, hltCont, oniaCont](auto&& cut) mutable {
+				hltCont = filterHltData(hltCont, cut);
+				auto _pair_oniaCont = matchedData( oniaCont, hltCont);
+				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
+			});
+	//	for( auto cut : derivedPtCuts ){
+	//	/* 6 */v_end.push_back(std::chrono::steady_clock::now());
+	//		hltCont = filterHltData(hltCont, cut);
+	//		pair_oniaCont = matchedData( oniaCont, hltCont);
+	//		fillDerivedHist(pair_oniaCont.first, pair_oniaCont.second, cut );
+	//	}
 	}
+//	/* n */v_end.push_back(std::chrono::steady_clock::now());
+//	std::cout << v_end.size() << std::endl;
+//	for( auto end : v_end ){
+//		std::chrono::duration<double> diff = end- start;
+//		std::cout << "Time : " << diff.count() << std::endl;
+//	}
 	return;
 
 };
@@ -94,7 +115,7 @@ std::vector<EventData> EffCalc::filterHltData( std::vector<EventData> hltCont, d
 		if( ofront ) {if( cont.find("front") != cont.end() ) ofront = false; continue; }
 		if( cont["mu"].mu.Pt() > cut ) d_cpy.push_back(cont);
 	}
-	return d_cpy;
+	return std::move(d_cpy);
 };
 
 std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont ){
@@ -161,7 +182,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 //			cont["Pix1"].val, cont["Trk1"].val, cont["dxy1"].val, cont["dz"].val, cont["mu"].mu.Eta(), cont["mu"].mu.Pt() ) << std::endl; 
 		}d_cpy.push_back(cont);
 	}
-	return d_cpy;
+	return std::move(d_cpy);
 };
 
 std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt ){
@@ -226,7 +247,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 		if( false ||( match_dR(cont, 0.3) && match_dPt(cont, 99999.) ) ) d_cpy_pass.push_back(cont);
 		else d_cpy_fail.push_back(cont);
 	}
-	return std::make_pair(d_cpy_pass, d_cpy_fail);
+	return std::move(std::make_pair(d_cpy_pass, d_cpy_fail));
 };
 
 
@@ -281,7 +302,7 @@ std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > EffCalc::
 //		res_map.insert({cont.first, *cont.second});
 //	}
 //	return res_map;
-	return std::make_pair(registered_trigger, map_eff);
+	return std::move(std::make_pair(std::move(registered_trigger), std::move(map_eff) ));
 };
 
 

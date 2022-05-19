@@ -21,6 +21,9 @@ bool readerBase::checkBranch( std::string name_tree, std::string name_branch ){
 
 readerHlt::readerHlt( std::string name_file ) : base( name_file) {
 	base.setTree( "hltanalysis/HltTree", "HltTree");
+	base.map_tree["HltTree"]->SetBranchStatus("*",0);
+	base.map_tree["HltTree"]->SetBranchStatus("Run",1);
+	base.map_tree["HltTree"]->SetBranchStatus("Event",1);
 	base.map_tree["HltTree"]->SetBranchAddress("Run", &runNb);
 	base.map_tree["HltTree"]->SetBranchAddress("Event", &eventNb);
 	pts = new std::vector<Float_t>;
@@ -42,7 +45,9 @@ void readerHlt::registerTrig( std::string _name_base_trig, std::string _name_tri
 	base.map_tree[nickname]->SetBranchAddress("phi", &phis);
 	base.map_tree[nickname]->SetBranchAddress("mass", &masses);
 
+	base.map_tree["HltTree"]->SetBranchStatus(_name_base_trig.c_str(),1);
 	base.map_tree["HltTree"]->SetBranchAddress(_name_base_trig.c_str(), &triggered );
+
 };
 
 std::vector<EventData> readerHlt::getEventContent(){ 
@@ -52,17 +57,18 @@ std::vector<EventData> readerHlt::getEventContent(){
 	TLorentzVector tv;
 	for( auto idx : ROOT::TSeqI(sz) ){
 		tv.SetPtEtaPhiM( pts->at(idx), etas->at(idx), phis->at(idx), masses->at(idx));
-		t.push_back( EventData{{"mu", content{0, tv}}});
+		t.push_back( EventData{{"mu", content{0, std::move(tv)}}});
 	}
-	return t;
+	return std::move(t);
 };
 
 EventData readerHlt::getEventPrimitive(){
-	return EventData{
+	return std::move(EventData{
 		{"front", content{0} },
 		{"Event", content{static_cast<double>(eventNb)}}, 
 		{"passed", content{static_cast<double>(triggered)}}
-	};
+	}
+	);
 };
 
 //EventData readerHlt::getCandsContent(){
@@ -77,11 +83,28 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	Reco_QQ_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
 	Reco_mu_L1_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
 	std::cout << "initialized Onia" << std::endl;
+	base.map_tree["myTree"]->SetBranchStatus("*", 0);
+	base.map_tree["myTree"]->SetBranchStatus("eventNb", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Centrality", 1);
+	base.map_tree["myTree"]->SetBranchStatus("SumET_HF", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_size", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_size", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_mupl_idx", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_mumi_idx", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_nTrkWMea", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_nPixWMea", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_SelectionType", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_dxy", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_dz", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_VtxProb", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_4mom", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_L1_4mom", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_4mom", 1);
 	base.map_tree["myTree"]->SetBranchAddress("eventNb", &eventNb);
 	base.map_tree["myTree"]->SetBranchAddress("Centrality", &Centrality);
 	base.map_tree["myTree"]->SetBranchAddress("SumET_HF", &SumET_HF);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_size", &Reco_mu_size);
-	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_whichGen", &Reco_mu_whichGen);
+//	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_whichGen", &Reco_mu_whichGen);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_mupl_idx", &Reco_QQ_mupl_idx);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_mumi_idx", &Reco_QQ_mumi_idx);
@@ -116,7 +139,7 @@ std::vector<EventData> readerOnia::getEventContent(bool getDimu, bool isL1){
 	s = getMuonsContent(getDimu, isL1);
 	t.insert(t.end(), std::make_move_iterator(s.begin()), std::make_move_iterator(s.end()) );
 
-	return t;
+	return std::move(t);
 };
 
 std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
@@ -126,19 +149,19 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 		totQQ += (int) Reco_QQ_size;
 		for( auto idx : ROOT::TSeqI( Reco_QQ_size ) ){
 			t.push_back( EventData{{"dbmu", content{0, 
-					TLorentzVector(*((TLorentzVector*) mu_4mom->At(Reco_QQ_mupl_idx[idx]))),
-					TLorentzVector(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx]))), 
-					TLorentzVector(*((TLorentzVector*)Reco_QQ_4mom->At(idx)))}
+					TLorentzVector(std::move(*((TLorentzVector*) mu_4mom->At(Reco_QQ_mupl_idx[idx])))),
+					TLorentzVector(std::move(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx])))), 
+					TLorentzVector(std::move(*((TLorentzVector*)Reco_QQ_4mom->At(idx))))}
 				}, 
-				{"Trk1", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mupl_idx[idx]])}}, 
-				{"Trk2", content{static_cast<double>(Reco_mu_nTrkWMea[Reco_QQ_mumi_idx[idx]])}}, 
-				{"Pix1", content{static_cast<double>(Reco_mu_nPixWMea[Reco_QQ_mupl_idx[idx]])}}, 
-				{"Pix2", content{static_cast<double>(Reco_mu_nPixWMea[Reco_QQ_mumi_idx[idx]])}}, 
-				{"dxy1", content{Reco_mu_dxy[Reco_QQ_mupl_idx[idx]]}}, 
-				{"dxy2", content{Reco_mu_dxy[Reco_QQ_mumi_idx[idx]]}}, 
-				{"dz1", content{Reco_mu_dz[Reco_QQ_mupl_idx[idx]]}}, 
-				{"dz2", content{Reco_mu_dz[Reco_QQ_mumi_idx[idx]]}}, 
-				{"QQVtxProb", content{Reco_QQ_VtxProb[idx]}} 
+				{"Trk1", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[Reco_QQ_mupl_idx[idx]]))}}, 
+				{"Trk2", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[Reco_QQ_mumi_idx[idx]]))}}, 
+				{"Pix1", content{static_cast<double>(std::move(Reco_mu_nPixWMea[Reco_QQ_mupl_idx[idx]]))}}, 
+				{"Pix2", content{static_cast<double>(std::move(Reco_mu_nPixWMea[Reco_QQ_mumi_idx[idx]]))}}, 
+				{"dxy1", content{std::move(Reco_mu_dxy[Reco_QQ_mupl_idx[idx]])}}, 
+				{"dxy2", content{std::move(Reco_mu_dxy[Reco_QQ_mumi_idx[idx]])}}, 
+				{"dz1", content{std::move(Reco_mu_dz[Reco_QQ_mupl_idx[idx]])}}, 
+				{"dz2", content{std::move(Reco_mu_dz[Reco_QQ_mumi_idx[idx]])}}, 
+				{"QQVtxProb", content{std::move(Reco_QQ_VtxProb[idx])}} 
 			} 
 			);
 		}
@@ -146,17 +169,17 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 	else {
 		for( auto idx : ROOT::TSeqI(Reco_mu_size) ){
 			t.push_back( EventData{{"mu", content{0, 
-					TLorentzVector(*((TLorentzVector*)mu_4mom->At(idx)))}
+					TLorentzVector(std::move(*((TLorentzVector*)mu_4mom->At(idx))))}
 				}, 
-				{"Trk1", content{static_cast<double>(Reco_mu_nTrkWMea[idx])}},
-				{"Pix1", content{static_cast<double>(Reco_mu_nPixWMea[idx])}},
+				{"Trk1", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[idx]))}},
+				{"Pix1", content{static_cast<double>(std::move(Reco_mu_nPixWMea[idx]))}},
 				{"dxy1", content{Reco_mu_dxy[idx]}},
 				{"dz1", content{Reco_mu_dz[idx]}}
 			} 
 			);
 		}
 	};
-	return t;
+	return std::move(t);
 };
 
 void readerOnia::checkArray(){

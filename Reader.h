@@ -81,8 +81,8 @@ class readerOnia : public readerBase
 
 	protected :
 
-		static constexpr int maxArraySize = 100;
-		static constexpr int maxCloneArraySize = 32000;
+		static constexpr int maxArraySize = 2000;
+		static constexpr int maxCloneArraySize = 2000;
 
 	public :
 
