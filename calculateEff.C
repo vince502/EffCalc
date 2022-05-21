@@ -12,46 +12,45 @@
 static int UseNCores = 40;
 
 void calculateEff(){
-//	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoL1IONoSPClimit_v1230_v8.root";
-	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoSPClimit_v1230_v8.root";
-	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
-	string file_output = "output_MCJpsiEMB.root";
-//	string file_name_hlt = "../store/openHLT_HIMuon_MBPD2018_v1230_v9.root";
-//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-//	string file_output = "output_Data2018_newMenu.root";
+//	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoSPClimit_v1230_v8.root";
+//	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
+//	string file_output = "output_MCJpsiEMB.root";
+	string file_name_hlt = "../store/openHLT_HIMuon_MBPD2018_v1230_v9.root";
+	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
+	string file_output = "output_Data2018_newMenu.root";
 
 	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 	std::vector<std::pair<std::string, std::string> > v_names = { 
 //trigger of menu v12
-//		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
-//		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
-//		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
-//		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
-//		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
-//		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
-//		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
-//		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
-//		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
-//		{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
-//		{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
-//		{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
-//		{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
-//		{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
-//		{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
-//		{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
-//		{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
-//		{ "HLT_HIL3DoubleMu0_SQ_v"  , ""}, 
+		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
+		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
+		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
+		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
+		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
+		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
+		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
+		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
+		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
+		{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
+		{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
+		{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
+		{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
+		{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
+		{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
+		{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
+		{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
+		{ "HLT_HIL3DoubleMu0_SQ_v"  , ""}, 
 //trigger of menu v9
-		{ "HLT_HIL1DoubleMuOpen_v", "L1DoubleMuOpen"}, 
-		{ "HLT_HIL2Mu0_L1DoubleMuOpen_v", "L2DoubleMuOpen"}, 
-		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", "L3DoubleMuOpen"}, 
-		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", ""}, 
-		{ "HLT_HIL3Mu0L1SingleMuOpen_v", "L1SingleMuOpen"}, 
-		{"HLT_HIL1DoubleMuOpen_v", ""},
-		{"HLT_HIL2Mu0_L1DoubleMu0_v", ""},
-		{"HLT_Mu12_v", ""},
+//		{ "HLT_HIL1DoubleMuOpen_v", "L1DoubleMuOpen"}, 
+//		{ "HLT_HIL2Mu0_L1DoubleMuOpen_v", "L2DoubleMuOpen"}, 
+//		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", "L3DoubleMuOpen"}, 
+//		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", ""}, 
+//		{ "HLT_HIL3Mu0L1SingleMuOpen_v", "L1SingleMuOpen"}, 
+//		{"HLT_HIL1DoubleMuOpen_v", ""},
+//		{"HLT_HIL2Mu0_L1DoubleMu0_v", ""},
+//		{"HLT_Mu12_v", ""},
 	};
 	std::vector<std::string> v_names2 = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 	auto trigAttr = [v_names](int idx){
