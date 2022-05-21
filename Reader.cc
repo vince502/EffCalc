@@ -26,6 +26,7 @@ readerHlt::readerHlt( std::string name_file ) : base( name_file) {
 	base.map_tree["HltTree"]->SetBranchStatus("Event",1);
 	base.map_tree["HltTree"]->SetBranchAddress("Run", &runNb);
 	base.map_tree["HltTree"]->SetBranchAddress("Event", &eventNb);
+//	vec_idx = getIndexVector();
 	pts = new std::vector<Float_t>;
 	etas = new std::vector<Float_t>;
 	phis = new std::vector<Float_t>;
@@ -62,6 +63,15 @@ std::vector<EventData> readerHlt::getEventContent(){
 	return std::move(t);
 };
 
+std::vector<std::pair<long, long> > readerHlt::getIndexVector(){
+	std::vector<std::pair<long, long> > v;
+	for( auto idx : ROOT::TSeqI(base.map_tree["HltTree"]->GetEntries()) ){
+		base.map_tree["HltTree"]->GetEntry(idx);
+		v.push_back(std::make_pair(static_cast<long>(idx), eventNb));
+	}
+	return std::move(v);
+};
+
 EventData readerHlt::getEventPrimitive(){
 	return std::move(EventData{
 		{"front", content{0} },
@@ -78,6 +88,8 @@ EventData readerHlt::getEventPrimitive(){
 readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	std::cout << "initializing Onia" << std::endl;
 	base.setTree( "hionia/myTree", "myTree" );
+
+//	vec_idx = getIndexVector();
 
 	Reco_mu_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
 	Reco_QQ_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
@@ -138,7 +150,6 @@ std::vector<EventData> readerOnia::getEventContent(bool getDimu, bool isL1){
 	t.push_back(tfront);
 	s = getMuonsContent(getDimu, isL1);
 	t.insert(t.end(), std::make_move_iterator(s.begin()), std::make_move_iterator(s.end()) );
-
 	return std::move(t);
 };
 
@@ -182,13 +193,26 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 	return std::move(t);
 };
 
+std::vector<std::pair<long, long> > readerOnia::getIndexVector(){
+	std::vector<std::pair<long, long> > v ={};
+	base.map_tree["myTree"]->SetBranchStatus("*", 0);
+	base.map_tree["myTree"]->SetBranchStatus("eventNb", 1);
+	base.map_tree["myTree"]->SetBranchAddress("eventNb", &eventNb);
+	for( auto idx : ROOT::TSeqU(base.map_tree["myTree"]->GetEntries())){
+		base.map_tree["myTree"]->GetEntry(idx);
+		v.push_back(std::make_pair(idx, eventNb) );	
+	}
+	return std::move(v);
+
+};
+
 void readerOnia::checkArray(){
 	std::cout << "Reco_QQ_size: " << Reco_QQ_size<< std::endl;
 	std::cout << "Reco_QQ_4mom size: " << Reco_QQ_4mom->LastIndex() << std::endl;
 	std::cout << "Reco_mu_size: " << Reco_mu_size<< std::endl;
 	std::cout << "Reco_mu_4mom size: " << Reco_mu_4mom->LastIndex() << std::endl;
 	std::cout << "Reco_mu_L1_4mom size: " << Reco_mu_L1_4mom->LastIndex() <<std::endl;
-}
+};
 
 
 

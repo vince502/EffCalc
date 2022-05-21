@@ -34,18 +34,23 @@ class EffCalc : public readerHlt, readerOnia
 		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
 		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 		void eval(int idx);
+		void eval(std::pair<long, long> indexes);
 		void eval(int idx, double cut);
 		void evalAll(int maxEvents);
+		void evalAll(int maxEvents, std::vector<std::pair<long, long> > indexes);
+		void mapIndex();
 		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();
 //		void writeOutput();
 		
 //		void check;
 		std::unordered_map<std::string, TEfficiency*> map_eff;
 		std::string registered_trigger;
+		std::vector<std::pair<long, long> >vec_idx;
 	protected :
 
 	private :
 		TFile* file_output;
+
 //		std::unordered_map<string, bool> map_hlt;
 
 

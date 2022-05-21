@@ -57,6 +57,7 @@ class readerHlt : public readerBase
 		EventData getEventPrimitive();
 //		EventData getCandsContent();
 		UInt_t GetEventNb(){ return eventNb; };
+		std::vector<std::pair<long, long> > getIndexVector();
 		int GetEntry( int idx ){
 			base.map_tree[nickname]->GetEntry(idx);
 			return base.map_tree["HltTree"]->GetEntry(idx);
@@ -64,6 +65,7 @@ class readerHlt : public readerBase
 
 		bool isDerived;
 		std::string nickname;
+		std::vector<std::pair<long, long> > vec_idx;
 	protected :
 
 
@@ -89,6 +91,7 @@ class readerOnia : public readerBase
 		UInt_t eventNb;
 		Int_t Centrality;
 		Float_t SumET_HF;
+		std::vector<std::pair<long, long> > vec_idx;
 
 		long totQQ = 0;
 
@@ -116,12 +119,14 @@ class readerOnia : public readerBase
 		readerOnia( std::string name_file );
 
 		int GetEntryWithIndex( int evtNb ) {
-//			if(Reco_mu_4mom == nullptr)Reco_mu_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
-//			if(Reco_QQ_4mom == nullptr)Reco_QQ_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
-//			if(Reco_mu_L1_4mom == nullptr)Reco_mu_L1_4mom = new TClonesArray("TLorentzVector", maxCloneArraySize);
 			int x = base.map_tree["myTree"]->GetEntryWithIndex(evtNb);
 			return x;
 		};
+		int GetEntry( int idx ) {
+			int x = base.map_tree["myTree"]->GetEntry(idx);
+			return x;
+		};
+		std::vector<std::pair<long, long> > getIndexVector();
 //		void init;
 
 		std::vector<EventData> getEventContent( bool getDimu, bool isL1 );

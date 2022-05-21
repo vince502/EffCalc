@@ -49,9 +49,10 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 //};
 
 void EffCalc::eval(int idx){
-	auto start = std::chrono::steady_clock::now();
+//	auto start = std::chrono::steady_clock::now();
 	hltData.GetEntry(idx);
-	std::vector<std::chrono::steady_clock::time_point> v_end;
+//	std::vector<std::chrono::steady_clock::time_point> v_end;
+//	/* 0 */v_end.push_back(std::chrono::steady_clock::now());
 	auto hltPrim = hltData.getEventPrimitive( );
 	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
 	if( chksum < 0 ) return;
@@ -74,19 +75,20 @@ void EffCalc::eval(int idx){
 	fillHist(pair_oniaCont.first, pair_oniaCont.second);
 //	/* 4 */v_end.push_back(std::chrono::steady_clock::now());
 	if( hltData.isDerived ){
-		std::for_each( 
-			derivedPtCuts.begin(), derivedPtCuts.end(),
-			[&, hltCont, oniaCont](auto&& cut) mutable {
+		for( auto cut : derivedPtCuts){
 				hltCont = filterHltData(hltCont, cut);
 				auto _pair_oniaCont = matchedData( oniaCont, hltCont);
 				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
-			});
-	//	for( auto cut : derivedPtCuts ){
-	//	/* 6 */v_end.push_back(std::chrono::steady_clock::now());
-	//		hltCont = filterHltData(hltCont, cut);
-	//		pair_oniaCont = matchedData( oniaCont, hltCont);
-	//		fillDerivedHist(pair_oniaCont.first, pair_oniaCont.second, cut );
-	//	}
+		}
+//		std::for_each( 
+//			derivedPtCuts.begin(), derivedPtCuts.end(),
+//			[&, hltCont, oniaCont](auto&& cut) mutable {
+//			//	hltCont = filterHltData(hltCont, cut);
+//			//	auto _pair_oniaCont = matchedData( oniaCont, hltCont);
+//				auto _pair_oniaCont = matchedData( oniaCont, filterHltData(hltCont, cut));
+//				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
+//			});
+//		/* 6 */v_end.push_back(std::chrono::steady_clock::now());
 	}
 //	/* n */v_end.push_back(std::chrono::steady_clock::now());
 //	std::cout << v_end.size() << std::endl;
@@ -98,28 +100,98 @@ void EffCalc::eval(int idx){
 
 };
 
+void EffCalc::eval(std::pair<long, long> indexes){
+	hltData.GetEntry(indexes.first);
+	auto hltPrim = hltData.getEventPrimitive( );
+	oniaData.GetEntry( indexes.second );
+	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
+	if( !((bool) hltPrim["passed"].val) ){
+		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
+		if( hltData.isDerived ){
+			for( auto cut : derivedPtCuts ){
+				fillDerivedHist(std::vector<EventData>{oniaCont[0]}, oniaCont, cut );
+			}
+		}
+		return;
+	}
+	auto hltCont = hltData.getEventContent();
+	auto pair_oniaCont = matchedData( oniaCont, hltCont );
+	fillHist(pair_oniaCont.first, pair_oniaCont.second);
+	if( hltData.isDerived ){
+		std::for_each( 
+			derivedPtCuts.begin(), derivedPtCuts.end(),
+			[&, hltCont, oniaCont](auto&& cut) mutable {
+				hltCont = filterHltData(hltCont, cut);
+				auto _pair_oniaCont = matchedData( oniaCont, hltCont);
+				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
+			});
+	}
+	return;
+
+};
+
 void EffCalc::evalAll(int maxEvents = -1){
 	int totEntries = hltData.base.map_tree["HltTree"]->GetEntries();
 	unsigned int iEntries = (maxEvents > 0 ) ? std::min( maxEvents, totEntries ) : totEntries;
 	for( auto iEvt : ROOT::TSeqI(iEntries) ){
-		if( ( iEvt % 1000 ) == 0 ) std::cout << "Processing event " << iEvt << std::endl;
+		if( ( iEvt % 10000 ) == 0 ) std::cout << "Processing event " << iEvt << std::endl;
 		eval(iEvt);
 	}
 	std::cout << "Done " << std::endl;
 };
 
-std::vector<EventData> EffCalc::filterHltData( std::vector<EventData> hltCont, double cut ){
-	std::vector<EventData> d_cpy = {hltCont[0]};
-	bool ofront  =true;
-	for( auto cont : hltCont ){
-		if( ofront ) {if( cont.find("front") != cont.end() ) ofront = false; continue; }
-		if( cont["mu"].mu.Pt() > cut ) d_cpy.push_back(cont);
+void EffCalc::evalAll(int maxEvents , std::vector<std::pair<long, long> > indexes){
+	long count = 0;
+	for( auto p : indexes ){
+		if( ( count % 10000 ) == 0 ) std::cout << "Processing event " << count << std::endl;
+		eval(p);
+		if(maxEvents < count ) return; 
+		count ++;
 	}
-	return std::move(d_cpy);
+	std::cout << "Done " << std::endl;
+};
+
+void EffCalc::mapIndex(){
+	auto p_sort = [](std::pair<long, long> i1, std::pair<long, long> i2){return i1.second < i2.second;};
+	std::sort(hltData.vec_idx.begin(), hltData.vec_idx.end(), p_sort);
+	std::sort(oniaData.vec_idx.begin(), oniaData.vec_idx.end(), p_sort);
+	std::vector<std::pair<long, long> >::iterator vit_hlt = hltData.vec_idx.begin();
+	std::vector<std::pair<long, long> >::iterator vit_onia = oniaData.vec_idx.begin();
+	std::vector<std::pair<long, long> > v;
+	while( vit_hlt != hltData.vec_idx.end()){
+		while(((*vit_onia).second < vit_hlt[1].second) && vit_onia != oniaData.vec_idx.end() ){
+			if( (*vit_hlt).second == (*vit_onia).second ){
+				v.push_back(std::make_pair((*vit_hlt).first, (*vit_onia).first));
+				break;
+			}
+			vit_onia++;
+		}
+		vit_hlt++;
+	}
+	vec_idx = std::move(v);
+};
+
+std::vector<EventData> EffCalc::filterHltData( std::vector<EventData> hltCont, double cut ){
+	auto vit = hltCont.begin();
+	vit++;
+	while( vit != hltCont.end()){
+		if( (*vit)["mu"].mu.Pt() < cut ){
+			vit = hltCont.erase(vit);
+		}
+		else vit++;
+	}
+	return std::move(hltCont);
+//	std::vector<EventData> d_cpy = {hltCont[0]};
+//	bool ofront  =true;
+//	for( auto cont : hltCont ){
+//		if( ofront ) {if( cont.find("front") != cont.end() ) ofront = false; continue; }
+//		if( cont["mu"].mu.Pt() > cut ) d_cpy.push_back(cont);
+//	}
+//	return std::move(d_cpy);
 };
 
 std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont ){
-	std::vector<EventData> d_cpy = {oniaCont[0]};
+//	std::vector<EventData> d_cpy = {oniaCont[0]};
 	auto passQuality = [=](EventData d){
 		if( getDimu ){
 			return (
@@ -174,18 +246,28 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 		}
 		else return false;
 	};
-	bool ofront  =true;
-	for( auto cont : oniaCont ){
-		if( ofront ) {if( cont.find("front") != cont.end() ) ofront = false; continue; }
-		if( false || (passQuality(cont) && passAcceptance(cont)) ){
-//			std::cout <<Form( "cont : pix %.1f, trk%.1f, dxy %.2f, dz %.2f, eta %.3f, pt %.3f " , 
-//			cont["Pix1"].val, cont["Trk1"].val, cont["dxy1"].val, cont["dz"].val, cont["mu"].mu.Eta(), cont["mu"].mu.Pt() ) << std::endl; 
-		}d_cpy.push_back(cont);
+
+	auto vit = oniaCont.begin();
+	vit++;
+	while( vit != oniaCont.end()){
+		if( false || !((passQuality(*vit) && passAcceptance(*vit))) ){
+			vit = oniaCont.erase(vit);
+		}
+		else vit++;
 	}
-	return std::move(d_cpy);
+	return std::move(oniaCont);
+//	bool ofront  =true;
+//	for( auto cont : oniaCont ){
+//		if( ofront ) {if( cont.find("front") != cont.end() ) ofront = false; continue; }
+//		if( false || (passQuality(cont) && passAcceptance(cont)) ){
+////			std::cout <<Form( "cont : pix %.1f, trk%.1f, dxy %.2f, dz %.2f, eta %.3f, pt %.3f " , 
+////			cont["Pix1"].val, cont["Trk1"].val, cont["dxy1"].val, cont["dz"].val, cont["mu"].mu.Eta(), cont["mu"].mu.Pt() ) << std::endl; 
+//		}d_cpy.push_back(cont);
+//	}
+//	return std::move(d_cpy);
 };
 
-std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt ){
+std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt){
 	std::vector<EventData> d_cpy_pass = {onia[0]};
 	std::vector<EventData> d_cpy_fail = {onia[0]};
 	auto match_dR = [=](EventData base, double cut){
@@ -240,14 +322,22 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 		}
 		return true;
 	};
-
-	bool ofront  =true;
-	for( auto cont : onia ){
-		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
-		if( false ||( match_dR(cont, 0.3) && match_dPt(cont, 99999.) ) ) d_cpy_pass.push_back(cont);
-		else d_cpy_fail.push_back(cont);
+	auto vit = onia.begin();
+	vit++;
+	while( vit != onia.end()){
+		if( false ||( match_dR(*vit, 0.3) && match_dPt(*vit, 99999.) ) ) d_cpy_pass.push_back(*vit);
+		else d_cpy_fail.push_back(*vit);
+		vit++;
 	}
 	return std::move(std::make_pair(d_cpy_pass, d_cpy_fail));
+
+//	bool ofront  =true;
+//	for( auto cont : onia ){
+//		if( ofront ) {if( cont["front"].val == 1 ) ofront = false; continue; }
+//		if( false ||( match_dR(cont, 0.3) && match_dPt(cont, 99999.) ) ) d_cpy_pass.push_back(cont);
+//		else d_cpy_fail.push_back(cont);
+//	}
+//	return std::move(std::make_pair(d_cpy_pass, d_cpy_fail));
 };
 
 
@@ -264,14 +354,29 @@ void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> 
 		return;
 	};
 
-	for( auto item : oniaFail ){
-		if(item.find("front") != item.end()) {if( oniaFail.size() > 1 ){ map_eff["cent"]->Fill(false, item["Centrality"].val); } continue;}
-		fn_fill(false, item);
+	auto vitF = oniaFail.begin();
+	auto vitP = oniaPass.begin();
+	if( oniaFail.size() > 1 ){ map_eff["cent"]->Fill(false, (*vitF)["Centrality"].val); }
+	if( oniaPass.size() > 1 ){ map_eff["cent"]->Fill(true, (*vitP)["Centrality"].val); }
+	vitF++;
+	vitP++;
+	while( vitF != oniaFail.end()){
+		fn_fill(false, *vitF);
+		vitF++;
 	}
-	for( auto item : oniaPass ){
-		if(item.find("front") != item.end()) {if( oniaPass.size() > 1 ){ map_eff["cent"]->Fill(true, item["Centrality"].val); } continue;}
-		fn_fill(true, item);
+	while( vitP != oniaPass.end()){
+		fn_fill(true, *vitP);
+		vitP++;
 	}
+
+//	for( auto item : oniaFail ){
+//		if(item.find("front") != item.end()) {if( oniaFail.size() > 1 ){ map_eff["cent"]->Fill(false, item["Centrality"].val); } continue;}
+//		fn_fill(false, item);
+//	}
+//	for( auto item : oniaPass ){
+//		if(item.find("front") != item.end()) {if( oniaPass.size() > 1 ){ map_eff["cent"]->Fill(true, item["Centrality"].val); } continue;}
+//		fn_fill(true, item);
+//	}
 };
 
 void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaFail, double cut){
@@ -285,14 +390,26 @@ void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<Even
 		return;
 	};
 
-	for( auto item : oniaFail ){
-		if(item.find("front") != item.end() )  continue;
-		fn_fill(false, item);
+	auto vitF = oniaFail.begin();
+	auto vitP = oniaPass.begin();
+	vitF++;
+	vitP++;
+	while( vitF != oniaFail.end()){
+		fn_fill(false, *vitF);
+		vitF++;
 	}
-	for( auto item : oniaPass ){
-		if(item.find("front") != item.end() )  continue;
-		fn_fill(true, item);
+	while( vitP != oniaPass.end()){
+		fn_fill(true, *vitP);
+		vitP++;
 	}
+//	for( auto item : oniaFail ){
+//		if(item.find("front") != item.end() )  continue;
+//		fn_fill(false, item);
+//	}
+//	for( auto item : oniaPass ){
+//		if(item.find("front") != item.end() )  continue;
+//		fn_fill(true, item);
+//	}
 };
 
 std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > EffCalc::getEfficiencies(){

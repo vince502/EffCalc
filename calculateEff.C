@@ -67,7 +67,8 @@ void calculateEff(){
 
 	//Enable MultiThreading, the thread executor creates threads per trigger and make use of the available CPU cores
 	ROOT::EnableImplicitMT(UseNCores);
-	ROOT::TThreadExecutor mpe(v_names.size());
+	ROOT::TThreadExecutor mpe(UseNCores);
+//	ROOT::TThreadExecutor mpe(v_names.size());
 
 	//Define cuts
 	std::vector<double> cuts;
@@ -76,7 +77,7 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 4e+7;
+	long max_events = 2e+8;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia );
@@ -84,7 +85,6 @@ void calculateEff(){
 		calc.init(trigAttr(idx));
 		calc.evalAll(max_events);
 		std::cout << Form("Done trigger [%s]", v_names[idx].first.c_str()) << std::endl;
-		
 		return std::move(calc.getEfficiencies());
 	};
 
