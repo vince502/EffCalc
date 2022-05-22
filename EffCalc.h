@@ -23,7 +23,6 @@ class EffCalc : public readerHlt, readerOnia
 		void init( std::pair<bool, bool> dp );
 
 		void setTrigger( std::string name_trig, std::string name_base_trig = "" );
-//		void setTrigger( std::vector<std::string> v_trigs );
 		EffMap generateHist( std::string );
 		bool indexMatched( double iHlt, double iOnia);
 		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
@@ -40,7 +39,6 @@ class EffCalc : public readerHlt, readerOnia
 		void evalAll(int maxEvents, std::vector<std::pair<long, long> > indexes);
 		void mapIndex();
 		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();
-//		void writeOutput();
 		
 //		void check;
 		std::unordered_map<std::string, TEfficiency*> map_eff;
@@ -50,10 +48,7 @@ class EffCalc : public readerHlt, readerOnia
 
 	private :
 		TFile* file_output;
-
 //		std::unordered_map<string, bool> map_hlt;
-
-
 		bool getDimu, isL1;
 		std::string rap;
 };
