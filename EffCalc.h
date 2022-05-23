@@ -23,19 +23,14 @@ class EffCalc : public readerHlt, readerOnia
 		void init( std::pair<bool, bool> dp );
 
 		void setTrigger( std::string name_trig, std::string name_base_trig = "" );
-		EffMap generateHist( std::string );
 		bool indexMatched( double iHlt, double iOnia);
-		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
-		std::vector<EventData> filterHltData( std::vector<EventData> hltCont, double cut );
-		std::pair<std::vector<EventData>, std::vector<EventData> > matchedData( std::vector<EventData> onia, std::vector<EventData> hlt );
 		void requestHist( std::string types );
-		void fillProjHist( TEfficiency hist_eff, std::string type );
-		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
-		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 		void eval(int idx);
+		void evalHLT(int idx);
 		void eval(std::pair<long, long> indexes);
 		void eval(int idx, double cut);
 		void evalAll(int maxEvents);
+		void evalAllHLT(int maxEvents);
 		void evalAll(int maxEvents, std::vector<std::pair<long, long> > indexes);
 		void mapIndex();
 		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();
@@ -45,6 +40,14 @@ class EffCalc : public readerHlt, readerOnia
 		std::string registered_trigger;
 		std::vector<std::pair<long, long> >vec_idx;
 	protected :
+		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
+		std::vector<EventData> filterHltData( std::vector<EventData> hltCont, double cut );
+		std::pair<std::vector<EventData>, std::vector<EventData> > matchedData( std::vector<EventData> onia, std::vector<EventData> hlt );
+		EffMap generateHist( std::string );
+		void fillProjHist( TEfficiency hist_eff, std::string type );
+		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
+		void fillHLTHist( std::vector<EventData> hlt) ;
+		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 
 	private :
 		TFile* file_output;

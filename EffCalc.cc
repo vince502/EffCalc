@@ -20,6 +20,11 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 					{"pt", new TEfficiency("pt", "", pt_bins.size()-1, &pt_bins[0]) },
 					{rap.c_str(), new TEfficiency(rap.c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
 					{"cent", new TEfficiency("cent", "", cent_bins.size()-1, &cent_bins[0]) },
+					{"hltpass", new TEfficiency("hltpass","", 1, 0,1) },
+					{"hltmass", new TEfficiency("hltmass","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+					{"hltpt", new TEfficiency("hltpt","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+					{"hlteta", new TEfficiency("hlteta","", 24, -2.4, 2.4) },
+					{"hltphi", new TEfficiency("hltphi","", 72, -2*TMath::Pi(), 2*TMath::Pi()) },
 				};
 	if (hltData.isDerived){
 		for( auto cut : derivedPtCuts ){
@@ -103,6 +108,27 @@ void EffCalc::eval(std::pair<long, long> indexes){
 	}
 	return;
 
+};
+
+void EffCalc::evalHLT( int idx ){
+	hltData.GetEntry(idx);
+	auto hltPrim = hltData.getEventPrimitive( );
+	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
+	if( chksum < 0 ) return;
+//	if( !((bool) hltPrim["passed"].val) ){
+//	}
+	auto hltCont = hltData.getEventContent();
+	fillHLTHist(hltCont);
+};
+
+void EffCalc::evalAllHLT(int maxEvents = -1){
+	int totEntries = hltData.base.map_tree["HltTree"]->GetEntries();
+	unsigned int iEntries = (maxEvents > 0 ) ? std::min( maxEvents, totEntries ) : totEntries;
+	for( auto iEvt : ROOT::TSeqI(iEntries) ){
+		if( ( iEvt % 10000 ) == 0 ) std::cout << "Processing event " << iEvt << std::endl;
+		evalHLT(iEvt);
+	}
+	std::cout << "Done " << std::endl;
 };
 
 void EffCalc::evalAll(int maxEvents = -1){
@@ -326,6 +352,24 @@ void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> 
 	while( vitP != oniaPass.end()){
 		fn_fill(true, *vitP);
 		vitP++;
+	}
+};
+
+void EffCalc::fillHLTHist( std::vector<EventData> hlt){
+	auto fn_fill = [&](bool pass, EventData hltObj){
+			map_eff["hltmass"]->Fill(pass, hltObj["mu"].mu.M());
+			map_eff["hltpt"]->Fill(pass, hltObj["mu"].mu.Pt());
+			map_eff["hlteta"]->Fill(pass, hltObj["mu"].mu.Eta());
+			map_eff["hltphi"]->Fill(pass, hltObj["mu"].mu.Phi());
+		return;
+	};
+
+	auto vit = hlt.begin();
+	bool passhlt = (bool) ((*vit)["passed"].val);
+	vit++;
+	while( vit != hlt.end()){
+		fn_fill(passhlt, *vit);
+		vit++;
 	}
 };
 
