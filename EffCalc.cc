@@ -160,56 +160,65 @@ std::vector<EventData> EffCalc::filterHltData( std::vector<EventData> hltCont, d
 
 std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont ){
 	auto passQuality = [=](EventData d){
-		if( getDimu ){
-			return (
-				((int) d["Pix1"].val) > 0 &&
-				((int) d["Pix2"].val) > 0 && 
-				((int) d["Trk1"].val) > 5 &&
-				((int) d["Trk2"].val) > 5 &&
-				d["dxy1"].val < 0.3 &&
-				d["dxy2"].val < 0.3 &&
-				d["dz1"].val  < 20 &&
-				d["dz2"].val  < 20 ); 
-		}
-		else {
-			return (
-				((int) d["Pix1"].val) > 0 &&
-				((int) d["Trk1"].val) > 5 &&
-				d["dxy1"].val < 0.3 &&
-				d["dz1"].val  < 20 );
-		}
+		return (
+			(( static_cast<int>(d["Sel1"].val) & ((int)pow(2,1)) ) &&
+			( static_cast<int>(d["Sel1"].val) & ((int)pow(2,3)) ) &&
+			((int) d["Pix1"].val) > 0 &&
+			((int) d["Trk1"].val) > 5 &&
+			d["dxy1"].val < 0.3 &&
+			d["dz1"].val  < 20) && 
+			( !(getDimu) || 
+			(( static_cast<int>(d["Sel2"].val) & ((int)pow(2,1)) ) &&
+			( static_cast<int>(d["Sel2"].val) & ((int)pow(2,3)) ) &&
+			((int) d["Pix2"].val) > 0 &&
+			((int) d["Trk2"].val) > 5 &&
+			d["dxy2"].val < 0.3 &&
+			d["dz2"].val  < 20)  )
+		);
 	};
 	auto passAcceptance = [=](EventData d){
-		TLorentzVector mu1;
+		auto accPass = [](TLorentzVector mu1){
+				return (
+					(fabs(mu1.Eta()) < 2.4) &&
+					(
+						(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && ( mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) ) )||
+						(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5) ||
+						(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5)
+					)
+				);
+		};
+//		TLorentzVector mu1;
 		if( !getDimu ){
-			mu1 = d["mu"].mu;	
-			return (
-				(fabs(mu1.Eta()) < 2.4) &&
-				(
-					(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5) ||
-					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && ( mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) ) )||
-					(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5)
-				)
-			);
+			return accPass(d["mu"].mu);
+//			mu1 = d["mu"].mu;	
+//			return (
+//				(fabs(mu1.Eta()) < 2.4) &&
+//				(
+//					(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5) ||
+//					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && ( mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) ) )||
+//					(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5)
+//				)
+//			);
 		}
 		if( getDimu ){
-			mu1 = d["dbmu"].mu;
-			auto mu2 = d["dbmu"].mu2;
-			
-			return (
-				(fabs(mu1.Eta()) < 2.4) &&
-				(
-					(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5) ||
-					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && (mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta())) )||
-					(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5)
-				) &&
-				(fabs(mu2.Eta()) < 2.4) &&
-				(
-					(fabs(mu2.Eta()) < 1.2 && mu2.Pt() > 3.5) ||
-					(fabs(mu2.Eta()) > 1.2 && fabs(mu2.Eta()) < 2.1  && (mu2.Pt() >= 5.47 - 1.89 * fabs(mu2.Eta())) )||
-					(fabs(mu2.Eta()) > 2.1 && fabs(mu2.Eta()) < 2.4 && mu2.Pt() > 1.5)
-				)
-			);
+			return ( accPass(d["dbmu"].mu) && accPass(d["dbmu"].mu2));
+//			mu1 = d["dbmu"].mu;
+//			auto mu2 = d["dbmu"].mu2;
+//			
+//			return (
+//				(fabs(mu1.Eta()) < 2.4) &&
+//				(
+//					(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5) ||
+//					(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && (mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta())) )||
+//					(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5)
+//				) &&
+//				(fabs(mu2.Eta()) < 2.4) &&
+//				(
+//					(fabs(mu2.Eta()) < 1.2 && mu2.Pt() > 3.5) ||
+//					(fabs(mu2.Eta()) > 1.2 && fabs(mu2.Eta()) < 2.1  && (mu2.Pt() >= 5.47 - 1.89 * fabs(mu2.Eta())) )||
+//					(fabs(mu2.Eta()) > 2.1 && fabs(mu2.Eta()) < 2.4 && mu2.Pt() > 1.5)
+//				)
+//			);
 		}
 		else return false;
 	};
@@ -283,7 +292,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 	auto vit = onia.begin();
 	vit++;
 	while( vit != onia.end()){
-		if( true ||( match_dR(*vit,0.3) && match_dPt(*vit, 99999.) ) ) d_cpy_pass.push_back(*vit);
+		if( false ||( match_dR(*vit,0.3) && match_dPt(*vit, 99999.) ) ) d_cpy_pass.push_back(*vit);
 		else d_cpy_fail.push_back(*vit);
 		vit++;
 	}
