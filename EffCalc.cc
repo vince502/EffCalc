@@ -71,8 +71,8 @@ void EffCalc::eval(int idx){
 				auto _pair_oniaCont = matchedData( oniaCont, hltCont);
 				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
 		}
+	}
 	return;
-
 };
 
 void EffCalc::eval(std::pair<long, long> indexes){
