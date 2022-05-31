@@ -209,6 +209,11 @@ std::vector<std::pair<long, long> > readerOnia::getIndexVector(){
 
 };
 
+void readerOnia::turnObjTreeOff(){
+	base.map_tree["myTree"]->SetBranchStatus("*", 0);
+	base.map_tree["myTree"]->SetBranchStatus("eventNb", 1);
+};
+
 void readerOnia::checkArray(){
 	std::cout << "Reco_QQ_size: " << Reco_QQ_size<< std::endl;
 	std::cout << "Reco_QQ_4mom size: " << Reco_QQ_4mom->LastIndex() << std::endl;

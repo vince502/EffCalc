@@ -21,6 +21,7 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 					{rap.c_str(), new TEfficiency(rap.c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
 					{"cent", new TEfficiency("cent", "", cent_bins.size()-1, &cent_bins[0]) },
 					{"hltpass", new TEfficiency("hltpass","", 1, 0,1) },
+					{"hltfake", new TEfficiency("hltfake","", 1, 0,1) },
 					{"hltmass", new TEfficiency("hltmass","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
 					{"hltpt", new TEfficiency("hltpt","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
 					{"hlteta", new TEfficiency("hlteta","", 24, -2.4, 2.4) },
@@ -113,16 +114,23 @@ void EffCalc::eval(std::pair<long, long> indexes){
 void EffCalc::evalHLT( int idx ){
 	hltData.GetEntry(idx);
 	auto hltPrim = hltData.getEventPrimitive( );
+		if( !((bool) hltPrim["passed"].val) ){
+			return;
+		}
 	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
-	if( chksum < 0 ) return;
+	auto hltCont = hltData.getEventContent();
+	if( chksum < 0 ){
+			map_eff["hltfake"]->Fill(true,0.5,  hltCont.size() -1); 
+		return;
+	}
 //	if( !((bool) hltPrim["passed"].val) ){
 //	}
-	auto hltCont = hltData.getEventContent();
 	fillHLTHist(hltCont);
 };
 
 void EffCalc::evalAllHLT(int maxEvents = -1){
 	int totEntries = hltData.base.map_tree["HltTree"]->GetEntries();
+	oniaData.turnObjTreeOff();
 	unsigned int iEntries = (maxEvents > 0 ) ? std::min( maxEvents, totEntries ) : totEntries;
 	for( auto iEvt : ROOT::TSeqI(iEntries) ){
 		if( ( iEvt % 10000 ) == 0 ) std::cout << "Processing event " << iEvt << std::endl;
@@ -371,6 +379,7 @@ void EffCalc::fillHLTHist( std::vector<EventData> hlt){
 		fn_fill(passhlt, *vit);
 		vit++;
 	}
+	return;
 };
 
 void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaFail, double cut){

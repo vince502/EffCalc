@@ -132,6 +132,8 @@ class readerOnia : public readerBase
 		std::vector<EventData> getEventContent( bool getDimu, bool isL1 );
 		std::vector<EventData> getMuonsContent( bool getDimu, bool isL1 );
 
+		void turnObjTreeOff();
+
 		void checkArray( );
 
 

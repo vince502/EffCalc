@@ -15,9 +15,18 @@ void calculateHLT(){
 //	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoSPClimit_v1230_v8.root";
 //	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
 //	string file_output = "outputHLT_MCJpsiEMB.root";
-	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v9.root";
-	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-	string file_output = "outputHLT_Data2018_newMenudRCut0p3.root";
+
+//	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v9.root";
+//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
+//	string file_output = "outputHLT_Data2018_newMenudRCut0p3.root";
+
+//	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v2_7_mod1.root";
+//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
+//	string file_output = "outputHLT_Data2018_v2_7_mod1_2.root";
+
+	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_v2_9.root";
+	string file_name_onia = "../store/Oniatree_Jpsi_CMSSW_12_3_0_pre1_20220312.root";
+	string file_output = "outputHLT_JPsi_v2_9.root";
 
 //	string file_name_hlt = "../store/openHLT_HIMuon_LegacyTrigger_MBPD2018.root";
 //	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
@@ -27,6 +36,24 @@ void calculateHLT(){
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 	std::vector<std::pair<std::string, std::string> > v_names = { 
+//v2_7(_mod1)
+		{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
+		{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
+		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", ""}, 
+		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Zero_v", ""}, 
+		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", ""}, 
+		{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
+		{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
+		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", ""}, 
+		{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
+		{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
+		{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
+		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", ""}, 
+		{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
+		{ "HLT_HIL3DoubleMu0_SQ_v"  , ""}, 
+		{ "HLT_HIL1Mu0_v", ""}, 
+		{ "HLT_HIL2Mu0_v", ""}, 
+		{ "HLT_HIL3Mu0_v", ""}, 
 //trigger of menu v12
 //		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
 //		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
@@ -37,18 +64,18 @@ void calculateHLT(){
 //		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
 //		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
 //		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
-		{ "HLT_HIL1Mu0_v", ""}, 
-		{ "HLT_HIL2Mu0_v", ""}, 
-		{ "HLT_HIL3Mu0_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
-		{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
-		{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
-		{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
-		{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
-		{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
-		{ "HLT_HIL3DoubleMu0_SQ_v"  , ""}, 
+//		{ "HLT_HIL1Mu0_v", ""}, 
+//		{ "HLT_HIL2Mu0_v", ""}, 
+//		{ "HLT_HIL3Mu0_v", ""}, 
+//		{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
+//		{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
+//		{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
+//		{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
+//		{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
+//		{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
+//		{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
+//		{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
+//		{ "HLT_HIL3DoubleMu0_SQ_v"  , ""}, 
 //trigger of menu v9
 //		{ "HLT_HIL1DoubleMuOpen_v", "L1DoubleMuOpen"}, 
 //		{ "HLT_HIL2Mu0_L1DoubleMuOpen_v", "L2DoubleMuOpen"}, 
