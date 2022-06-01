@@ -25,6 +25,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		void init( std::pair<bool, bool> dp );
 
 		void setTrigger( std::string name_trig, std::string name_base_trig = "" );
+		void setTriggerLvl(int lvl);
 		bool indexMatched( double iHlt, double iOnia);
 		void requestHist( std::string types );
 		void eval(int idx);
@@ -44,7 +45,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 	protected :
 		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
 		std::vector<EventData> filterHltData( std::vector<EventData> hltCont, double cut );
-		std::pair<std::vector<EventData>, std::vector<EventData> > matchedData( std::vector<EventData> onia, std::vector<EventData> hlt );
+		std::pair<std::vector<EventData>, std::vector<EventData> > matchedData( std::vector<EventData> onia, std::vector<EventData> hlt , bool sendParcel);
 		EffMap generateHist( std::string );
 		void fillProjHist( TEfficiency hist_eff, std::string type );
 		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
@@ -55,5 +56,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		TFile* file_output;
 //		std::unordered_map<string, bool> map_hlt;
 		bool getDimu, isL1;
+		int level;
+		double dRcut;
 		std::string rap;
 };

@@ -5,13 +5,14 @@
 void objectTree::init( std::string _trig, bool _isDimu){
 	trig = _trig;
 	isDimu = _isDimu;
-	fout = new TFile(Form("outputMatchTree_%s.root", trig.c_str() ), "recreate");
+	fout = new TFile(Form("MatchTree/outputMatchTree_%s_v2.root", trig.c_str() ), "recreate");
 	fullTree = new TTree("fullTree", "hlt vs. onia full matched tree");
 	oniaTree = new TTree("oniaTree", "per onia entry tree");
 	
 	fullTree->Branch( "evtNb", &nevt, "eventNb/D");
 	fullTree->Branch( "cent", &cent, "centrality/D");
-	fullTree->Branch( "oniaN", &oniaCount, "OniaN/I");
+	fullTree->Branch( "Muidx", &passMu, "Mu Idx/I");
+	fullTree->Branch( "oniaN", &oniaN, "OniaN/I");
 	fullTree->Branch( "hpt", &hpt, "hlt pt/D");
 	fullTree->Branch( "heta", &heta, "hlt eta/D");
 	fullTree->Branch( "hphi", &hphi, "hlt phi/D");
@@ -36,16 +37,19 @@ void objectTree::init( std::string _trig, bool _isDimu){
 
 	oniaTree->Branch( "evtNb", &nevt, "eventNb/D");
 	oniaTree->Branch( "cent", &cent, "centrality/D");
-	oniaTree->Branch( "hpt", &hpt, "hlt pt/D");
-	oniaTree->Branch( "heta", &heta, "hlt eta/D");
-	oniaTree->Branch( "hphi", &hphi, "hlt phi/D");
+	oniaTree->Branch( "hpt1", &hpt1, "hlt pt/D");
+	oniaTree->Branch( "heta1", &heta1, "hlt eta/D");
+	oniaTree->Branch( "hphi1", &hphi1, "hlt phi/D");
 	oniaTree->Branch( "opt1", &opt1, "onia pt1/D");
 	oniaTree->Branch( "oeta1", &oeta1, "onia eta 1/D");
 	oniaTree->Branch( "ophi1", &ophi1, "onia phi 1/D");
 	oniaTree->Branch( "om1", &om1, "onia mass 1/D");
-	oniaTree->Branch( "dr1", &dr1, "dR 1/D");
-	oniaTree->Branch( "dpt1", &dpt1, "dPt 1/D");
+	oniaTree->Branch( "dr1", &tdr1, "dR 1/D");
+	oniaTree->Branch( "dpt1", &tdpt1, "dPt 1/D");
 	if( isDimu ){
+		oniaTree->Branch( "hpt2", &hpt2, "hlt pt/D");
+		oniaTree->Branch( "heta2", &heta2, "hlt eta/D");
+		oniaTree->Branch( "hphi2", &hphi2, "hlt phi/D");
 		oniaTree->Branch( "opt2", &opt2, "onia pt2/D");
 		oniaTree->Branch( "oeta2", &oeta2, "onia eta 2/D");
 		oniaTree->Branch( "ophi1", &ophi1, "onia phi 2/D");
@@ -54,8 +58,8 @@ void objectTree::init( std::string _trig, bool _isDimu){
 		oniaTree->Branch( "diy", &diy, "dimu y/D");
 		oniaTree->Branch( "diphi", &diphi, "dimu phi/D");
 		oniaTree->Branch( "dim", &dim, "dimu m/D");
-		oniaTree->Branch( "dr2", &dr2, "dR 2/D");
-		oniaTree->Branch( "dpt2", &dpt2, "dPt 2/D");
+		oniaTree->Branch( "dr2", &tdr2, "dR 2/D");
+		oniaTree->Branch( "dpt2", &tdpt2, "dPt 2/D");
 	}
 
 
@@ -68,43 +72,73 @@ void objectTree::setOniaIndex(){
 void objectTree::setEventWideContent( EventData edat){
 	cent = edat["Centrality"].val;
 	nevt = edat["eventNb"].val;
-	std::cout << cent << " , " << nevt << std::endl;
 };
 
 void objectTree::parcelEntry( evtFlatDimu parcel ){
-	eventMatrix.push_back( evtFlatSummary{nevt, cent, parcel.hpt, parcel.heta, parcel.hphi, parcel.omu1.Pt(), parcel.omu2.Pt(), parcel.omu1.Eta(), parcel.omu2.Eta(), parcel.omu1.Phi(), parcel.omu2.Phi(), parcel.omu1.M(), parcel.omu2.M(), parcel.odmu.Pt(), parcel.odmu.Y(), parcel.odmu.Phi(), parcel.odmu.M(), parcel.dR1, parcel.dR2, parcel.dPt1, parcel.dPt2} ); 
+	eventMatrix.push_back( evtFlatSummary{nevt, cent, parcel.hpt, parcel.heta, parcel.hphi, parcel.omu1.Pt(), parcel.omu2.Pt(), parcel.omu1.Eta(), parcel.omu2.Eta(), parcel.omu1.Phi(), parcel.omu2.Phi(), parcel.omu1.M(), parcel.omu2.M(), parcel.odmu.Pt(), parcel.odmu.Y(), parcel.odmu.Phi(), parcel.odmu.M(), parcel.dR1, parcel.dR2, parcel.dPt1, parcel.dPt2, parcel.passMu, oniaCount} ); 
 
 };
 
 void objectTree::parcelEntry( evtFlatSimu parcel ){
-	eventMatrix.push_back( evtFlatSummary{nevt, cent, parcel.hpt, parcel.heta, parcel.hphi, parcel.omu1.Pt(), 0, parcel.omu1.Eta(),0,  parcel.omu1.Phi(), 0,  parcel.omu1.M(), 0,0,0,0,0, parcel.dR1, -1, parcel.dPt1 -1} );
+	eventMatrix.push_back( evtFlatSummary{nevt, cent, parcel.hpt, parcel.heta, parcel.hphi, parcel.omu1.Pt(), 0, parcel.omu1.Eta(),0,  parcel.omu1.Phi(), 0,  parcel.omu1.M(), 0,0,0,0,0, parcel.dR1, -1, parcel.dPt1, -1, parcel.passMu, oniaCount} );
 };
 
 
 void objectTree::flush(){
-	for( auto evt : eventMatrix ){
-		hpt = evt.hpt;
-		heta = evt.heta;
-		hphi = evt.hphi;
-		opt1 = evt.opt1;
-		oeta1 = evt.oeta1;
-		ophi1 = evt.ophi1;
-		om1 = evt.om1;
-		if( isDimu ){
-			dr2 = evt.dr2;
-			dpt2 = evt.dpt2;
-			opt2 = evt.opt2;
-			oeta2 = evt.oeta2;
-			phi2 = evt.phi2;
-			om2 = evt.om2;
-			dipt = evt.dipt;
-			diy = evt.diy;
-			diphi = evt.diphi;
-			dim = evt.dim;
+	bool hasGoodHLT; 
+	bool getNext;
+	tdr1 = 10;
+	tdr2 = 10;
+	tdpt1 = 10;
+	tdpt2 = 10;
+	auto evt = eventMatrix.begin();
+	while( evt != eventMatrix.end()){
+		oniaN =  (*evt).oniaN;
+		if( tdr1 > (*evt).dr1 ){
+			tdr1 = (*evt).dr1;
+			tdpt1 = (*evt).dpt1;
+			hpt1 = (*evt).hpt;
+			heta1 = (*evt).heta;
+			hphi1 = (*evt).hphi;
 		}
-		dr1 = evt.dr1;
-		dpt1 = evt.dpt1;
+
+		hpt = (*evt).hpt;
+		heta = (*evt).heta;
+		hphi = (*evt).hphi;
+		opt1 = (*evt).opt1;
+		oeta1 = (*evt).oeta1;
+		ophi1 = (*evt).ophi1;
+		om1 = (*evt).om1;
+		if( isDimu ){
+			if( tdr2 > (*evt).dr2 ){
+				tdr2 = (*evt).dr2;
+				tdpt2 = (*evt).dpt2;
+				hpt2 = (*evt).hpt;
+				heta2 = (*evt).heta;
+				hphi2 = (*evt).hphi;
+			}
+			dr2 = (*evt).dr2;
+			dpt2 = (*evt).dpt2;
+			opt2 = (*evt).opt2;
+			oeta2 = (*evt).oeta2;
+			phi2 = (*evt).phi2;
+			om2 = (*evt).om2;
+			dipt = (*evt).dipt;
+			diy = (*evt).diy;
+			diphi = (*evt).diphi;
+			dim = (*evt).dim;
+		}
+		dr1 = (*evt).dr1;
+		dpt1 = (*evt).dpt1;
+		passMu = (*evt).passMu;
 		fullTree->Fill();
+		auto kit = evt;
+		auto kit2 = evt;
+		kit++; kit2++;
+		if(   (((*kit).oniaN) !=oniaN) || (kit2 == eventMatrix.end()) ){
+			oniaTree->Fill();
+		}
+		evt++;
 	}
 	eventMatrix.clear();
 	oniaCount = 0;

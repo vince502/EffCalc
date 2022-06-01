@@ -46,6 +46,11 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 	registered_trigger = hltData.nickname;
 };
 
+void EffCalc::setTriggerLvl( int lvl ){
+	level = lvl;
+	dRcut = (level == 3) ? 0.1 : 0.3;
+};
+
 
 void EffCalc::eval(int idx){
 //	auto start = std::chrono::steady_clock::now();
@@ -55,9 +60,11 @@ void EffCalc::eval(int idx){
 	auto hltPrim = hltData.getEventPrimitive( );
 	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
 	if( chksum < 0 ) return;
+
 //	/* 1 */v_end.push_back(std::chrono::steady_clock::now());
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
 	objT.setEventWideContent( oniaCont[0] );
+
 //	/* 2 */v_end.push_back(std::chrono::steady_clock::now());
 	if( !((bool) hltPrim["passed"].val) ){
 		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
@@ -70,14 +77,14 @@ void EffCalc::eval(int idx){
 	}
 //	/* 3 */v_end.push_back(std::chrono::steady_clock::now());
 	auto hltCont = hltData.getEventContent();
-	auto pair_oniaCont = matchedData( oniaCont, hltCont );
+	auto pair_oniaCont = matchedData( oniaCont, hltCont , true);
 	objT.flush();
 	fillHist(pair_oniaCont.first, pair_oniaCont.second);
 //	/* 4 */v_end.push_back(std::chrono::steady_clock::now());
 	if( hltData.isDerived ){
 		for( auto cut : derivedPtCuts){
 			hltCont = filterHltData(hltCont, cut);
-			auto _pair_oniaCont = matchedData( oniaCont, hltCont);
+			auto _pair_oniaCont = matchedData( oniaCont, hltCont, false);
 			fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
 		}
 	}
@@ -99,14 +106,14 @@ void EffCalc::eval(std::pair<long, long> indexes){
 		return;
 	}
 	auto hltCont = hltData.getEventContent();
-	auto pair_oniaCont = matchedData( oniaCont, hltCont );
+	auto pair_oniaCont = matchedData( oniaCont, hltCont, true );
 	fillHist(pair_oniaCont.first, pair_oniaCont.second);
 	if( hltData.isDerived ){
 		std::for_each( 
 			derivedPtCuts.begin(), derivedPtCuts.end(),
 			[&, hltCont, oniaCont](auto&& cut) mutable {
 				hltCont = filterHltData(hltCont, cut);
-				auto _pair_oniaCont = matchedData( oniaCont, hltCont);
+				auto _pair_oniaCont = matchedData( oniaCont, hltCont, false);
 				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
 			});
 	}
@@ -273,7 +280,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	return std::move(oniaCont);
 };
 
-std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt){
+std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt, bool sendParcel){
 	std::vector<EventData> d_cpy_pass = {onia[0]};
 	std::vector<EventData> d_cpy_fail = {onia[0]};
 //	auto match_dR = [=](EventData base, double cut){
@@ -329,7 +336,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 				if( !passdR2 ) passdR2 =  dR2 < cutdR;
 				if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
 				if( !passdPt2 ) passdPt2 = dPt2 < cutdPt;
-				objT.parcelEntry( evtFlatDimu{hpt, heta, hphi, base["dbmu"].mu, base["dbmu"].mu2, base["dbmu"].dmu, dR1, dR2, dPt1, dPt2}); 
+				if( sendParcel )objT.parcelEntry( evtFlatDimu{hpt, heta, hphi, base["dbmu"].mu, base["dbmu"].mu2, base["dbmu"].dmu, dR1, dR2, dPt1, dPt2,(int)( passdR1 && passdPt1) + 2*( (int) passdR2 && passdPt2)}); 
+//				std::cout << (int)( passdR1 && passdPt1) << std::endl;
 			}
 			return (passdR1 && passdR2 && passdPt1 && passdPt2);
 		}
@@ -347,7 +355,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 				double dPt1 = (fabs(hpt - opt1) / opt1);
 				if( !passdR1 ) passdR1 = dR1 < cutdR;
 				if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
-				objT.parcelEntry( evtFlatSimu{hpt, heta, hphi, base["dbmu"].mu, dR1, dPt1}); 
+				if( sendParcel ) objT.parcelEntry( evtFlatSimu{hpt, heta, hphi, base["dbmu"].mu, dR1, dPt1,(int)( passdR1 && passdPt1) }); 
 			}
 			return (passdR1 && passdPt1);
 		}
@@ -379,9 +387,12 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 	auto vit = onia.begin();
 	vit++;
 	while( vit != onia.end()){
-		objT.setOniaIndex();
+		if( sendParcel ) {
+			objT.setOniaIndex();
+//			std::cout << objT.oniaCount << std::endl;
+		}
 	//	if( false ||( match_dR(*vit,0.3) && match_dPt(*vit, 99999.) ) ){
-		if( false || match(*vit,0.3, 99999.) ){
+		if( false || match(*vit,dRcut, 99999.) ){
 			d_cpy_pass.push_back(*vit);
 		}
 		else {
