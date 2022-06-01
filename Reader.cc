@@ -56,7 +56,9 @@ std::vector<EventData> readerHlt::getEventContent(){
 	std::vector<EventData> t;
 	t.push_back(getEventPrimitive() );
 	TLorentzVector tv;
+//	std::cout << "Size of Mass V : " << masses->size() << std::endl;
 	for( auto idx : ROOT::TSeqI(sz) ){
+//		std::cout << "Mass Of HLT Muon : " << masses->at(idx) << std::endl;
 		tv.SetPtEtaPhiM( pts->at(idx), etas->at(idx), phis->at(idx), masses->at(idx));
 		t.push_back( EventData{{"mu", content{0, std::move(tv)}}});
 	}

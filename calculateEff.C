@@ -33,7 +33,7 @@ void calculateEff(){
 
 	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_v2_9.root";
 	string file_name_onia = "../store/Oniatree_Jpsi_CMSSW_12_3_0_pre1_20220312.root";
-	string file_output = "output_JPsi_v2_9.root";
+	string file_output = "output_JPsi_v2_9_test.root";
 
 //	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_v2_9.root";
 //	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
@@ -44,22 +44,22 @@ void calculateEff(){
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 	std::vector<std::pair<std::string, std::string> > v_names = { 
 //trigger of menu v12
-		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
-		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
-		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
-		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
-		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
-		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
-		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
-		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
+//		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
+//		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
+//		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
+//		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
+//		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+//		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
+//		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
+//		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
+//		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+//		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
 		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
-		{ "HLT_HIL1Mu0_v", ""}, 
-		{ "HLT_HIL2Mu0_v", ""}, 
+//		{ "HLT_HIL1Mu0_v", ""}, 
+//		{ "HLT_HIL2Mu0_v", ""}, 
 		{ "HLT_HIL3Mu0_v", ""}, 
 		//{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
 		//{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
@@ -110,14 +110,16 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 3.5e+7;
+	long max_events = 3.5e+1;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia );
 		calc.setTrigger(v_names[idx].first, v_names[idx].second);
 		calc.init(trigAttr(idx));
+//		calc.objT.init();
 		calc.evalAll(max_events);
 		std::cout << Form("Done trigger [%s]", v_names[idx].first.c_str()) << std::endl;
+//		calc.objT.getOniaFriend();
 		return std::move(calc.getEfficiencies());
 	};
 

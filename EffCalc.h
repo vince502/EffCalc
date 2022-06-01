@@ -4,15 +4,17 @@
 #include "Reader.h"
 //#include "Reader.cc"
 #include "TEfficiency.h"
+#include "ObjectTree.h"
 #include "pset.h"
 
 using EffMap=std::map<std::string,TEfficiency*>;
 using MatchData=std::map<std::pair<string,double>,EventData>;
 
-class EffCalc : public readerHlt, readerOnia
+class EffCalc : public readerHlt, readerOnia, objectTree
 {
 	public :
 
+		objectTree objT;	
 		readerHlt hltData;
 		readerOnia oniaData;
 		EffCalc() : hltData(), oniaData() {};

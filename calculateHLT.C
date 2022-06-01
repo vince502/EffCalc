@@ -9,7 +9,7 @@
 #include "EffCalc.cc"
 #include <chrono>
 
-static int UseNCores = 40;
+static int UseNCores = 4;
 
 void calculateHLT(){
 //	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoSPClimit_v1230_v8.root";
@@ -37,22 +37,22 @@ void calculateHLT(){
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 	std::vector<std::pair<std::string, std::string> > v_names = { 
 //v2_7(_mod1)
-		{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Zero_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", ""}, 
-		{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
-		{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
-		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", ""}, 
-		{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
-		{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
-		{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
-		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", ""}, 
-		{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
+///		{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
+///		{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
+///		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", ""}, 
+///		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Zero_v", ""}, 
+///		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", ""}, 
+///		{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
+///		{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
+///		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", ""}, 
+///		{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
+///		{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
+///		{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
+///		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", ""}, 
+///		{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
 		{ "HLT_HIL3DoubleMu0_SQ_v"  , ""}, 
-		{ "HLT_HIL1Mu0_v", ""}, 
-		{ "HLT_HIL2Mu0_v", ""}, 
+	//	{ "HLT_HIL1Mu0_v", ""}, 
+	//	{ "HLT_HIL2Mu0_v", ""}, 
 		{ "HLT_HIL3Mu0_v", ""}, 
 //trigger of menu v12
 //		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
@@ -116,7 +116,7 @@ void calculateHLT(){
 	}
 
 	//Run calculator
-	long max_events = 3.5e+7;
+	long max_events = 3.5e+3;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia );

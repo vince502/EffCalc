@@ -2,6 +2,7 @@
 
 #include "EffCalc.h"
 #include "Reader.cc"
+#include "ObjectTree.cc"
 #include <vector>
 #include <chrono>
 
@@ -32,7 +33,7 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 			map_eff.insert({Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut ))), new TEfficiency(Form("pt_%dp%d", (int) cut, (int) (10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
 		}
 	}
-	
+	objT.init( registered_trigger, getDimu );
 };
 
 void EffCalc::init( std::pair<bool, bool> dp){
@@ -56,6 +57,7 @@ void EffCalc::eval(int idx){
 	if( chksum < 0 ) return;
 //	/* 1 */v_end.push_back(std::chrono::steady_clock::now());
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
+	objT.setEventWideContent( oniaCont[0] );
 //	/* 2 */v_end.push_back(std::chrono::steady_clock::now());
 	if( !((bool) hltPrim["passed"].val) ){
 		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
@@ -69,13 +71,14 @@ void EffCalc::eval(int idx){
 //	/* 3 */v_end.push_back(std::chrono::steady_clock::now());
 	auto hltCont = hltData.getEventContent();
 	auto pair_oniaCont = matchedData( oniaCont, hltCont );
+	objT.flush();
 	fillHist(pair_oniaCont.first, pair_oniaCont.second);
 //	/* 4 */v_end.push_back(std::chrono::steady_clock::now());
 	if( hltData.isDerived ){
 		for( auto cut : derivedPtCuts){
-				hltCont = filterHltData(hltCont, cut);
-				auto _pair_oniaCont = matchedData( oniaCont, hltCont);
-				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
+			hltCont = filterHltData(hltCont, cut);
+			auto _pair_oniaCont = matchedData( oniaCont, hltCont);
+			fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
 		}
 	}
 	return;
@@ -146,6 +149,7 @@ void EffCalc::evalAll(int maxEvents = -1){
 		if( ( iEvt % 10000 ) == 0 ) std::cout << "Processing event " << iEvt << std::endl;
 		eval(iEvt);
 	}
+	objT.write();
 	std::cout << "Done " << std::endl;
 };
 
@@ -157,6 +161,7 @@ void EffCalc::evalAll(int maxEvents , std::vector<std::pair<long, long> > indexe
 		if(maxEvents < count ) return; 
 		count ++;
 	}
+	objT.write();
 	std::cout << "Done " << std::endl;
 };
 
@@ -271,63 +276,117 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt){
 	std::vector<EventData> d_cpy_pass = {onia[0]};
 	std::vector<EventData> d_cpy_fail = {onia[0]};
-	auto match_dR = [=](EventData base, double cut){
+//	auto match_dR = [=](EventData base, double cut){
+//		if( getDimu ){
+//			double oeta1 = base["dbmu"].mu.Eta();
+//			double ophi1 = base["dbmu"].mu.Phi();
+//			double oeta2 = base["dbmu"].mu2.Eta();
+//			double ophi2 = base["dbmu"].mu2.Phi();
+//			bool pass1, pass2;
+//			for( auto hltcont : hlt ){
+//				double heta = hltcont["mu"].mu.Eta();
+//				double hphi = hltcont["mu"].mu.Phi();
+////				std::cout << 	sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) << std::endl;
+//				if( !pass1 )pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) < cut;
+//				if( !pass2 )pass2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2)) < cut;
+//			}
+//			return (pass1 && pass2 );
+//		}
+//		if( !getDimu ){
+//			double oeta1 = base["mu"].mu.Eta();
+//			double ophi1 = base["mu"].mu.Phi();
+//			bool pass1;
+//			for( auto hltcont : hlt ){
+//				double heta = hltcont["mu"].mu.Eta();
+//				double hphi = hltcont["mu"].mu.Phi();
+//				if( !pass1 ) pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ),2)) < cut;
+//			}
+//			return (pass1);
+//		}
+//		return true;
+//	};
+	auto match = [&](EventData base, double cutdR, double cutdPt){
 		if( getDimu ){
 			double oeta1 = base["dbmu"].mu.Eta();
 			double ophi1 = base["dbmu"].mu.Phi();
 			double oeta2 = base["dbmu"].mu2.Eta();
 			double ophi2 = base["dbmu"].mu2.Phi();
-			bool pass1, pass2;
+			double opt1 = base["dbmu"].mu.Pt();
+			double opt2 = base["dbmu"].mu2.Pt();
+			double om1 = base["dbmu"].mu.M();
+			double om2 = base["dbmu"].mu2.M();
+			bool passdR1, passdR2, passdPt1, passdPt2;
 			for( auto hltcont : hlt ){
 				double heta = hltcont["mu"].mu.Eta();
 				double hphi = hltcont["mu"].mu.Phi();
+				double hpt = hltcont["mu"].mu.Pt();
 //				std::cout << 	sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) << std::endl;
-				if( !pass1 )pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) < cut;
-				if( !pass2 )pass2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2)) < cut;
+				double dR1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2));
+				double dR2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2));
+				double dPt1 = (fabs(hpt - opt1) / opt1);
+				double dPt2 = (fabs(hpt - opt2) / opt2);
+				if( !passdR1 ) passdR1 =  dR1 < cutdR;
+				if( !passdR2 ) passdR2 =  dR2 < cutdR;
+				if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
+				if( !passdPt2 ) passdPt2 = dPt2 < cutdPt;
+				objT.parcelEntry( evtFlatDimu{hpt, heta, hphi, base["dbmu"].mu, base["dbmu"].mu2, base["dbmu"].dmu, dR1, dR2, dPt1, dPt2}); 
 			}
-			return (pass1 && pass2 );
+			return (passdR1 && passdR2 && passdPt1 && passdPt2);
 		}
 		if( !getDimu ){
 			double oeta1 = base["mu"].mu.Eta();
 			double ophi1 = base["mu"].mu.Phi();
-			bool pass1;
+			double opt1 = base["dbmu"].mu.Pt();
+			double om1 = base["dbmu"].mu.M();
+			bool passdR1, passdPt1;
 			for( auto hltcont : hlt ){
 				double heta = hltcont["mu"].mu.Eta();
 				double hphi = hltcont["mu"].mu.Phi();
-				if( !pass1 ) pass1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ),2)) < cut;
+				double hpt = hltcont["mu"].mu.Pt();
+				double dR1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ),2));
+				double dPt1 = (fabs(hpt - opt1) / opt1);
+				if( !passdR1 ) passdR1 = dR1 < cutdR;
+				if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
+				objT.parcelEntry( evtFlatSimu{hpt, heta, hphi, base["dbmu"].mu, dR1, dPt1}); 
 			}
-			return (pass1);
+			return (passdR1 && passdPt1);
 		}
 		return true;
 	};
-	auto match_dPt = [=](EventData base, double cut){
-		if( getDimu ){
-			double opt1 = base["dbmu"].mu.Pt();
-			double opt2 = base["dbmu"].mu2.Pt();
-			bool pass1, pass2;
-			for( auto hltcont : hlt ){
-				double hpt = hltcont["mu"].mu.Pt();
-				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
-				if( !pass2 ) pass2 =  (fabs(hpt - opt2) / opt2)< cut;
-			}
-			return (pass1 && pass2);
-		}
-		if( !getDimu ){
-			double opt1 = base["mu"].mu.Pt();
-			bool pass1;
-			for( auto hltcont : hlt ){
-				double hpt = hltcont["mu"].mu.Pt();
-				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
-			}
-			return (pass1);
-		}
-		return true;
-	};
+//	auto match_dPt = [=](EventData base, double cut){
+//		if( getDimu ){
+//			double opt1 = base["dbmu"].mu.Pt();
+//			double opt2 = base["dbmu"].mu2.Pt();
+//			bool pass1, pass2;
+//			for( auto hltcont : hlt ){
+//				double hpt = hltcont["mu"].mu.Pt();
+//				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
+//				if( !pass2 ) pass2 =  (fabs(hpt - opt2) / opt2)< cut;
+//			}
+//			return (pass1 && pass2);
+//		}
+//		if( !getDimu ){
+//			double opt1 = base["mu"].mu.Pt();
+//			bool pass1;
+//			for( auto hltcont : hlt ){
+//				double hpt = hltcont["mu"].mu.Pt();
+//				if( !pass1 ) pass1 =  (fabs(hpt - opt1) / opt1)< cut;
+//			}
+//			return (pass1);
+//		}
+//		return true;
+//	};
 	auto vit = onia.begin();
 	vit++;
 	while( vit != onia.end()){
-		if( false ||( match_dR(*vit,0.3) && match_dPt(*vit, 99999.) ) ) d_cpy_pass.push_back(*vit);
-		else d_cpy_fail.push_back(*vit);
+		objT.setOniaIndex();
+	//	if( false ||( match_dR(*vit,0.3) && match_dPt(*vit, 99999.) ) ){
+		if( false || match(*vit,0.3, 99999.) ){
+			d_cpy_pass.push_back(*vit);
+		}
+		else {
+			d_cpy_fail.push_back(*vit);
+		}
 		vit++;
 	}
 	return std::move(std::make_pair(d_cpy_pass, d_cpy_fail));
