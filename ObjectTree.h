@@ -12,7 +12,7 @@ struct evtFlatSimu{
 	double hpt; double heta; double hphi; TLorentzVector omu1; double dR1; double dPt1; int passMu;
 };
 struct evtFlatSummary{
-	double nevt; double cent; double hpt; double heta; double hphi; double opt1; double opt2; double oeta1; double oeta2; double ophi1; double phi2; double om1; double om2; double dipt; double diy; double diphi; double dim; double dr1; double dr2; double dpt1; double dpt2; int passMu; int oniaN;
+	double nevt; double cent; double hpt; double heta; double hphi; double opt1; double opt2; double oeta1; double oeta2; double ophi1; double ophi2; double om1; double om2; double dipt; double diy; double diphi; double dim; double dr1; double dr2; double dpt1; double dpt2; int passMu; int oniaN;
 };
 
 class objectTree {
@@ -37,7 +37,7 @@ class objectTree {
 		TTree *fullTree, *oniaTree;
 		int passMu;
 		int oniaN;
-		double nevt, cent, hpt, heta, hphi, opt1, opt2, oeta1, oeta2, ophi1, phi2, om1, om2, dipt, diy, diphi, dim, dr1, dr2, dpt1, dpt2;
+		double nevt, cent, hpt, heta, hphi, opt1, opt2, oeta1, oeta2, ophi1, ophi2, om1, om2, dipt, diy, diphi, dim, dr1, dr2, dpt1, dpt2;
 		double tdr1, tdr2, tdpt1, tdpt2;
 		double hpt1, heta1, hphi1;
 		double hpt2, heta2, hphi2;

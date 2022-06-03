@@ -27,40 +27,40 @@ void calculateEff(){
 //	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
 //	string file_output = "output_Data2018_v2_6.root";
 
-//	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v2_7_mod1.root";
-//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-//	string file_output = "output_Data2018_v2_7_mod1.root";
+	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v2_7_mod1.root";
+	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
+	string file_output = "output_Data2018_v2_7_mod1_test.root";
 
 //	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_v2_9.root";
 //	string file_name_onia = "../store/Oniatree_Jpsi_CMSSW_12_3_0_pre1_20220312.root";
 //	string file_output = "output_JPsi_v2_9_test.root";
 
-	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_v2_9.root";
-	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
-	string file_output = "output_JPsiEMB_v2_9_test2.root";
+//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_v2_9.root";
+//	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
+//	string file_output = "output_JPsiEMB_v2_9_test2.root";
 
 	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 	std::vector<std::pair<std::string, std::string> > v_names = { 
 //trigger of menu v12
-		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
-		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
-		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
+//		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
+//		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
+//		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
 		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
-		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
-		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
+//		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+//		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
+//		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
 		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
-		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
-		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
-		{ "HLT_HIL1Mu0_v", ""}, 
-		{ "HLT_HIL2Mu0_v", ""}, 
-		{ "HLT_HIL3Mu0_v", ""}, 
+//		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+//		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
+//		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
+//		{ "HLT_HIL1Mu0_v", ""}, 
+//		{ "HLT_HIL2Mu0_v", ""}, 
+//		{ "HLT_HIL3Mu0_v", ""}, 
 		//{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
 		//{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
 		//{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 

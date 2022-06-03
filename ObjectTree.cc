@@ -25,7 +25,7 @@ void objectTree::init( std::string _trig, bool _isDimu){
 	if( isDimu ){
 		fullTree->Branch( "opt2", &opt2, "onia pt2/D");
 		fullTree->Branch( "oeta2", &oeta2, "onia eta 2/D");
-		fullTree->Branch( "ophi1", &ophi1, "onia phi 2/D");
+		fullTree->Branch( "ophi2", &ophi2, "onia phi 2/D");
 		fullTree->Branch( "om2", &om2, "onia mass 2/D");
 		fullTree->Branch( "dipt", &dipt, "dimu pt/D");
 		fullTree->Branch( "diy", &diy, "dimu y/D");
@@ -52,7 +52,7 @@ void objectTree::init( std::string _trig, bool _isDimu){
 		oniaTree->Branch( "hphi2", &hphi2, "hlt phi/D");
 		oniaTree->Branch( "opt2", &opt2, "onia pt2/D");
 		oniaTree->Branch( "oeta2", &oeta2, "onia eta 2/D");
-		oniaTree->Branch( "ophi1", &ophi1, "onia phi 2/D");
+		oniaTree->Branch( "ophi2", &ophi2, "onia phi 2/D");
 		oniaTree->Branch( "om2", &om2, "onia mass 2/D");
 		oniaTree->Branch( "dipt", &dipt, "dimu pt/D");
 		oniaTree->Branch( "diy", &diy, "dimu y/D");
@@ -121,7 +121,7 @@ void objectTree::flush(){
 			dpt2 = (*evt).dpt2;
 			opt2 = (*evt).opt2;
 			oeta2 = (*evt).oeta2;
-			phi2 = (*evt).phi2;
+			ophi2 = (*evt).ophi2;
 			om2 = (*evt).om2;
 			dipt = (*evt).dipt;
 			diy = (*evt).diy;
