@@ -11,8 +11,28 @@ struct content{
 	TLorentzVector mu;
 	TLorentzVector mu2;
 	TLorentzVector dmu;
+
+	friend bool operator==(const content& lref, const content &rref){
+		if ( lref.val != rref.val ) return false;
+		if ( lref.mu != rref.mu ) return false;
+		if ( lref.mu2 != rref.mu2 ) return false;
+		if ( lref.dmu != rref.dmu ) return false;
+		return true;
+	}
+	
+	friend bool operator<(const content& lhs, const content& rhs){
+		if ( lhs.val < rhs.val ) return true;
+		return false;
+	}
 };
+
 using EventData=std::unordered_map<std::string, content>;
+
+//inline std::operator==(const std::pair<string,content>& lh, const std::pair<string, content>& rh){
+//	if (lh.first != rh.first) return false;
+//	if (lh.second != rh.second ) return false;
+//	return true;
+//};
 
 class readerHlt;
 class readerOnia;
@@ -97,6 +117,7 @@ class readerOnia : public readerBase
 
 		Short_t Reco_mu_size;
 		Short_t Reco_mu_whichGen[maxArraySize];
+		Short_t Reco_QQ_whichGen[maxArraySize];
 		Short_t Reco_QQ_size;
 		Short_t Reco_QQ_mupl_idx[maxArraySize];
 		Short_t Reco_QQ_mumi_idx[maxArraySize];

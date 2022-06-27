@@ -60,7 +60,7 @@ std::vector<EventData> readerHlt::getEventContent(){
 	for( auto idx : ROOT::TSeqI(sz) ){
 //		std::cout << "Mass Of HLT Muon : " << masses->at(idx) << std::endl;
 		tv.SetPtEtaPhiM( pts->at(idx), etas->at(idx), phis->at(idx), masses->at(idx));
-		t.push_back( EventData{{"mu", content{0, std::move(tv)}}});
+		t.push_back( EventData{{"mu", content{static_cast<double>(idx), std::move(tv)}}});
 	}
 	return std::move(t);
 };
@@ -114,6 +114,7 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_L1_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_4mom", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_whichGen", 1);
 	base.map_tree["myTree"]->SetBranchAddress("eventNb", &eventNb);
 	base.map_tree["myTree"]->SetBranchAddress("Centrality", &Centrality);
 	base.map_tree["myTree"]->SetBranchAddress("SumET_HF", &SumET_HF);
@@ -131,6 +132,7 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_4mom", &(Reco_mu_4mom));
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_L1_4mom", &(Reco_mu_L1_4mom));
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_4mom", &(Reco_QQ_4mom));
+	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_whichGen", &(Reco_QQ_whichGen));
 
 //	base.map_tree["myTree"]->SetBranchAddress(&ZX, "ZX");
 
@@ -161,7 +163,7 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 	if( getDimu ){
 		totQQ += (int) Reco_QQ_size;
 		for( auto idx : ROOT::TSeqI( Reco_QQ_size ) ){
-			t.push_back( EventData{{"dbmu", content{0, 
+			t.push_back( EventData{{"dbmu", content{static_cast<double>(idx), 
 					TLorentzVector(std::move(*((TLorentzVector*) mu_4mom->At(Reco_QQ_mupl_idx[idx])))),
 					TLorentzVector(std::move(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx])))), 
 					TLorentzVector(std::move(*((TLorentzVector*)Reco_QQ_4mom->At(idx))))}
@@ -176,14 +178,15 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 				{"dxy2", content{std::move(Reco_mu_dxy[Reco_QQ_mumi_idx[idx]])}}, 
 				{"dz1", content{std::move(Reco_mu_dz[Reco_QQ_mupl_idx[idx]])}}, 
 				{"dz2", content{std::move(Reco_mu_dz[Reco_QQ_mumi_idx[idx]])}}, 
-				{"QQVtxProb", content{std::move(Reco_QQ_VtxProb[idx])}} 
+				{"QQVtxProb", content{std::move(Reco_QQ_VtxProb[idx])}},
+				{"QQisGen", content{static_cast<double>(std::move(Reco_QQ_whichGen[idx]))}} 
 			} 
 			);
 		}
 	}
 	else {
 		for( auto idx : ROOT::TSeqI(Reco_mu_size) ){
-			t.push_back( EventData{{"mu", content{0, 
+			t.push_back( EventData{{"mu", content{static_cast<double>(idx), 
 					TLorentzVector(std::move(*((TLorentzVector*)mu_4mom->At(idx))))}
 				}, 
 				{"Trk1", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[idx]))}},

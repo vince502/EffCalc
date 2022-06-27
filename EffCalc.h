@@ -37,6 +37,8 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		void evalAll(int maxEvents, std::vector<std::pair<long, long> > indexes);
 		void mapIndex();
 		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();
+		void setOniaCustomFilter( std::map<string, std::pair<double, double> > m );
+		void setHltCustomMassFilter( std::pair<double, double> m );
 		
 //		void check;
 		std::unordered_map<std::string, TEfficiency*> map_eff;
@@ -45,18 +47,29 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 	protected :
 		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
 		std::vector<EventData> filterHltData( std::vector<EventData> hltCont, double cut );
+		std::vector<EventData> filterHltDataMass( std::vector<EventData> hltCont, double cut );
 		std::pair<std::vector<EventData>, std::vector<EventData> > matchedData( std::vector<EventData> onia, std::vector<EventData> hlt , bool sendParcel);
 		EffMap generateHist( std::string );
 		void fillProjHist( TEfficiency hist_eff, std::string type );
 		void fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaTotal) ;
 		void fillHLTHist( std::vector<EventData> hlt) ;
 		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
+		void fillDerivedMassHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 
 	private :
 		TFile* file_output;
 //		std::unordered_map<string, bool> map_hlt;
 		bool getDimu, isL1;
 		int level;
+		bool cuthltrange;
 		double dRcut;
+		double hlt_m_low, hlt_m_high;
 		std::string rap;
+		std::map<std::string, std::pair<double, double> > map_oniafilter_limit{
+			{"m", {0., 999.}},
+			{"pt", {0., 999.}},
+			{"pt1", {0., 999.}},
+			{"pt2", {0., 999.}},
+			{"rap", {-2.5, 2.5}},
+		};
 };
