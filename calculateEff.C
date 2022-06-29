@@ -43,16 +43,17 @@ void calculateEff(){
 //	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
 //	string file_output = "output_pTHat2_JPsiEMB_v2_9.root";
 
-	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatchingtest_customFilterM2p6t03p5.root";
-	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-	std::pair<double, double> hltFilter{2.2, 4.4} ;
+//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
+//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
+//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatchingtest_customFilterM2p6t03p5.root";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	std::pair<double, double> hltFilter{2.2, 4.4} ;
 
-//	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_UpsiEMB_v2_11.root";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.4, 3.2}} };
+	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
+	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0.root";
+	string file_output = "output_UpsiEMB_v2_11.root";
+	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0, 999.}} };
+	std::pair<double, double> hltFilter{0, 999.} ;
 
 	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
@@ -139,17 +140,18 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 3.5e+8;
+	long max_events = 3.5e+9;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia );
 		calc.setTrigger(v_names[idx].first, v_names[idx].second);
 		calc.setTriggerLvl(trigLvl(idx));
 		calc.init(trigAttr(idx));
-		calc.setOniaCustomFilter(oniaFilter);
 		if(v_names[idx].second.find("DoHLTCut") != std::string::npos ){
 			calc.setHltCustomMassFilter(hltFilter);
 		}
+		calc.setOniaCustomFilter(oniaFilter);
+
 //		calc.objT.init();
 		calc.evalAll(max_events);
 		std::cout << Form("Done trigger [%s]", v_names[idx].first.c_str()) << std::endl;

@@ -16,7 +16,6 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 	getDimu = _getDimu;
 	isL1 = _isL1;
 	rap = ( getDimu ) ? "y" : "eta" ;
-	cuthltrange = false;
 	std::cout << "initializing efficiencies" << std::endl;
 	map_eff =  {
 					{"pt", new TEfficiency("pt", "", pt_bins.size()-1, &pt_bins[0]) },
@@ -48,6 +47,7 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 	std::cout << "Registering Trigger " << name_trig.c_str() << std::endl;
 	hltData.registerTrig( name_trig, name_base_trig ); 
 	registered_trigger = hltData.nickname;
+	cuthltrange = false;
 	if( name_base_trig.find("DoHLTCut") != std::string::npos) cuthltrange = true;
 };
 
@@ -69,6 +69,7 @@ void EffCalc::eval(int idx){
 	auto hltPrim = hltData.getEventPrimitive( );
 	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
 	if( chksum < 0 ) return;
+
 
 //	/* 1 */v_end.push_back(std::chrono::steady_clock::now());
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
@@ -168,7 +169,7 @@ void EffCalc::evalAll(int maxEvents = -1){
 	int totEntries = hltData.base.map_tree["HltTree"]->GetEntries();
 	unsigned int iEntries = (maxEvents > 0 ) ? std::min( maxEvents, totEntries ) : totEntries;
 	for( auto iEvt : ROOT::TSeqI(iEntries) ){
-		if( ( iEvt % 10000 ) == 0 ) std::cout << "Processing event " << iEvt << std::endl;
+		if( ( iEvt % 30000 ) == 0 ) std::cout << "Processing event ["<<registered_trigger.c_str()<<"] " << iEvt << std::endl;
 		eval(iEvt);
 	}
 	objT.write();
@@ -178,7 +179,7 @@ void EffCalc::evalAll(int maxEvents = -1){
 void EffCalc::evalAll(int maxEvents , std::vector<std::pair<long, long> > indexes){
 	long count = 0;
 	for( auto p : indexes ){
-		if( ( count % 10000 ) == 0 ) std::cout << "Processing event " << count << std::endl;
+		if( ( count % 10000 ) == 0 ) std::cout << "Processing event ["<<registered_trigger.c_str()<<"] " << count << std::endl;
 		eval(p);
 		if(maxEvents < count ) return; 
 		count ++;
@@ -316,7 +317,8 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	auto passGenMatching = [=](EventData d){
 		auto dimuGM = [](EventData dd){
 			if(dd["QQisGen"].val >=0) return true;
-			return false;
+//			return false;
+			return true;//only for test Upsilon!!!
 		};
 		auto simuGM = [](EventData dd){
 //			if((dd["QQisGen"].val >=0) && (dd["QQisGen"].val >=0)) return true;
@@ -347,6 +349,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 			) ret = true;
 		}
 		return ret;
+
 	};
 
 	auto vit = oniaCont.begin();
@@ -354,8 +357,12 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	while( vit != oniaCont.end()){
 		if( false || !(passGenMatching(*vit) && passAcceptance(*vit) && passCustomFilter(*vit) && (passQuality(*vit))) ){
 			vit = oniaCont.erase(vit);
+//			std::cout << "fail onia" << std::endl;
 		}
-		else vit++;
+		else{
+			vit++;
+//			std::cout << "pass onia" << std::endl;
+		}
 	}
 	return std::move(oniaCont);
 };
@@ -402,7 +409,10 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			double opt2 = base["dbmu"].mu2.Pt();
 			double om1 = base["dbmu"].mu.M();
 			double om2 = base["dbmu"].mu2.M();
-			bool passdR1, passdR2, passdPt1, passdPt2;
+			bool passdR1=false;
+			bool passdR2=false;
+			bool passdPt1=false;
+			bool passdPt2=false;
 			if(!cuthltrange){
 				for( auto hltcont : hlt ){
 					double heta = hltcont["mu"].mu.Eta();
