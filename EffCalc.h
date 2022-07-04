@@ -7,6 +7,12 @@
 #include "ObjectTree.h"
 #include "pset.h"
 
+enum kDtype{
+	kMCUp = (unsigned int) 2,
+	kMCJP = (unsigned int) 1,
+	kData = (unsigned int) 0,
+};
+
 using EffMap=std::map<std::string,TEfficiency*>;
 using MatchData=std::map<std::pair<string,double>,EventData>;
 
@@ -19,7 +25,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		readerOnia oniaData;
 		EffCalc() : hltData(), oniaData() {};
 		~EffCalc();
-		EffCalc( std::string name_file_hlt, std::string name_file_onia );
+		EffCalc( std::string name_file_hlt, std::string name_file_onia, unsigned int feedType = kMCJP );
 
 		void init( bool _getDimu, bool _isL1 );
 		void init( std::pair<bool, bool> dp );
@@ -62,6 +68,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		bool getDimu, isL1;
 		int level;
 		bool cuthltrange;
+		unsigned int dataType;
 		double dRcut;
 		double hlt_m_low, hlt_m_high;
 		std::string rap;

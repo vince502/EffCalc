@@ -11,6 +11,7 @@ void objectTree::init( std::string _trig, bool _isDimu){
 	
 	fullTree->Branch( "evtNb", &nevt, "eventNb/D");
 	fullTree->Branch( "cent", &cent, "centrality/D");
+	fullTree->Branch( "Ncoll", &nColl, "Ncoll/D");
 	fullTree->Branch( "Muidx", &passMu, "Mu Idx/I");
 	fullTree->Branch( "oniaN", &oniaN, "OniaN/I");
 	fullTree->Branch( "hpt", &hpt, "hlt pt/D");
@@ -37,6 +38,7 @@ void objectTree::init( std::string _trig, bool _isDimu){
 
 	oniaTree->Branch( "evtNb", &nevt, "eventNb/D");
 	oniaTree->Branch( "cent", &cent, "centrality/D");
+	oniaTree->Branch( "Ncoll", &nColl, "Ncoll/D");
 	oniaTree->Branch( "hpt1", &hpt1, "hlt pt/D");
 	oniaTree->Branch( "heta1", &heta1, "hlt eta/D");
 	oniaTree->Branch( "hphi1", &hphi1, "hlt phi/D");
@@ -71,6 +73,7 @@ void objectTree::setOniaIndex(){
 
 void objectTree::setEventWideContent( EventData edat){
 	cent = edat["Centrality"].val;
+	nColl = findNcoll(cent);
 	nevt = edat["eventNb"].val;
 };
 

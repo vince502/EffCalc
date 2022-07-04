@@ -6,7 +6,8 @@
 #include <vector>
 #include <chrono>
 
-EffCalc::EffCalc( std::string name_file_hlt, std::string name_file_onia ) : hltData( name_file_hlt ), oniaData( name_file_onia) {
+EffCalc::EffCalc( std::string name_file_hlt, std::string name_file_onia, unsigned int feedType = kMCJP ) : hltData( name_file_hlt ), oniaData( name_file_onia) {
+	dataType = feedType;
 };
 
 EffCalc::~EffCalc(){
@@ -269,8 +270,8 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 		);
 	};
 	auto passAcceptance = [=](EventData d){
-		auto accPass = [](TLorentzVector mu1){
-				return (
+		auto accPass = [=](TLorentzVector mu1){
+				if(dataType == kMCJP || dataType == kData) return (
 					(fabs(mu1.Eta()) < 2.4) &&
 					(
 						(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && ( mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) ) )||
@@ -278,6 +279,11 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 						(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5)
 					)
 				);
+				if(dataType == kMCUp) return(
+					fabs(mu1.Eta()) < 2.4 &&
+					fabs(mu1.Pt()) > 4
+				);
+				else return false;
 		};
 //		TLorentzVector mu1;
 		if( !getDimu ){
@@ -317,8 +323,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	auto passGenMatching = [=](EventData d){
 		auto dimuGM = [](EventData dd){
 			if(dd["QQisGen"].val >=0) return true;
-//			return false;
-			return true;//only for test Upsilon!!!
+			return false;
 		};
 		auto simuGM = [](EventData dd){
 //			if((dd["QQisGen"].val >=0) && (dd["QQisGen"].val >=0)) return true;

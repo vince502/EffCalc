@@ -37,7 +37,7 @@ class objectTree {
 		TTree *fullTree, *oniaTree;
 		int passMu;
 		int oniaN;
-		double nevt, cent, hpt, heta, hphi, opt1, opt2, oeta1, oeta2, ophi1, ophi2, om1, om2, dipt, diy, diphi, dim, dr1, dr2, dpt1, dpt2;
+		double nevt, cent, nColl, hpt, heta, hphi, opt1, opt2, oeta1, oeta2, ophi1, ophi2, om1, om2, dipt, diy, diphi, dim, dr1, dr2, dpt1, dpt2;
 		double tdr1, tdr2, tdpt1, tdpt2;
 		double hpt1, heta1, hphi1;
 		double hpt2, heta2, hphi2;
