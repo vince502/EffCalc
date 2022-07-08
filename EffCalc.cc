@@ -55,6 +55,7 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
 	dRcut = (level == 3) ? 0.1 : 0.3;
+	dRcut = 0.5; // Only for this version!
 };
 
 void EffCalc::setHltCustomMassFilter( std::pair<double, double> m ){
@@ -418,6 +419,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			bool passdR2=false;
 			bool passdPt1=false;
 			bool passdPt2=false;
+			int  countN = 0;
 			if(!cuthltrange){
 				for( auto hltcont : hlt ){
 					double heta = hltcont["mu"].mu.Eta();
@@ -434,6 +436,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 					if( !passdPt2 ) passdPt2 = dPt2 < cutdPt;
 					if( sendParcel )objT.parcelEntry( evtFlatDimu{hpt, heta, hphi, base["dbmu"].mu, base["dbmu"].mu2, base["dbmu"].dmu, dR1, dR2, dPt1, dPt2,(int)( passdR1 && passdPt1) + 2*( (int) passdR2 && passdPt2)}); 
 //					std::cout << (int)( passdR1 && passdPt1) << std::endl;
+					if( (dR1 < cutdR && dPt1 < cutdPt) || (dR2 < cutdR && dPt2 < cutdPt) ) countN++;
 				}
 			}
 			if(cuthltrange){
@@ -475,13 +478,14 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 							if( !passdR2 ) passdR2 =  dR2 < cutdR;
 							if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
 							if( !passdPt2 ) passdPt2 = dPt2 < cutdPt;
+							if( (dR1 < cutdR && dPt1 < cutdPt) || (dR2 < cutdR && dPt2 < cutdPt) ) countN++;
 						}
 //						if( sendParcel )objT.parcelEntry( evtFlatDimu{hpt, heta, hphi, base["dbmu"].mu, base["dbmu"].mu2, base["dbmu"].dmu, dR1, dR2, dPt1, dPt2,(int)( passdR1 && passdPt1) + 2*( (int) passdR2 && passdPt2)}); 
 //						std::cout << (int)( passdR1 && passdPt1) << std::endl;
 					}
 				}
 			}
-			return (passdR1 && passdR2 && passdPt1 && passdPt2);
+			return ( (countN>1) &&passdR1 && passdR2 && passdPt1 && passdPt2);
 		}
 		if( !getDimu ){
 			double oeta1 = base["mu"].mu.Eta();
@@ -534,7 +538,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 //			std::cout << objT.oniaCount << std::endl;
 		}
 	//	if( false ||( match_dR(*vit,0.3) && match_dPt(*vit, 99999.) ) ){
-		if( false || match(*vit,dRcut, 99999.) ){
+		if( false || match(*vit,dRcut, 9999.0) ){
 			d_cpy_pass.push_back(*vit);
 		}
 		else {

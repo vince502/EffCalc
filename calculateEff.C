@@ -43,9 +43,23 @@ void calculateEff(){
 //	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
 //	string file_output = "output_pTHat2_JPsiEMB_v2_9.root";
 
+//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
+//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
+//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatchingtest_customFilterM2p6t03p5.root";
+//	unsigned int dType = kMCJP;
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	std::pair<double, double> hltFilter{2.2, 4.4} ;
+
+//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
+//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
+//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched_dPt_customFilterM2p6t03p5.root";
+//	unsigned int dType = kMCJP;
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	std::pair<double, double> hltFilter{2.2, 4.4} ;
+
 	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
 	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatchingtest_customFilterM2p6t03p5.root";
+	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched_customFilterM2p6t03p5_dR0p5.root";
 	unsigned int dType = kMCJP;
 	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
 	std::pair<double, double> hltFilter{2.2, 4.4} ;
