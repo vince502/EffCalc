@@ -32,9 +32,13 @@ void calculateHLT(){
 //	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
 //	string file_output = "outputHLT_Data2018_LegacydR0p3_v2.root";
 
-	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
-	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0.root";
-	string file_output = "outputHLT_UpsiEMB_v2_11.root";
+//	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
+//	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0.root";
+//	string file_output = "outputHLT_UpsiEMB_v2_11.root";
+
+	string file_name_hlt = "../store/openHLT_NewMumenu_MuonGunHighPt_half_v2_11.root";
+	string file_name_onia = "../store/Oniatree_SingleMuPt_3_100_MuonSelAll_CMSSW_12_3_0_220519.root";
+	string file_output = "outputHLT_MuonGunHighPt_v2_11.root";
 
 	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 //	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};

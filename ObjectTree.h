@@ -18,7 +18,7 @@ struct evtFlatSummary{
 class objectTree {
 	public :
 		objectTree(){};
-		void init( std::string _trig, bool _isDimu );
+		void init( std::string _trig, bool _isDimu, unsigned int dataType );
 		~objectTree(){};
 		void setOniaIndex();
 		void setEventWideContent( EventData edat );

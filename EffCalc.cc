@@ -37,7 +37,7 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 			map_eff.insert({Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), new TEfficiency(Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
 		}
 	}
-	objT.init( registered_trigger, getDimu );
+	objT.init( registered_trigger, getDimu, dataType );
 };
 
 void EffCalc::init( std::pair<bool, bool> dp){
@@ -55,7 +55,7 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
 	dRcut = (level == 3) ? 0.1 : 0.3;
-	dRcut = 0.5; // Only for this version!
+//	dRcut = 0.5; // Only for this version!
 };
 
 void EffCalc::setHltCustomMassFilter( std::pair<double, double> m ){
@@ -72,9 +72,13 @@ void EffCalc::eval(int idx){
 	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
 	if( chksum < 0 ) return;
 
-
+//	std::cout << "Debug : Onia Passed, EvtNb :  " << oniaData.eventNb <<std::endl;
 //	/* 1 */v_end.push_back(std::chrono::steady_clock::now());
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
+	for( auto base : oniaCont ) {
+//		if( base["front"].val==1 ) continue;
+//		std::cout << "Debug : dimuon Y : " << base["dbmu"].dmu.Rapidity() << std::endl;
+	}
 	objT.setEventWideContent( oniaCont[0] );
 
 //	/* 2 */v_end.push_back(std::chrono::steady_clock::now());
@@ -284,6 +288,9 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 					fabs(mu1.Eta()) < 2.4 &&
 					fabs(mu1.Pt()) > 4
 				);
+				if(dataType == kMCmu){
+					return true;
+				}
 				else return false;
 		};
 //		TLorentzVector mu1;
@@ -349,18 +356,19 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 		}
 		else if( !getDimu ){
 			if( d["mu"].mu.Pt() > map_oniafilter_limit["pt1"].first &&
-				d["mu"].mu.Pt() < map_oniafilter_limit["pt1"].second &&
-				d["mu"].mu2.Pt() > map_oniafilter_limit["pt2"].first &&
-				d["mu"].mu2.Pt() < map_oniafilter_limit["pt2"].second
+				d["mu"].mu.Pt() < map_oniafilter_limit["pt1"].second //&&
 			) ret = true;
 		}
 		return ret;
-
 	};
 
 	auto vit = oniaCont.begin();
 	vit++;
 	while( vit != oniaCont.end()){
+//			std::cout << "Debug onia qual pass Gen : "   << passGenMatching(*vit) << std::endl;
+//			std::cout << "Debug onia qual pass Acc : "   << passAcceptance(*vit) << std::endl;
+//			std::cout << "Debug onia qual pass Custom: " << passCustomFilter(*vit) << std::endl;
+//			std::cout << "Debug onia qual pass ID : "    << passQuality(*vit) << std::endl;
 		if( false || !(passGenMatching(*vit) && passAcceptance(*vit) && passCustomFilter(*vit) && (passQuality(*vit))) ){
 			vit = oniaCont.erase(vit);
 //			std::cout << "fail onia" << std::endl;
@@ -370,6 +378,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 //			std::cout << "pass onia" << std::endl;
 		}
 	}
+//	std::cout << "Debug onia qual pass : " << oniaCont.size() - 1 << std::endl;
 	return std::move(oniaCont);
 };
 
@@ -557,7 +566,7 @@ void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> 
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
 			map_eff["pt"]->Fill(pass, oniaObj["dbmu"].dmu.Pt(), nColl);
-			map_eff[rap]->Fill(pass, oniaObj["dbmu"].dmu.Y(), nColl);
+			map_eff[rap]->Fill(pass, oniaObj["dbmu"].dmu.Rapidity(), nColl);
 		}
 		if(!getDimu){
 			map_eff["pt"]->Fill(pass, oniaObj["mu"].mu.Pt(), nColl);

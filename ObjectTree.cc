@@ -2,10 +2,10 @@
 
 #include "ObjectTree.h"
 
-void objectTree::init( std::string _trig, bool _isDimu){
+void objectTree::init( std::string _trig, bool _isDimu, unsigned int dataType){
 	trig = _trig;
 	isDimu = _isDimu;
-	fout = new TFile(Form("MatchTree/outputMatchTree_%s_v2.root", trig.c_str() ), "recreate");
+	fout = new TFile(Form("MatchTree/outputMatchTree_%s_SampleType%u_v2.root", trig.c_str(), dataType ), "recreate");
 	fullTree = new TTree("fullTree", "hlt vs. onia full matched tree");
 	oniaTree = new TTree("oniaTree", "per onia entry tree");
 	
@@ -78,7 +78,7 @@ void objectTree::setEventWideContent( EventData edat){
 };
 
 void objectTree::parcelEntry( evtFlatDimu parcel ){
-	eventMatrix.push_back( evtFlatSummary{nevt, cent, parcel.hpt, parcel.heta, parcel.hphi, parcel.omu1.Pt(), parcel.omu2.Pt(), parcel.omu1.Eta(), parcel.omu2.Eta(), parcel.omu1.Phi(), parcel.omu2.Phi(), parcel.omu1.M(), parcel.omu2.M(), parcel.odmu.Pt(), parcel.odmu.Y(), parcel.odmu.Phi(), parcel.odmu.M(), parcel.dR1, parcel.dR2, parcel.dPt1, parcel.dPt2, parcel.passMu, oniaCount} ); 
+	eventMatrix.push_back( evtFlatSummary{nevt, cent, parcel.hpt, parcel.heta, parcel.hphi, parcel.omu1.Pt(), parcel.omu2.Pt(), parcel.omu1.Eta(), parcel.omu2.Eta(), parcel.omu1.Phi(), parcel.omu2.Phi(), parcel.omu1.M(), parcel.omu2.M(), parcel.odmu.Pt(), parcel.odmu.Rapidity(), parcel.odmu.Phi(), parcel.odmu.M(), parcel.dR1, parcel.dR2, parcel.dPt1, parcel.dPt2, parcel.passMu, oniaCount} ); 
 
 };
 

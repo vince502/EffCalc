@@ -180,7 +180,7 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 				{"dz2", content{std::move(Reco_mu_dz[Reco_QQ_mumi_idx[idx]])}}, 
 				{"QQVtxProb", content{std::move(Reco_QQ_VtxProb[idx])}},
 				{"QQisGen", content{static_cast<double>(std::move(Reco_QQ_whichGen[idx]))}} 
-			} 
+			}
 			);
 		}
 	}

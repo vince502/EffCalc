@@ -8,6 +8,7 @@
 #include "pset.h"
 
 enum kDtype{
+	kMCmu = (unsigned int) 3,
 	kMCUp = (unsigned int) 2,
 	kMCJP = (unsigned int) 1,
 	kData = (unsigned int) 0,
@@ -50,7 +51,8 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		std::unordered_map<std::string, TEfficiency*> map_eff;
 		std::string registered_trigger;
 		std::vector<std::pair<long, long> >vec_idx;
-	protected :
+//	protected :
+	public :
 		std::vector<EventData> filterOniaData( std::vector<EventData> oniaCont );
 		std::vector<EventData> filterHltData( std::vector<EventData> hltCont, double cut );
 		std::vector<EventData> filterHltDataMass( std::vector<EventData> hltCont, double cut );
@@ -62,7 +64,9 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		void fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 		void fillDerivedMassHist( std::vector<EventData> oniaPass, std::vector<EventData>, double cut );
 
-	private :
+
+//	private :
+	public :
 		TFile* file_output;
 //		std::unordered_map<string, bool> map_hlt;
 		bool getDimu, isL1;
@@ -79,4 +83,5 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 			{"pt2", {0., 999.}},
 			{"rap", {-2.5, 2.5}},
 		};
+		friend objectTree;
 };
