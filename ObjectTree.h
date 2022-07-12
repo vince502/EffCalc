@@ -21,6 +21,7 @@ class objectTree {
 		void init( std::string _trig, bool _isDimu, unsigned int dataType );
 		~objectTree(){};
 		void setOniaIndex();
+		void setTag(string tag);
 		void setEventWideContent( EventData edat );
 		void parcelEntry(evtFlatDimu parcel);
 		void parcelEntry(evtFlatSimu parcel);
@@ -31,6 +32,7 @@ class objectTree {
 	private :
 
 		std::string trig;
+		std::string file_tag = "";
 		bool isDimu;
 
 		TFile* fout;

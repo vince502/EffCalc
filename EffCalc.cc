@@ -288,9 +288,14 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 					fabs(mu1.Eta()) < 2.4 &&
 					fabs(mu1.Pt()) > 4
 				);
-				if(dataType == kMCmu){
-					return true;
-				}
+				if(dataType == kMCmu) return (
+					(fabs(mu1.Eta()) < 2.4) &&
+					(
+						(fabs(mu1.Eta()) > 1.2 && fabs(mu1.Eta()) < 2.1  && ( mu1.Pt() >= 5.47 - 1.89 * fabs(mu1.Eta()) ) )||
+						(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5) ||
+						(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5)
+					)
+				);
 				else return false;
 		};
 //		TLorentzVector mu1;
@@ -334,9 +339,9 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 			return false;
 		};
 		auto simuGM = [](EventData dd){
-//			if((dd["QQisGen"].val >=0) && (dd["QQisGen"].val >=0)) return true;
-//			return false;
-			return true;
+			if((dd["QQisGen"].val >=0) && (dd["QQisGen"].val >=0)) return true;
+			return false;
+//			return true;
 		};
 		if( getDimu ) return dimuGM(d);
 		else return simuGM(d);
@@ -449,6 +454,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 				}
 			}
 			if(cuthltrange){
+				countN = 2;
 				int hltsize = hlt.size();
 				for( auto jump : ROOT::TSeqI(1,hltsize)){
 					for( auto idx : ROOT::TSeqI(hltsize - jump) ){
@@ -456,6 +462,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 						auto hltcont2 = hlt[idx+jump];
 						auto dimumass = (hltcont["mu"].mu + hltcont2["mu"].mu).M();
 						if ( !( dimumass < hlt_m_high&& dimumass > hlt_m_low  )) continue;
+//						std::cout << "Debug : dimumass " << dimumass << std::endl;
 						double heta1 = hltcont["mu"].mu.Eta();
 						double hphi1 = hltcont["mu"].mu.Phi();
 						double hpt1 = hltcont["mu"].mu.Pt();
@@ -499,8 +506,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 		if( !getDimu ){
 			double oeta1 = base["mu"].mu.Eta();
 			double ophi1 = base["mu"].mu.Phi();
-			double opt1 = base["dbmu"].mu.Pt();
-			double om1 = base["dbmu"].mu.M();
+			double opt1 = base["mu"].mu.Pt();
+			double om1 = base["mu"].mu.M();
 			bool passdR1, passdPt1;
 			for( auto hltcont : hlt ){
 				double heta = hltcont["mu"].mu.Eta();
@@ -510,7 +517,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 				double dPt1 = (fabs(hpt - opt1) / opt1);
 				if( !passdR1 ) passdR1 = dR1 < cutdR;
 				if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
-				if( sendParcel ) objT.parcelEntry( evtFlatSimu{hpt, heta, hphi, base["dbmu"].mu, dR1, dPt1,(int)( passdR1 && passdPt1) }); 
+				if( sendParcel ) objT.parcelEntry( evtFlatSimu{hpt, heta, hphi, base["mu"].mu, dR1, dPt1,(int)( passdR1 && passdPt1) }); 
 			}
 			return (passdR1 && passdPt1);
 		}

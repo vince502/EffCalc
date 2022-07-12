@@ -115,11 +115,12 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_L1_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_whichGen", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_whichGen", 1);
 	base.map_tree["myTree"]->SetBranchAddress("eventNb", &eventNb);
 	base.map_tree["myTree"]->SetBranchAddress("Centrality", &Centrality);
 	base.map_tree["myTree"]->SetBranchAddress("SumET_HF", &SumET_HF);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_size", &Reco_mu_size);
-//	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_whichGen", &Reco_mu_whichGen);
+	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_whichGen", &Reco_mu_whichGen);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_mupl_idx", &Reco_QQ_mupl_idx);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_mumi_idx", &Reco_QQ_mumi_idx);
@@ -193,7 +194,8 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 				{"Pix1", content{static_cast<double>(std::move(Reco_mu_nPixWMea[idx]))}},
 				{"Sel1", content{static_cast<double>(std::move(Reco_mu_SelectionType[idx]))}},
 				{"dxy1", content{Reco_mu_dxy[idx]}},
-				{"dz1", content{Reco_mu_dz[idx]}}
+				{"dz1", content{Reco_mu_dz[idx]}},
+				{"QQisGen", content{static_cast<double>(std::move(Reco_mu_whichGen[idx]))}} 
 			} 
 			);
 		}

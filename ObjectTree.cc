@@ -5,7 +5,7 @@
 void objectTree::init( std::string _trig, bool _isDimu, unsigned int dataType){
 	trig = _trig;
 	isDimu = _isDimu;
-	fout = new TFile(Form("MatchTree/outputMatchTree_%s_SampleType%u_v2.root", trig.c_str(), dataType ), "recreate");
+	fout = new TFile(Form("MatchTree/outputMatchTree_%s_SampleType%u_%s_v2.root", trig.c_str(), dataType, file_tag.c_str() ), "recreate");
 	fullTree = new TTree("fullTree", "hlt vs. onia full matched tree");
 	oniaTree = new TTree("oniaTree", "per onia entry tree");
 	
@@ -65,6 +65,10 @@ void objectTree::init( std::string _trig, bool _isDimu, unsigned int dataType){
 	}
 
 
+};
+
+void objectTree::setTag(string tag){
+	file_tag = tag;
 };
 
 void objectTree::setOniaIndex(){
