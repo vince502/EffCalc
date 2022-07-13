@@ -6,9 +6,17 @@
 //TFile* f2 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/MuonGun/LowPt_v2_11_Gen_acc/outputMatchTree_HLT_HIL3Mu0_v_SampleType3_MuGunLowPt_v2.root");
 //bool singleMu = true;
 
-TFile* f1 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/UpsiEMB/v2_11_GENMatching/outputMatchTree_L2DoubleMuOpen_SampleType2_UpsiEMB_v2.root");
-TFile* f2 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/UpsiEMB/v2_11_GENMatching/outputMatchTree_L3DoubleMuOpen_SampleType2_UpsiEMB_v2.root");
-bool singleMu = false;
+//TFile* f1 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/UpsiEMB/v2_11_GENMatching/outputMatchTree_L2DoubleMuOpen_SampleType2_UpsiEMB_v2.root");
+//TFile* f2 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/UpsiEMB/v2_11_GENMatching/outputMatchTree_L3DoubleMuOpen_SampleType2_UpsiEMB_v2.root");
+//bool singleMu = false;
+
+//TFile* f1 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/JPsi/v2_11_Gen_Mass/outputMatchTree_L2DoubleMuOpen_SampleType1_JPsiEMB_v2.root");
+//TFile* f2 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/JPsi/v2_11_Gen_Mass/outputMatchTree_L3DoubleMuOpen_SampleType1_JPsiEMB_v2.root");
+//bool singleMu = false;
+
+TFile* f1 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/JPsi/v2_11_Gen_Mass/outputMatchTree_HLT_HIL2Mu0_v_SampleType1_JPsiEMB_v2.root");
+TFile* f2 = TFile::Open("/home/vince402/RunPrep_2022/EffCalc/MatchTree/JPsi/v2_11_Gen_Mass/outputMatchTree_HLT_HIL3Mu0_v_SampleType1_JPsiEMB_v2.root");
+bool singleMu = true;
 
 TTree* t1 = (TTree*) f1->Get("oniaTree");
 TTree* t2 = (TTree*) f2->Get("oniaTree");
