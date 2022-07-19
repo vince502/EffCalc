@@ -28,6 +28,8 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 					{"hltpt", new TEfficiency("hltpt","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
 					{"hlteta", new TEfficiency("hlteta","", 24, -2.4, 2.4) },
 					{"hltphi", new TEfficiency("hltphi","", 72, -2*TMath::Pi(), 2*TMath::Pi()) },
+					{"passdr1", new TEfficiency("passdr","", 80, -2, 2) },
+					{"passdr2", new TEfficiency("passdr","", 80, -2, 2) },
 				};
 	if (hltData.isDerived){
 		for( auto cut : derivedPtCuts ){
@@ -75,6 +77,7 @@ void EffCalc::eval(int idx){
 //	std::cout << "Debug : Onia Passed, EvtNb :  " << oniaData.eventNb <<std::endl;
 //	/* 1 */v_end.push_back(std::chrono::steady_clock::now());
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
+	if( oniaCont[0]["Reco_mu_size"].val != 2 && dataType == kMCJP) return;
 	for( auto base : oniaCont ) {
 //		if( base["front"].val==1 ) continue;
 //		std::cout << "Debug : dimuon Y : " << base["dbmu"].dmu.Rapidity() << std::endl;
@@ -339,10 +342,12 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 			return false;
 		};
 		auto simuGM = [](EventData dd){
-			if((dd["QQisGen"].val >=0) && (dd["QQisGen"].val >=0)) return true;
+			if((dd["QQisGen"].val >=0) ) return true;
 			return false;
 //			return true;
 		};
+//		if( dataType == kMCJP && d["Reco_mu_size"].val < 2 ) return false;
+		if( dataType == kData ) return true;
 		if( getDimu ) return dimuGM(d);
 		else return simuGM(d);
 	};
@@ -368,21 +373,30 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 	};
 
 	auto vit = oniaCont.begin();
+	bool hastwoMu = (*vit)["Reco_mu_size"].val >=1.5;
 	vit++;
-	while( vit != oniaCont.end()){
-//			std::cout << "Debug onia qual pass Gen : "   << passGenMatching(*vit) << std::endl;
-//			std::cout << "Debug onia qual pass Acc : "   << passAcceptance(*vit) << std::endl;
-//			std::cout << "Debug onia qual pass Custom: " << passCustomFilter(*vit) << std::endl;
-//			std::cout << "Debug onia qual pass ID : "    << passQuality(*vit) << std::endl;
-		if( false || !(passGenMatching(*vit) && passAcceptance(*vit) && passCustomFilter(*vit) && (passQuality(*vit))) ){
-			vit = oniaCont.erase(vit);
-//			std::cout << "fail onia" << std::endl;
+//	if( (!hastwoMu) && (dataType == kMCJP) ){
+//		std::cout << "Debug erasing event" << std::endl;
+//		while( vit != oniaCont.end()){
+//			vit = oniaCont.erase(vit);
+//		}
+//	}
+//	else {
+		while( vit != oniaCont.end()){
+//				std::cout << "Debug onia qual pass Gen : "   << passGenMatching(*vit) << std::endl;
+//				std::cout << "Debug onia qual pass Acc : "   << passAcceptance(*vit) << std::endl;
+//				std::cout << "Debug onia qual pass Custom: " << passCustomFilter(*vit) << std::endl;
+//				std::cout << "Debug onia qual pass ID : "    << passQuality(*vit) << std::endl;
+			if( false || !(passGenMatching(*vit) && passAcceptance(*vit) && passCustomFilter(*vit) && (passQuality(*vit))) ){
+				vit = oniaCont.erase(vit);
+//				std::cout << "fail onia" << std::endl;
+			}
+			else{
+				vit++;
+//				std::cout << "pass onia" << std::endl;
+			}
 		}
-		else{
-			vit++;
-//			std::cout << "pass onia" << std::endl;
-		}
-	}
+//	}
 //	std::cout << "Debug onia qual pass : " << oniaCont.size() - 1 << std::endl;
 	return std::move(oniaCont);
 };
@@ -434,6 +448,10 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			bool passdPt1=false;
 			bool passdPt2=false;
 			int  countN = 0;
+			int  counter = 0;
+			int  countM1 = 0;
+			int  countM2 = 0;
+			int  M1matchedWith = 2;
 			if(!cuthltrange){
 				for( auto hltcont : hlt ){
 					double heta = hltcont["mu"].mu.Eta();
@@ -450,8 +468,24 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 					if( !passdPt2 ) passdPt2 = dPt2 < cutdPt;
 					if( sendParcel )objT.parcelEntry( evtFlatDimu{hpt, heta, hphi, base["dbmu"].mu, base["dbmu"].mu2, base["dbmu"].dmu, dR1, dR2, dPt1, dPt2,(int)( passdR1 && passdPt1) + 2*( (int) passdR2 && passdPt2)}); 
 //					std::cout << (int)( passdR1 && passdPt1) << std::endl;
-					if( (dR1 < cutdR && dPt1 < cutdPt) || (dR2 < cutdR && dPt2 < cutdPt) ) countN++;
+					if( (dR1 < cutdR && dPt1 < cutdPt) || (dR2 < cutdR && dPt2 < cutdPt) ){
+						countN++;
+						if( countM1 == 0 ) countM1 = counter;
+						if(dR1 < cutdR && dPt1 < cutdPt) M1matchedWith = 1;
+						else M1matchedWith = 2;
+						if( countM1 !=0 ){ 
+							if( M1matchedWith == 1 && dR2 < cutdR && dPt2 < cutdPt) countM2 = counter;
+							else if( M1matchedWith == 2 && dR1 < cutdR && dPt1 < cutdPt) countM2 = counter;
+						}
+					}
+					counter ++;
 				}
+				if( countM1 != 0 ){ auto v = hlt.begin(); std::advance(v, countM1); hlt.erase(v);
+					if( countM2 != 0 &&( countM1 > countM2) ){ auto v = hlt.begin(); std::advance(v, countM2); hlt.erase(v);}
+					else if( countM2 != 0 &&( countM1 < countM2) ){ auto v = hlt.begin(); std::advance(v, countM2 -1); hlt.erase(v);}
+				}
+				else if( countM2 !=0 ){ auto v = hlt.begin(); std::advance(v, countM2); hlt.erase(v);} 
+
 			}
 			if(cuthltrange){
 				countN = 2;
@@ -509,6 +543,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			double opt1 = base["mu"].mu.Pt();
 			double om1 = base["mu"].mu.M();
 			bool passdR1, passdPt1;
+			int  counter = 0;
+			int  countM1 = 0;
 			for( auto hltcont : hlt ){
 				double heta = hltcont["mu"].mu.Eta();
 				double hphi = hltcont["mu"].mu.Phi();
@@ -518,7 +554,11 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 				if( !passdR1 ) passdR1 = dR1 < cutdR;
 				if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
 				if( sendParcel ) objT.parcelEntry( evtFlatSimu{hpt, heta, hphi, base["mu"].mu, dR1, dPt1,(int)( passdR1 && passdPt1) }); 
+				if( (dR1 < cutdR && dPt1 < cutdPt) ){
+					if( countM1 == 0 ) countM1 = counter;
+				}
 			}
+			if( countM1 != 0 ){ auto v = hlt.begin(); std::advance(v, countM1); hlt.erase(v);}
 			return (passdR1 && passdPt1);
 		}
 		return true;
