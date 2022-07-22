@@ -1,7 +1,8 @@
 #pragma once
 
+#include "config.h"
 static int UseNCores = 40;
-static string SUBDIR = "";
+
 #include "TGraph.h"
 #include <ROOT/TProcessExecutor.hxx>
 #include <thread>
@@ -12,303 +13,46 @@ static string SUBDIR = "";
 #include <chrono>
 
 void calculateEff(){
-//	string file_name_hlt = "../store/openHLT_Gmenu_JPsiEMB_NoSPClimit_v1230_v8.root";
-//	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
-//	string file_output = "output_MCJpsiEMB.root";
-//	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v9.root";
-//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-//	string file_output = "output_Data2018_newMenudRCut0p3.root";
 
-//	string file_name_hlt = "../store/openHLT_HIMuon_LegacyTrigger_MBPD2018.root";
-//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-//	string file_output = "output_Data2018_LegacydR0p3.root";
+//	string file_name_hlt = INPUT_HLT;
+//	string file_name_onia = INPUT_ONIA;
+//	string file_output = OUTPUT_EFF;
+//	unsigned int dType = SAMPLE_TYPE;
+//	string tag = TAG;
 
-//	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v2_6.root";
-//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-//	string file_output = "output_Data2018_v2_6.root";
 
-//	string file_name_hlt = "../store/openHLT_data2018MB_NewMenu_v2_7_mod1.root";
-//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-//	string file_output = "output_Data2018_v2_7_mod1_test.root";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_v2_9.root";
-//	string file_name_onia = "../store/Oniatree_Jpsi_CMSSW_12_3_0_pre1_20220312.root";
-//	string file_output = "output_JPsi_v2_9_test.root";
-
-//	string file_name_hlt = "../store/openHLT_NewMuMenu_DataMBPD2_v2_11.root";
-//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
-//	string file_output = "output_Run2MBPD_v2_11_JPsiAcc.root";
-//	unsigned int dType = kMCJP; string tag = "DataRun2MB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "DataRun2/MB_v2_11_JPsiAcc";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_v2_9.root";
-//	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
-//	string file_output = "output_JPsiEMB_v2_9_testNcollWeight.root";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_9.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_9.root";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched_customFilterM2p6t03p5.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::pair<double, double> hltFilter{2.2, 4.4} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched_dPt_customFilterM2p6t03p5.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::pair<double, double> hltFilter{2.2, 4.4} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched_customFilterM2p6t03p5_hltMass_test.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {1.0, 6.5}},
-//		{3, {2.0, 4.0}},
-//	} ;
-//	SUBDIR= "JPsi/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GenMatched_muSize2.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 100.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GenMatched_muSizeIs2.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 100.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
-
-	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-	string file_output = "output_pTHat2_JPsiEMB_v2_11_GenMatched_fakeL1.root";
-	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 100.}} };
-	std::map<int, std::pair<double, double> > hltFilter{ 
-		{1, {0., 9999.}},
-		{2, {0., 9999.}},
-		{3, {0., 9999.}},
-	} ;
-	SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsi_v2_11_GetMatched_customFilterM2p6t03p5_hltMass.root";
-//	unsigned int dType = kMCJP; string tag = "JPsi";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {1.0, 6.5}},
-//		{3, {2.0, 4.0}},
-//	} ;
-//	SUBDIR= "JPsi/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsi_v2_11_GenMatched.root";
-//	unsigned int dType = kMCJP; string tag = "JPsi";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0,100.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "JPsi/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_pTHat2_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsi_v2_11_GenMatched_muSizeIs2.root";
-//	unsigned int dType = kMCJP; string tag = "JPsi";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0,100.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "JPsi/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11_mod1.root";
-//	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_mod1_GetMatched_customFilterM2p6t03p5.root";
-//	unsigned int dType = kMCJP;
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::pair<double, double> hltFilter{2.2, 4.4} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_MuonGunLowPt_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_SingleMuPt_0p5_3_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_MuonGunLowPt_v2_11.root";
-//  unsigned int dType = kMCmu; string tag = "MuGunLowPt";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0.0, 9999.}} };
-//	std::pair<double, double> hltFilter{0.0, 9999.} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_MuonGunHighPt_half_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_SingleMuPt_3_100_MuonSelAll_CMSSW_12_3_0_220519.root";
-//	string file_output = "output_MuonGunHighPt_v2_11.root";
-//	unsigned int dType = kMCmu; string tag = "MuGunHighPt";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0.0, 9999.}} };
-//	std::pair<double, double> hltFilter{0.0, 9999.} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_MuonGunHighPt_half_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_SingleMuPt_3_100_MuonSelAll_CMSSW_12_3_0_220519.root";
-//	string file_output = "output_MuonGunHighPt_Gen_acc_finePt_v2_11.root";
-//	unsigned int dType = kMCmu; string tag = "MuGunHighPt";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0.0, 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "MuonGun/HighPt_v2_11_Gen_acc";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_MuonGunLowPt_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_SingleMuPt_0p5_3_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_MuonGunLowPt_Gen_acc_finePt_v2_11.root";
-//  unsigned int dType = kMCmu; string tag = "MuGunLowPt";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0.0, 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "MuonGun/LowPt_v2_11_Gen_acc";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_MuonGunEMBLowPt_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_SingleMuPtEMB_0p5_3_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_MuonGunEMBLowPt_Gen_acc_finePt_v2_11.root";
-//	unsigned int dType = kMCmu; string tag = "MuGunEMBLowPt";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0.0, 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "MuonGunEMB/LowPt_v2_11_GENMatching";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_MuonGunHighEMBPt_half_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_SingleMuPtEMB_3_100_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_MuonGunEMBHighPt_Gen_acc_finePt_v2_11.root";
-//	unsigned int dType = kMCmu; string tag = "MuGunEMBHighPt";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0.0, 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	SUBDIR= "MuonGunEMB/HighPt_v2_11_GENMatching";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0_220629_v2.root";
-//	string file_output = "output_UpsiEMB_v2_11_OniaM8to10_GENMatched_accPt4.root";
-//	unsigned int dType = kMCUp; string tag = "UpsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {8., 10.}} };
-//	std::pair<double, double> hltFilter{0, 999.} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0_220629_v2.root";
-//	string file_output = "output_UpsiEMB_v2_11_GENMatched_accPt4_hltMass.root";
-//	unsigned int dType = kMCUp; string tag = "UpsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {7., 11.}},
-//		{3, {8., 10.}},
-//	} ;
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0_220629_v2.root";
-//	string file_output = "output_UpsiEMB_v2_11_GENMatched_accJpsi_hltMass.root";
-//	unsigned int dType = kMCJP; string tag = "UpsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {7., 11.}},
-//		{3, {8., 10.}},
-//	} ;
-//	SUBDIR= "UpsiEMB/v2_11_GENMatching";
-
-//	string file_name_hlt = "../store/openHLT_NewMumenu_UpsiEMB_v2_11.root";
-//	string file_name_onia = "../store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0_220629_v2.root";
-//	string file_output = "output_UpsiEMB_v2_11_GENMatched_accJpsi_muSize2.root";
-//	unsigned int dType = kMCJP; string tag = "UpsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 9999.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {7., 11.}},
-//		{3, {8., 10.}},
-//	} ;
-//	SUBDIR= "UpsiEMB/v2_11_GENMatching";
-
-	//std::vector<sstd::string> v_names = {"HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v", "HLT_HIL3Mu2p5NHitQ10_L2Mu2_M7toinf_v", "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
-//	std::vector<std::string> v_names = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
-//	std::vector<std::string> v_names = { "HLT_HIL1DoubleMuOpen_v", "HLT_HIL2DoubleMuOpen_v", "HLT_HIL3DoubleMuOpen_v"};
 	std::vector<std::pair<std::string, std::string> > v_names = { 
 //trigger of menu v12
 		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
-//		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
-//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
-//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
-//		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
-//		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
-		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
-//		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-//		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
-//		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
-  		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
-		
-//		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen_DoHLTCut_Mass"}, 
-//		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZer_DoHLTCut_Mass"}, 
-//		{ "HLT_HIL2DoubleMu0_SQ_v", "L2DoubleMuSQ_DoHLTCut_Mass"}, 
-//		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen_DoHLTCut_Mass"}, 
-//		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero_DoHLTCut_Mass"}, 
-//		{ "HLT_HIL3DoubleMu0_SQ_v", "L3DoubleMuSQ_DoHLTCut_Mass"}, 
+		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
+		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
+		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
+		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
+		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
+  	{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
+		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
+		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
+		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
+  	
+		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen_DoHLTCut_Mass"}, 
+		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZer_DoHLTCut_Mass"}, 
+		{ "HLT_HIL2DoubleMu0_SQ_v", "L2DoubleMuSQ_DoHLTCut_Mass"}, 
+		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen_DoHLTCut_Mass"}, 
+		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero_DoHLTCut_Mass"}, 
+		{ "HLT_HIL3DoubleMu0_SQ_v", "L3DoubleMuSQ_DoHLTCut_Mass"}, 
 
-//		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-//		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open"}, 
-//		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_Vtx_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open_Vtx"}, 
-//		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
-//		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
+		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open"}, 
+		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_Vtx_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open_Vtx"}, 
+		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
+		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
 		{ "HLT_HIL1Mu0_v", ""}, 
 		{ "HLT_HIL2Mu0_v", ""}, 
 		{ "HLT_HIL3Mu0_v", ""}, 
-		{ "HLT_HIL2Mu0_v", "L2DoubleMuOpen_fake"}, 
-		{ "HLT_HIL3Mu0_v", "L3DoubleMuOpen_fake"}, 
+//		{ "HLT_HIL1Mu0_v", "L1DoubleMuOpen_fake"}, 
+//		{ "HLT_HIL2Mu0_v", "L2DoubleMuOpen_fake"}, 
+//		{ "HLT_HIL3Mu0_v", "L3DoubleMuOpen_fake"}, 
 		//{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
 		//{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
 		//{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
@@ -356,12 +100,9 @@ void calculateEff(){
 		return level;
 	};
 	
-//	EffCalc calc = EffCalc( file_name_hlt, file_name_onia );
-
 	//Enable MultiThreading, the thread executor creates threads per trigger and make use of the available CPU cores
 	ROOT::EnableImplicitMT(UseNCores);
 	ROOT::TThreadExecutor mpe(UseNCores);
-//	ROOT::TThreadExecutor mpe(v_names.size());
 
 	//Define cuts
 	std::vector<double> cuts;
@@ -382,11 +123,8 @@ void calculateEff(){
 			calc.setHltCustomMassFilter((const std::pair<double, double>) hltFilter.at(trigLvl(idx)));
 		}
 		calc.setOniaCustomFilter(oniaFilter);
-
-//		calc.objT.init();
 		calc.evalAll(max_events);
 		std::cout << Form("Done trigger [%s]", v_names[idx].first.c_str()) << std::endl;
-//		calc.objT.getOniaFriend();
 		return std::move(calc.getEfficiencies());
 	};
 
@@ -400,7 +138,6 @@ void calculateEff(){
 	auto t_end = std::chrono::steady_clock::now();
 	std::chrono::duration<double> t_elapsed =  t_end -t_start;
 	std::cout << "elapsed time for Timing evaluaiton : " << t_elapsed.count() << std::endl;
-//	auto res= extractEffs(0);
 
 	std::cout << "Run Fin" << std::endl;
 	TFile* output = new TFile(file_output.c_str(), "recreate");
@@ -415,9 +152,4 @@ void calculateEff(){
 		result_map[idx.first] = idx.second;
 	}
 	output->Close();
-	
-
-	std::cout << "Draw" << std::endl;
-//	result_map["HLT_HIL1DoubleMuOpen_v"]["pt"]->Draw();
-
 };

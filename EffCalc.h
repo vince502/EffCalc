@@ -73,7 +73,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		int level;
 		bool cuthltrange;
 		unsigned int dataType;
-		double dRcut;
+		double dRcut, dPtcut;
 		double hlt_m_low, hlt_m_high;
 		std::string rap;
 		std::map<std::string, std::pair<double, double> > map_oniafilter_limit{

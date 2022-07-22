@@ -11,6 +11,9 @@ struct content{
 	TLorentzVector mu;
 	TLorentzVector mu2;
 	TLorentzVector dmu;
+	TLorentzVector gen_mu;
+	TLorentzVector gen_mu2;
+	TLorentzVector gen_dmu;
 
 	friend bool operator==(const content& lref, const content &rref){
 		if ( lref.val != rref.val ) return false;
@@ -127,9 +130,12 @@ class readerOnia : public readerBase
 		Float_t Reco_mu_dxy[maxArraySize];
 		Float_t Reco_mu_dz[maxArraySize];
 		Float_t Reco_QQ_VtxProb[maxArraySize];
+
 		TClonesArray* Reco_QQ_4mom;
 		TClonesArray* Reco_mu_4mom;
 		TClonesArray* Reco_mu_L1_4mom;
+		TClonesArray* Gen_QQ_4mom;
+		TClonesArray* Gen_mu_4mom;
 //			Reco_mu_4mom = new TClonesArray("TLorentzVector", maxArraySize);
 //			Reco_QQ_4mom = new TClonesArray("TLorentzVector", maxArraySize);
 //			Reco_mu_L1_4mom = new TClonesArray("TLorentzVector", maxArraySize);

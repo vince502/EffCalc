@@ -57,7 +57,7 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
 	dRcut = (level == 3) ? 0.1 : 0.3;
-//	dRcut = 0.5; // Only for this version!
+	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
 };
 
 void EffCalc::setHltCustomMassFilter( std::pair<double, double> m ){
@@ -77,7 +77,7 @@ void EffCalc::eval(int idx){
 //	std::cout << "Debug : Onia Passed, EvtNb :  " << oniaData.eventNb <<std::endl;
 //	/* 1 */v_end.push_back(std::chrono::steady_clock::now());
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
-	if( oniaCont[0]["Reco_mu_size"].val != 2 && dataType == kMCJP) return;
+//	if( oniaCont[0]["Reco_mu_size"].val != 2 && dataType == kMCJP) return;
 	for( auto base : oniaCont ) {
 //		if( base["front"].val==1 ) continue;
 //		std::cout << "Debug : dimuon Y : " << base["dbmu"].dmu.Rapidity() << std::endl;
@@ -441,6 +441,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			double ophi2 = base["dbmu"].mu2.Phi();
 			double opt1 = base["dbmu"].mu.Pt();
 			double opt2 = base["dbmu"].mu2.Pt();
+			double gpt1 = base["dbmu"].gen_mu.Pt();
+			double gpt2 = base["dbmu"].gen_mu2.Pt();
 			double om1 = base["dbmu"].mu.M();
 			double om2 = base["dbmu"].mu2.M();
 			bool passdR1=false;
@@ -460,8 +462,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 //					std::cout << 	sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) << std::endl;
 					double dR1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2));
 					double dR2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2));
-					double dPt1 = (fabs(hpt - opt1) / opt1);
-					double dPt2 = (fabs(hpt - opt2) / opt2);
+					double dPt1 = (fabs(hpt - gpt1) / gpt1);
+					double dPt2 = (fabs(hpt - gpt2) / gpt2);
 					if( !passdR1 ) passdR1 =  dR1 < cutdR;
 					if( !passdR2 ) passdR2 =  dR2 < cutdR;
 					if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
@@ -594,7 +596,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 //			std::cout << objT.oniaCount << std::endl;
 		}
 	//	if( false ||( match_dR(*vit,0.3) && match_dPt(*vit, 99999.) ) ){
-		if( false || match(*vit,dRcut, 9999.0) ){
+		if( false || match(*vit,dRcut, dPtcut) ){
 			d_cpy_pass.push_back(*vit);
 		}
 		else {
