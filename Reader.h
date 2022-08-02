@@ -115,6 +115,7 @@ class readerOnia : public readerBase
 		Int_t Centrality;
 		Float_t SumET_HF;
 		std::vector<std::pair<long, long> > vec_idx;
+		unsigned int dType;
 
 		long totQQ = 0;
 
@@ -144,6 +145,7 @@ class readerOnia : public readerBase
 		readerOnia() : readerBase() {};
 		~readerOnia();
 		readerOnia( std::string name_file );
+		readerOnia( std::string name_file, unsigned int feedType );
 
 		int GetEntryWithIndex( int evtNb ) {
 			int x = base.map_tree["myTree"]->GetEntryWithIndex(evtNb);

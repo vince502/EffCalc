@@ -146,6 +146,10 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->BuildIndex("eventNb");
 };
 
+readerOnia::readerOnia( std::string name_file, unsigned int feedType ) : readerOnia( name_file) {
+	dType  = feedType;
+};
+
 readerOnia::~readerOnia(){
 //	if( base.file ) base.file->Close();
 };
@@ -174,9 +178,9 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 					TLorentzVector(std::move(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mupl_idx[idx])))),
 					TLorentzVector(std::move(*((TLorentzVector*)mu_4mom->At(Reco_QQ_mumi_idx[idx])))), 
 					TLorentzVector(std::move(*((TLorentzVector*)Reco_QQ_4mom->At(idx)))),
-					TLorentzVector((Reco_mu_whichGen[Reco_QQ_mupl_idx[idx]]<0) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_mu_4mom->At(Reco_mu_whichGen[Reco_QQ_mupl_idx[idx]])))),
-					TLorentzVector((Reco_mu_whichGen[Reco_QQ_mumi_idx[idx]]<0) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_mu_4mom->At(Reco_mu_whichGen[Reco_QQ_mumi_idx[idx]])))), 
-					TLorentzVector((Reco_QQ_whichGen[idx] <0) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_QQ_4mom->At(Reco_QQ_whichGen[idx]))))}
+					TLorentzVector((Reco_mu_whichGen[Reco_QQ_mupl_idx[idx]]<0 || dType ==0 ) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_mu_4mom->At(Reco_mu_whichGen[Reco_QQ_mupl_idx[idx]])))),
+					TLorentzVector((Reco_mu_whichGen[Reco_QQ_mumi_idx[idx]]<0 || dType == 0) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_mu_4mom->At(Reco_mu_whichGen[Reco_QQ_mumi_idx[idx]])))), 
+					TLorentzVector((Reco_QQ_whichGen[idx] <0 || dType ==0 ) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_QQ_4mom->At(Reco_QQ_whichGen[idx]))))}
 				}, 
 				{"Trk1", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[Reco_QQ_mupl_idx[idx]]))}}, 
 				{"Trk2", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[Reco_QQ_mumi_idx[idx]]))}}, 
@@ -189,7 +193,7 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 				{"dz1", content{std::move(Reco_mu_dz[Reco_QQ_mupl_idx[idx]])}}, 
 				{"dz2", content{std::move(Reco_mu_dz[Reco_QQ_mumi_idx[idx]])}}, 
 				{"QQVtxProb", content{std::move(Reco_QQ_VtxProb[idx])}},
-				{"QQisGen", content{static_cast<double>(std::move(Reco_QQ_whichGen[idx]))}} 
+				{"QQisGen", content{static_cast<double>(( dType == 0 ) ? 0 :std::move(Reco_QQ_whichGen[idx]))}} 
 			}
 			);
 		}
@@ -200,14 +204,14 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 					TLorentzVector(std::move(*((TLorentzVector*)mu_4mom->At(idx)))),
 					TLorentzVector(),
 					TLorentzVector(),
-					TLorentzVector((Reco_mu_whichGen[idx] < 0) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_mu_4mom->At(Reco_mu_whichGen[idx]))))},
+					TLorentzVector((Reco_mu_whichGen[idx] < 0 || dType == 0) ? TLorentzVector() : std::move(*((TLorentzVector*)Gen_mu_4mom->At(Reco_mu_whichGen[idx]))))},
 				}, 
 				{"Trk1", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[idx]))}},
 				{"Pix1", content{static_cast<double>(std::move(Reco_mu_nPixWMea[idx]))}},
 				{"Sel1", content{static_cast<double>(std::move(Reco_mu_SelectionType[idx]))}},
 				{"dxy1", content{Reco_mu_dxy[idx]}},
 				{"dz1", content{Reco_mu_dz[idx]}},
-				{"QQisGen", content{static_cast<double>(std::move(Reco_mu_whichGen[idx]))}} 
+				{"QQisGen", content{static_cast<double>( ( dType == 0 ) ? 0 : std::move(Reco_mu_whichGen[idx]))}} 
 			} 
 			);
 		}

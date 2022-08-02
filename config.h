@@ -42,6 +42,30 @@
 //	} ;
 //	static string SUBDIR= "DataRun2/MB_v2_11_JPsiAcc";
 
+//	string file_name_hlt = "../store/openHLT_NewMuMenu_DataMBPD2_v2_11.root";
+//	string file_name_onia = "../store/OniaTree_miniAOD_HIMBPD2_Run327237_MuonNoSel.root";
+//	string file_output = "output_Run2MBPD_v2_11_JPsiAcc.root";
+//	unsigned int dType = kMCJP; string tag = "DataRun2MB";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 9999.}} };
+//	std::map<int, std::pair<double, double> > hltFilter{ 
+//		{1, {0., 9999.}},
+//		{2, {0., 9999.}},
+//		{3, {0., 9999.}},
+//	} ;
+//	static string SUBDIR= "DataRun2/MB_v2_11_JPsiAcc";
+
+	string file_name_hlt = "../store/openHLT_dataMBPD2_MuonTriggerBase_v2_V11_wholeRange.root";
+	string file_name_onia = "../store/Oniatree_miniAOD_HIMBPD2_FullRun_MuonNoSel.root";
+	string file_output = "output_Run2MBPD_full_v2_11_JPsiAcc.root";
+	unsigned int dType = kData; string tag = "DataRun2MB";
+	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 9999.}} };
+	std::map<int, std::pair<double, double> > hltFilter{ 
+		{1, {0., 9999.}},
+		{2, {0., 9999.}},
+		{3, {0., 9999.}},
+	} ;
+	static string SUBDIR= "DataRun2/MBPD2Full_v2_11_JPsiAcc";
+
 //	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_v2_9.root";
 //	string file_name_onia = "../store/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root";
 //	string file_output = "output_JPsiEMB_v2_9_testNcollWeight.root";
@@ -75,9 +99,9 @@
 //	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
 //	std::pair<double, double> hltFilter{2.2, 4.4} ;
 
-//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
+//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11_mod2.root";
 //	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched_customFilterM2p6t03p5_hltMass_test.root";
+//	string file_output = Form("output_pTHat2_JPsiEMB_v2_11_GetMatched_customFilterM2p6t03p5_hltMass_dPt%s.root", GLB_DPT_CUT);
 //	unsigned int dType = kMCJP; string tag = "JPsiEMB";
 //	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
 //	std::map<int, std::pair<double, double> > hltFilter{ 
@@ -85,7 +109,7 @@
 //		{2, {1.0, 6.5}},
 //		{3, {2.0, 4.0}},
 //	} ;
-//	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
+//	static string SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
 
 //	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
 //	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
@@ -159,17 +183,17 @@
 //	} ;
 //	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
 
-	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_pTHat2_v2_11_mod2.root";
-	string file_name_onia = "../store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-	string file_output = Form("test_output_pTHat2_JPsi_v2_11_GenMatched_dPt_%s.root", GLB_DPT_CUT);
-	unsigned int dType = kMCJP; string tag = "JPsi";
-	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0,100.}} };
-	std::map<int, std::pair<double, double> > hltFilter{ 
-		{1, {0., 9999.}},
-		{2, {0., 9999.}},
-		{3, {0., 9999.}},
-	} ;
-	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
+//	string file_name_hlt = "../store/openHLT_NewMumenu_JPsi_pTHat2_v2_11_mod2.root";
+//	string file_name_onia = "../store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
+//	string file_output = Form("output_pTHat2_JPsi_v2_11_GenMatched_hltMassCut_dPt_%s.root", GLB_DPT_CUT);
+//	unsigned int dType = kMCJP; string tag = "JPsi";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	std::map<int, std::pair<double, double> > hltFilter{ 
+//		{1, {0., 9999.}},
+//		{2, {1., 6.5}},
+//		{3, {2., 4.}},
+//	} ;
+//	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
 
 //	string file_name_hlt = "../store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11_mod1.root";
 //	string file_name_onia = "../store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";

@@ -29,7 +29,7 @@ void calculateEff(){
 		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
 		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
 		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
-  	{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
+		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
 		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
 		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
 		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
@@ -111,7 +111,7 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 3.1e+6;
+	long max_events = 3.1e+8;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia, dType );

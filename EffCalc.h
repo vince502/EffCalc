@@ -8,6 +8,7 @@
 #include "pset.h"
 
 enum kDtype{
+	kMCmuLoose = (unsigned int) 4,
 	kMCmu = (unsigned int) 3,
 	kMCUp = (unsigned int) 2,
 	kMCJP = (unsigned int) 1,

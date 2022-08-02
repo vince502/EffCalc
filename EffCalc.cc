@@ -6,7 +6,7 @@
 #include <vector>
 #include <chrono>
 
-EffCalc::EffCalc( std::string name_file_hlt, std::string name_file_onia, unsigned int feedType = kMCJP ) : hltData( name_file_hlt ), oniaData( name_file_onia) {
+EffCalc::EffCalc( std::string name_file_hlt, std::string name_file_onia, unsigned int feedType = kMCJP ) : hltData( name_file_hlt ), oniaData( name_file_onia, feedType) {
 	dataType = feedType;
 };
 
@@ -291,6 +291,9 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 					fabs(mu1.Eta()) < 2.4 &&
 					fabs(mu1.Pt()) > 4
 				);
+				if(dataType == kMCmuLoose) return(
+					fabs(mu1.Eta()) < 2.4 
+				);
 				if(dataType == kMCmu) return (
 					(fabs(mu1.Eta()) < 2.4) &&
 					(
@@ -462,8 +465,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 //					std::cout << 	sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2)) << std::endl;
 					double dR1 = sqrt(pow(fabs(oeta1 -heta ) ,2) +  pow( std::min( fabs(ophi1 - hphi), fabs( 2.*TMath::Pi() - ophi1 + hphi ) ), 2));
 					double dR2 = sqrt(pow(fabs(oeta2 -heta ) ,2) +  pow( std::min( fabs(ophi2 - hphi), fabs( 2.*TMath::Pi() - ophi2 + hphi ) ), 2));
-					double dPt1 = (fabs(hpt - gpt1) / gpt1);
-					double dPt2 = (fabs(hpt - gpt2) / gpt2);
+					double dPt1 = (fabs(hpt - opt1) / opt1);
+					double dPt2 = (fabs(hpt - opt2) / opt2);
 					if( !passdR1 ) passdR1 =  dR1 < cutdR;
 					if( !passdR2 ) passdR2 =  dR2 < cutdR;
 					if( !passdPt1 ) passdPt1 = dPt1 < cutdPt;
