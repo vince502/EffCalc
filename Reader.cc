@@ -116,15 +116,13 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_L1_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_4mom", 1);
-	base.map_tree["myTree"]->SetBranchStatus("Gen_mu_4mom", 1);
-	base.map_tree["myTree"]->SetBranchStatus("Gen_QQ_4mom", 1);
-	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_whichGen", 1);
-	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_whichGen", 1);
+
+
 	base.map_tree["myTree"]->SetBranchAddress("eventNb", &eventNb);
 	base.map_tree["myTree"]->SetBranchAddress("Centrality", &Centrality);
 	base.map_tree["myTree"]->SetBranchAddress("SumET_HF", &SumET_HF);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_size", &Reco_mu_size);
-	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_whichGen", &Reco_mu_whichGen);
+
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_size", &Reco_QQ_size);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_mupl_idx", &Reco_QQ_mupl_idx);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_mumi_idx", &Reco_QQ_mumi_idx);
@@ -135,11 +133,10 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_dz", &Reco_mu_dz);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_VtxProb", &Reco_QQ_VtxProb);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_4mom", &(Reco_mu_4mom));
-	base.map_tree["myTree"]->SetBranchAddress("Gen_mu_4mom", &(Gen_mu_4mom));
-	base.map_tree["myTree"]->SetBranchAddress("Gen_QQ_4mom", &(Gen_QQ_4mom));
+
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_L1_4mom", &(Reco_mu_L1_4mom));
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_4mom", &(Reco_QQ_4mom));
-	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_whichGen", &(Reco_QQ_whichGen));
+
 
 //	base.map_tree["myTree"]->SetBranchAddress(&ZX, "ZX");
 
@@ -148,6 +145,16 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 
 readerOnia::readerOnia( std::string name_file, unsigned int feedType ) : readerOnia( name_file) {
 	dType  = feedType;
+	if( dType != 0 ){
+		base.map_tree["myTree"]->SetBranchStatus("Gen_mu_4mom", 1);
+		base.map_tree["myTree"]->SetBranchStatus("Gen_QQ_4mom", 1);
+		base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_whichGen", 1);
+		base.map_tree["myTree"]->SetBranchStatus("Reco_mu_whichGen", 1);
+		base.map_tree["myTree"]->SetBranchAddress("Gen_mu_4mom", &(Gen_mu_4mom));
+		base.map_tree["myTree"]->SetBranchAddress("Gen_QQ_4mom", &(Gen_QQ_4mom));
+		base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_whichGen", &(Reco_QQ_whichGen));
+		base.map_tree["myTree"]->SetBranchAddress("Reco_mu_whichGen", &Reco_mu_whichGen);
+	}
 };
 
 readerOnia::~readerOnia(){
@@ -157,7 +164,8 @@ readerOnia::~readerOnia(){
 std::vector<EventData> readerOnia::getEventContent(bool getDimu, bool isL1){
 	std::vector<EventData> t, s;
 	EventData tfront = {{"front", content{1}}, {"eventNb", content{static_cast<double>(eventNb)}}, 
-		{"Centrality", content{static_cast<double>(Centrality)}},
+//		{"Centrality", content{static_cast<double>(Centrality)}},
+		{"Centrality", content{static_cast<double>(getHiBinFromhiHF(SumET_HF))}},
 		{"SumET_HF", content{SumET_HF}},
 		{"Reco_mu_size", content{static_cast<double>(Reco_mu_size)}},
 		{"Reco_QQ_size", content{static_cast<double>(Reco_QQ_size)} }

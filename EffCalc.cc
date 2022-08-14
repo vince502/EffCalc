@@ -185,6 +185,16 @@ void EffCalc::evalAll(int maxEvents = -1){
 	std::cout << "Done " << std::endl;
 };
 
+void EffCalc::evalSegment(int startIdx, int endIdx){
+	int totEntries = hltData.base.map_tree["HltTree"]->GetEntries();
+	for( int iEvt = startIdx; iEvt< endIdx && iEvt < totEntries; iEvt ++){
+		if( ( iEvt % 30000 ) == 0 ) std::cout << "Processing event ["<<registered_trigger.c_str()<<"] " << iEvt << std::endl;
+		eval(iEvt);
+	}
+	objT.write();
+	std::cout << "Done " << std::endl;
+};
+
 void EffCalc::evalAll(int maxEvents , std::vector<std::pair<long, long> > indexes){
 	long count = 0;
 	for( auto p : indexes ){
@@ -614,7 +624,8 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaFail){
 	auto vitF = oniaFail.begin();
 	auto vitP = oniaPass.begin();
-	auto nColl = findNcoll((*vitF)["Centrality"].val);
+//	auto nColl = findNcoll((*vitF)["Centrality"].val);
+	auto nColl = getHiBinFromhiHF((*vitF)["SumET_HF"].val);
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
 			map_eff["pt"]->Fill(pass, oniaObj["dbmu"].dmu.Pt(), nColl);

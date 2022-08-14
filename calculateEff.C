@@ -1,7 +1,7 @@
 #pragma once
 
 #include "config.h"
-static int UseNCores = 40;
+static int UseNCores = 160;
 
 #include "TGraph.h"
 #include <ROOT/TProcessExecutor.hxx>
@@ -13,6 +13,7 @@ static int UseNCores = 40;
 #include <chrono>
 
 void calculateEff(){
+	system(Form("mkdir /home/vince402/RunPrep_2022/EffCalc/MatchTree/%s", SUBDIR.c_str()));
 
 //	string file_name_hlt = INPUT_HLT;
 //	string file_name_onia = INPUT_ONIA;
@@ -24,32 +25,52 @@ void calculateEff(){
 	std::vector<std::pair<std::string, std::string> > v_names = { 
 //trigger of menu v12
 		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
-		{ "HLT_HIL1DoubleMu0_Zero_v", "L1DoubleMuZero"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
-		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
-		{ "HLT_HIL1DoubleMu0_SQ_v"  , "L1DoubleMuSQ"}, 
+
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
+//		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
+
 		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
-		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
-		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
+//		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+//		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
+//		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
 		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
+//		{ "HLT_HIL3DoubleMu0_Cosmic_v", "L3DoubleMuCosmic"}, 
   	
 		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen_DoHLTCut_Mass"}, 
-		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZer_DoHLTCut_Mass"}, 
-		{ "HLT_HIL2DoubleMu0_SQ_v", "L2DoubleMuSQ_DoHLTCut_Mass"}, 
+
+//		{ "HLT_HIL2DoubleMu0_SQ_v", "L2DoubleMuSQ_DoHLTCut_Mass"}, 
 		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen_DoHLTCut_Mass"}, 
-		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero_DoHLTCut_Mass"}, 
+
 		{ "HLT_HIL3DoubleMu0_SQ_v", "L3DoubleMuSQ_DoHLTCut_Mass"}, 
 
-		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open"}, 
-		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_Vtx_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open_Vtx"}, 
+//		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
+//		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open"}, 
+//		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_Vtx_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open_Vtx"}, 
 		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
 		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
 		{ "HLT_HIL1Mu0_v", ""}, 
 		{ "HLT_HIL2Mu0_v", ""}, 
 		{ "HLT_HIL3Mu0_v", ""}, 
+
+//		{ "HLT_HIL3DoubleMu0_Cosmic_v", "L3DoubleMuCosmic_DoHLTCut_Mass"}, 
+//		{ "HLT_HIL2DoubleMu0_Cosmic_v", "L2DoubleMuCosmic_DoHLTCut_Mass"}, 
+//		{ "HLT_HIL2DoubleMu0_Cosmic_v"  , "L2DoubleMuCosmic"}, 
+//		{ "HLT_HIL1DoubleMu0_Cosmic_v", "L1DoubleMuCosmic"}, 
+//		{ "HLT_HIL2SingleMu3_Open_v", ""}, 
+//		{ "HLT_HIL3SingleMu3_Open_v", ""}, 
+		{ "HLT_HIL2DoubleMu0_M1to6p5Acop1toPiAlphamiPito1_Open_v", ""},
+		{ "HLT_HIL2DoubleMu0_M1to6p5Acop1toPi_Open_v", ""},
+		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_v", "HLT_HIL2DoubleMu0_M1to6p5Open_DoHLTCut_Mass"},
+		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_v", ""},
+		{ "HLT_HIL2DoubleMu0_MmiInftoInf_Open_v", ""},
+		{ "HLT_HIL2DoubleMu0_MmiInftoInf_Open_v", "HLT_HIL2DoubleMu0_MmiInftoInfOpen_DoHLTCut_Mass_v"},
+		{ "HLT_HIL3DoubleMu0_M2to4p5Acop1p2toPi_Open_v", ""},
+		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_v", ""},
+		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_v", "HLT_HIL3DoubleMu0_M2to4p5Open_DoHLTCut_Mass_v"},
+		{ "HLT_HIL3DoubleMu0_M2to4p5NoL3Pre_Open_v", ""},
+		{ "HLT_HIL3DoubleMu0_M2to4p5NoL3PreFast_Open_v", ""},
+		{ "HLT_HIL3DoubleMu0_M2to4p5NoL3PreFast_Open_v", "HLT_HIL3DoubleMu0_M2to4p5NoL3PreFastOpen_DoHLTCut_Mass_v"},
 //		{ "HLT_HIL1Mu0_v", "L1DoubleMuOpen_fake"}, 
 //		{ "HLT_HIL2Mu0_v", "L2DoubleMuOpen_fake"}, 
 //		{ "HLT_HIL3Mu0_v", "L3DoubleMuOpen_fake"}, 
@@ -101,7 +122,7 @@ void calculateEff(){
 	};
 	
 	//Enable MultiThreading, the thread executor creates threads per trigger and make use of the available CPU cores
-	ROOT::EnableImplicitMT(UseNCores);
+//	ROOT::EnableImplicitMT(80);
 	ROOT::TThreadExecutor mpe(UseNCores);
 
 	//Define cuts
@@ -111,7 +132,7 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 3.1e+8;
+	long max_events = 5.0e+5;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia, dType );

@@ -41,6 +41,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		void eval(std::pair<long, long> indexes);
 		void eval(int idx, double cut);
 		void evalAll(int maxEvents);
+		void evalSegment(int startIdx, int endIdx);
 		void evalAllHLT(int maxEvents);
 		void evalAll(int maxEvents, std::vector<std::pair<long, long> > indexes);
 		void mapIndex();

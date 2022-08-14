@@ -10,7 +10,9 @@ void objectTree::init( std::string _trig, bool _isDimu, unsigned int dataType){
 	fout = new TFile(Form("MatchTree/%s/outputMatchTree_%s_SampleType%u_%s_v2.root", subdir.c_str(), trig.c_str(), dataType, file_tag.c_str() ), "recreate");
 
 	fullTree = new TTree("fullTree", "hlt vs. onia full matched tree");
+	fullTree->SetAutoSave(-300000);
 	oniaTree = new TTree("oniaTree", "per onia entry tree");
+	oniaTree->SetAutoSave(-300000);
 	
 	fullTree->Branch( "evtNb", &nevt, "eventNb/D");
 	fullTree->Branch( "cent", &cent, "centrality/D");
