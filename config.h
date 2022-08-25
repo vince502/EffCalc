@@ -104,24 +104,6 @@
 //		{3, {0., 9999.}},
 //	} ;
 
-//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GetMatched_dPt_customFilterM2p6t03p5.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::pair<double, double> hltFilter{2.2, 4.4} ;
-
-//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11_mod2.root";
-//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = Form("output_pTHat2_JPsiEMB_v2_11_GetMatched_customFilterM2p6t03p5_hltMass_dPt%s.root", GLB_DPT_CUT);
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {1.0, 6.5}},
-//		{3, {2.0, 4.0}},
-//	} ;
-//	static string SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
 
 //	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v3_5.root";
 //	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
@@ -135,29 +117,6 @@
 //	} ;
 //	static string SUBDIR= "JPsiEMB/v3_5_Gen_Mass";
 
-//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GenMatched_muSize2.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 100.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	static string SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
-//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsiEMB_v2_11_GenMatched_muSizeIs2.root";
-//	unsigned int dType = kMCJP; string tag = "JPsiEMB";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0., 100.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	static string SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
 
 //	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11.root";
 //	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
@@ -183,41 +142,6 @@
 //	} ;
 //	static string SUBDIR= "JPsiEMB/v2_11_Gen_Mass";
 
-//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v2_11.root";
-//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsi_v2_11_GetMatched_customFilterM2p6t03p5_hltMass.root";
-//	unsigned int dType = kMCJP; string tag = "JPsi";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {1.0, 6.5}},
-//		{3, {2.0, 4.0}},
-//	} ;
-//	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v2_11.root";
-//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-//	string file_output = "output_pTHat2_JPsi_v2_11_GenMatched.root";
-//	unsigned int dType = kMCJP; string tag = "JPsi";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {0,100.}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {0., 9999.}},
-//		{3, {0., 9999.}},
-//	} ;
-//	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
-
-//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v2_11_mod2.root";
-//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-//	string file_output = Form("output_pTHat2_JPsi_v2_11_GenMatched_hltMassCut_dPt_%s.root", GLB_DPT_CUT);
-//	unsigned int dType = kMCJP; string tag = "JPsi";
-//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
-//	std::map<int, std::pair<double, double> > hltFilter{ 
-//		{1, {0., 9999.}},
-//		{2, {1., 6.5}},
-//		{3, {2., 4.}},
-//	} ;
-//	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
 
 //	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v2_17.root";
 //	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
@@ -231,20 +155,80 @@
 //	} ;
 //	static string SUBDIR= "JPsi/v2_11_Gen_Mass";
 
-	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v2_19.root";
-	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
-	string file_output = Form("output_pTHat2_JPsi_v2_19_GenMatched_hltMassCut_dPt_%s_v5.root", GLB_DPT_CUT);
-	unsigned int dType = kMCJP; string tag = "JPsi";
-	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v2_19_mod2.root";
+//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
+//	string file_output = Form("output_pTHat2_JPsi_v2_19_GenMatched_hltMassCut_NOdRdPt_%s_v6.root", GLB_DPT_CUT);
+//	unsigned int dType = kMCJP; string tag = "JPsi";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	std::map<int, std::pair<double, double> > hltFilter{ 
+//		{1, {0., 9999.}},
+//		{2, {1., 6.5}},
+//		{3, {2., 4.5}},
+////		{1, {0., 9999.}},
+////		{2, {0., 9999.}},
+////		{3, {0., 9999.}},
+//	} ;
+//	static string SUBDIR= "JPsi/v2_19_Gen_Mass_v5";
+
+//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v1_7.root";
+//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
+//	string file_output = Form("output_pTHat2_JPsi_v3_7_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
+//	unsigned int dType = kMCJP; string tag = "JPsi";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	std::map<int, std::pair<double, double> > hltFilter{ 
+//		{1, {0., 9999.}},
+//		{2, {1., 6.5}},
+//		{3, {2., 4.5}},
+////		{1, {0., 9999.}},
+////		{2, {0., 9999.}},
+////		{3, {0., 9999.}},
+//	} ;
+//	static string SUBDIR= "JPsi/v3_7_Gen_Mass_NOdRdPt";
+
+//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v1_7.root";
+//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
+//	string file_output = Form("output_pTHat2_JPsiEMB_v3_7_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
+//	unsigned int dType = kMCJP; string tag = "JPsi";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+//	std::map<int, std::pair<double, double> > hltFilter{ 
+//		{1, {0., 9999.}},
+//		{2, {1., 6.5}},
+//		{3, {2., 4.5}},
+////		{1, {0., 9999.}},
+////		{2, {0., 9999.}},
+////		{3, {0., 9999.}},
+//	} ;
+//	static string SUBDIR= "JPsiEMB/v3_7_Gen_Mass";
+
+	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_Upsilon_v1_7.root";
+	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_Upsilon_MuonSelAll_CMSSW_12_3_0.root";
+	string file_output = Form("output_Upsilon_v3_7_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
+	unsigned int dType = kMCUp; string tag = "Upsi";
+	std::map<string, std::pair<double, double> > oniaFilter{{"m", {7, 15}} };
 	std::map<int, std::pair<double, double> > hltFilter{ 
+//		{1, {0., 9999.}},
+//		{2, {1., 6.5}},
+//		{3, {2., 4.5}},
 		{1, {0., 9999.}},
-		{2, {1., 6.5}},
-		{3, {2., 4.5}},
+		{2, {0., 9999.}},
+		{3, {0., 9999.}},
+	} ;
+	static string SUBDIR= "Upsi/v3_7_Gen_Mass";
+
+//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_UpsilonEMB_v1_7.root";
+//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0_220629_v2.root";
+//	string file_output = Form("output_UpsilonEMB_v3_7_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
+//	unsigned int dType = kMCUp; string tag = "Upsi";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {7, 15}} };
+//	std::map<int, std::pair<double, double> > hltFilter{ 
+////		{1, {0., 9999.}},
+////		{2, {1., 6.5}},
+////		{3, {2., 4.5}},
 //		{1, {0., 9999.}},
 //		{2, {0., 9999.}},
 //		{3, {0., 9999.}},
-	} ;
-	static string SUBDIR= "JPsi/v2_19_Gen_Mass_v3";
+//	} ;
+//	static string SUBDIR= "UpsiEMB/v3_7_Gen_Mass";
 
 //	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v2_11_mod1.root";
 //	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";

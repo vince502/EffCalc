@@ -57,6 +57,8 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
 	dRcut = (level == 3) ? 0.1 : 0.3;
+//	dRcut = (level == 3) ? 999. : 999.3;
+//	dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
 	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
 };
 
@@ -466,7 +468,9 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 			int  counter = 0;
 			int  countM1 = 0;
 			int  countM2 = 0;
-			int  M1matchedWith = 2;
+			int  posM1 = 0;
+			int  posM2 = 0;
+			int  M1matchedWith = -1;
 			if(!cuthltrange){
 				for( auto hltcont : hlt ){
 					double heta = hltcont["mu"].mu.Eta();
@@ -485,21 +489,21 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 //					std::cout << (int)( passdR1 && passdPt1) << std::endl;
 					if( (dR1 < cutdR && dPt1 < cutdPt) || (dR2 < cutdR && dPt2 < cutdPt) ){
 						countN++;
-						if( countM1 == 0 ) countM1 = counter;
+						if( countM1 == 0 ) posM1 = counter;
 						if(dR1 < cutdR && dPt1 < cutdPt) M1matchedWith = 1;
 						else M1matchedWith = 2;
 						if( countM1 !=0 ){ 
-							if( M1matchedWith == 1 && dR2 < cutdR && dPt2 < cutdPt) countM2 = counter;
-							else if( M1matchedWith == 2 && dR1 < cutdR && dPt1 < cutdPt) countM2 = counter;
+							if( M1matchedWith == 1 && dR2 < cutdR && dPt2 < cutdPt) posM2 = counter;
+							else if( M1matchedWith == 2 && dR1 < cutdR && dPt1 < cutdPt) posM2 = counter;
 						}
 					}
 					counter ++;
 				}
-				if( countM1 != 0 ){ auto v = hlt.begin(); std::advance(v, countM1); hlt.erase(v);
-					if( countM2 != 0 &&( countM1 > countM2) ){ auto v = hlt.begin(); std::advance(v, countM2); hlt.erase(v);}
-					else if( countM2 != 0 &&( countM1 < countM2) ){ auto v = hlt.begin(); std::advance(v, countM2 -1); hlt.erase(v);}
+				if( countM1 != 0 ){ auto v = hlt.begin(); std::advance(v, posM1); hlt.erase(v);
+					if( countM2 != 0 &&( posM1 > posM2) ){ auto v = hlt.begin(); std::advance(v, posM2); hlt.erase(v);}
+					else if( countM2 != 0 &&( posM1 < posM2) ){ auto v = hlt.begin(); std::advance(v, posM2 -1); hlt.erase(v);}
 				}
-				else if( countM2 !=0 ){ auto v = hlt.begin(); std::advance(v, countM2); hlt.erase(v);} 
+				else if( countM2 !=0 ){ auto v = hlt.begin(); std::advance(v, posM2); hlt.erase(v);} 
 
 			}
 			if(cuthltrange){
