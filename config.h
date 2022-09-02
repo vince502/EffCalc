@@ -185,6 +185,21 @@
 //	} ;
 //	static string SUBDIR= "JPsi/v3_7_Gen_Mass_NOdRdPt";
 
+	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsi_pTHat2_v1_8_mod1.root";
+	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsi_pTHatMin2_CMSSW_12_3_0.root";
+	string file_output = Form("output_pTHat2_JPsi_v3_8_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
+	unsigned int dType = kMCJP; string tag = "JPsi";
+	std::map<string, std::pair<double, double> > oniaFilter{{"m", {2.6, 3.5}} };
+	std::map<int, std::pair<double, double> > hltFilter{ 
+		{1, {0., 9999.}},
+		{2, {1., 6.5}},
+		{3, {2., 4.5}},
+//		{1, {0., 9999.}},
+//		{2, {0., 9999.}},
+//		{3, {0., 9999.}},
+	} ;
+	static string SUBDIR= "JPsi/v3_8_Gen";
+
 //	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_JPsiEMB_pTHat2_v1_7.root";
 //	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_JPsiEMB_pTHatMin2_MuonSelAll_CMSSW_12_3_0.root";
 //	string file_output = Form("output_pTHat2_JPsiEMB_v3_7_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
@@ -200,20 +215,20 @@
 //	} ;
 //	static string SUBDIR= "JPsiEMB/v3_7_Gen_Mass";
 
-	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_Upsilon_v1_7.root";
-	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_Upsilon_MuonSelAll_CMSSW_12_3_0.root";
-	string file_output = Form("output_Upsilon_v3_7_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
-	unsigned int dType = kMCUp; string tag = "Upsi";
-	std::map<string, std::pair<double, double> > oniaFilter{{"m", {7, 15}} };
-	std::map<int, std::pair<double, double> > hltFilter{ 
+//	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_Upsilon_v1_7.root";
+//	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_Upsilon_MuonSelAll_CMSSW_12_3_0.root";
+//	string file_output = Form("output_Upsilon_v3_7_GenMatched_hltMassCut_dPt_%s_v6.root", GLB_DPT_CUT);
+//	unsigned int dType = kMCUp; string tag = "Upsi";
+//	std::map<string, std::pair<double, double> > oniaFilter{{"m", {7, 15}} };
+//	std::map<int, std::pair<double, double> > hltFilter{ 
+////		{1, {0., 9999.}},
+////		{2, {1., 6.5}},
+////		{3, {2., 4.5}},
 //		{1, {0., 9999.}},
-//		{2, {1., 6.5}},
-//		{3, {2., 4.5}},
-		{1, {0., 9999.}},
-		{2, {0., 9999.}},
-		{3, {0., 9999.}},
-	} ;
-	static string SUBDIR= "Upsi/v3_7_Gen_Mass";
+//		{2, {0., 9999.}},
+//		{3, {0., 9999.}},
+//	} ;
+//	static string SUBDIR= "Upsi/v3_7_Gen_Mass";
 
 //	string file_name_hlt = "/home/CMS/soohwan/store/openHLT_NewMumenu_UpsilonEMB_v1_7.root";
 //	string file_name_onia = "/home/CMS/soohwan/store/Oniatree_UpsilonEMB_MuonSelAll_CMSSW_12_3_0_220629_v2.root";

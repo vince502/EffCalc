@@ -40,7 +40,8 @@ void readerHlt::registerTrig( std::string _name_base_trig, std::string _name_tri
 	name_base_trig = _name_base_trig;
 	nickname = ( _name_trig.empty() ) ? _name_base_trig : _name_trig;
 	base.setTree( Form("hltobject/%s", _name_base_trig.c_str()) , nickname );
-	isDerived = !((bool) _name_trig.empty());
+//	isDerived = !((bool) _name_trig.empty());
+	isDerived = _name_trig.find("ptDiff") !=std::string::npos;
 	base.map_tree[nickname]->SetBranchAddress("pt", &pts);
 	base.map_tree[nickname]->SetBranchAddress("eta", &etas );
 	base.map_tree[nickname]->SetBranchAddress("phi", &phis);
@@ -76,7 +77,7 @@ std::vector<std::pair<long, long> > readerHlt::getIndexVector(){
 
 EventData readerHlt::getEventPrimitive(){
 	return std::move(EventData{
-		{"front", content{0} },
+		{"front", content{1} },
 		{"Event", content{static_cast<double>(eventNb)}}, 
 		{"passed", content{static_cast<double>(triggered)}}
 	}
@@ -101,6 +102,7 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	std::cout << "initialized Onia" << std::endl;
 	base.map_tree["myTree"]->SetBranchStatus("*", 0);
 	base.map_tree["myTree"]->SetBranchStatus("eventNb", 1);
+//	base.map_tree["myTree"]->SetBranchStatus("runNb", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Centrality", 1);
 	base.map_tree["myTree"]->SetBranchStatus("SumET_HF", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_size", 1);
@@ -140,7 +142,8 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 
 //	base.map_tree["myTree"]->SetBranchAddress(&ZX, "ZX");
 
-	base.map_tree["myTree"]->BuildIndex("eventNb");
+//	base.map_tree["myTree"]->BuildIndex("runNb", "eventNb");
+	base.map_tree["myTree"]->BuildIndex( "eventNb");
 };
 
 readerOnia::readerOnia( std::string name_file, unsigned int feedType ) : readerOnia( name_file) {
@@ -163,7 +166,7 @@ readerOnia::~readerOnia(){
 
 std::vector<EventData> readerOnia::getEventContent(bool getDimu, bool isL1){
 	std::vector<EventData> t, s;
-	EventData tfront = {{"front", content{1}}, {"eventNb", content{static_cast<double>(eventNb)}}, 
+	EventData tfront = {{"front", content{1}}, {"eventNb", content{static_cast<double>(eventNb)}}, {"runNb", content{static_cast<double>(runNb)}},
 //		{"Centrality", content{static_cast<double>(Centrality)}},
 		{"Centrality", content{static_cast<double>(getHiBinFromhiHF(SumET_HF))}},
 		{"SumET_HF", content{SumET_HF}},

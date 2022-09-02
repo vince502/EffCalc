@@ -79,7 +79,8 @@ class readerHlt : public readerBase
 		std::vector<EventData> getEventContent();
 		EventData getEventPrimitive();
 //		EventData getCandsContent();
-		UInt_t GetEventNb(){ return eventNb; };
+		inline UInt_t GetEventNb(){ return eventNb; };
+		inline UInt_t GetRunNb(){ return runNb; };
 		std::vector<std::pair<long, long> > getIndexVector();
 		int GetEntry( int idx ){
 			base.map_tree[nickname]->GetEntry(idx);
@@ -112,6 +113,7 @@ class readerOnia : public readerBase
 	public :
 
 		UInt_t eventNb;
+		UInt_t runNb;
 		Int_t Centrality;
 		Float_t SumET_HF;
 		std::vector<std::pair<long, long> > vec_idx;
@@ -147,11 +149,15 @@ class readerOnia : public readerBase
 		readerOnia( std::string name_file );
 		readerOnia( std::string name_file, unsigned int feedType );
 
-		int GetEntryWithIndex( int evtNb ) {
+		inline int GetEntryWithIndex( int evtNb ) {
 			int x = base.map_tree["myTree"]->GetEntryWithIndex(evtNb);
 			return x;
 		};
-		int GetEntry( int idx ) {
+		inline int GetEntryWithIndex( int runNb, int evtNb ) {
+			int x = base.map_tree["myTree"]->GetEntryWithIndex(runNb, evtNb);
+			return x;
+		};
+		inline int GetEntry( int idx ) {
 			int x = base.map_tree["myTree"]->GetEntry(idx);
 			return x;
 		};

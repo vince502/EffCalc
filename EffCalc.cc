@@ -73,7 +73,9 @@ void EffCalc::eval(int idx){
 //	std::vector<std::chrono::steady_clock::time_point> v_end;
 //	/* 0 */v_end.push_back(std::chrono::steady_clock::now());
 	auto hltPrim = hltData.getEventPrimitive( );
-	int chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
+	int chksum;
+	if( dataType == kData ) chksum = oniaData.GetEntryWithIndex( hltData.GetRunNb(), hltData.GetEventNb() );
+	if( dataType != kData) chksum = oniaData.GetEntryWithIndex( hltData.GetEventNb() );
 	if( chksum < 0 ) return;
 
 //	std::cout << "Debug : Onia Passed, EvtNb :  " << oniaData.eventNb <<std::endl;
@@ -118,32 +120,32 @@ void EffCalc::eval(int idx){
 };
 
 void EffCalc::eval(std::pair<long, long> indexes){
-	hltData.GetEntry(indexes.first);
-	auto hltPrim = hltData.getEventPrimitive( );
-	oniaData.GetEntry( indexes.second );
-	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
-	if( !((bool) hltPrim["passed"].val) ){
-		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
-		if( hltData.isDerived ){
-			for( auto cut : derivedPtCuts ){
-				fillDerivedHist(std::vector<EventData>{oniaCont[0]}, oniaCont, cut );
-			}
-		}
-		return;
-	}
-	auto hltCont = hltData.getEventContent();
-	auto pair_oniaCont = matchedData( oniaCont, hltCont, false);
-    fillHist(pair_oniaCont.first, pair_oniaCont.second);
-    if( hltData.isDerived ){
-        std::for_each(
-            derivedPtCuts.begin(), derivedPtCuts.end(),
-            [&, hltCont, oniaCont](auto&& cut) mutable {
-                hltCont = filterHltData(hltCont, cut);
-                auto _pair_oniaCont = matchedData( oniaCont, hltCont, false);
-				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
-			}
-			);
-	}
+//	hltData.GetEntry(indexes.first);
+//	auto hltPrim = hltData.getEventPrimitive( );
+//	oniaData.GetEntry( indexes.second );
+//	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
+//	if( !((bool) hltPrim["passed"].val) ){
+//		fillHist(std::vector<EventData>{oniaCont[0]}, oniaCont);
+//		if( hltData.isDerived ){
+//			for( auto cut : derivedPtCuts ){
+//				fillDerivedHist(std::vector<EventData>{oniaCont[0]}, oniaCont, cut );
+//			}
+//		}
+//		return;
+//	}
+//	auto hltCont = hltData.getEventContent();
+//	auto pair_oniaCont = matchedData( oniaCont, hltCont, false);
+//    fillHist(pair_oniaCont.first, pair_oniaCont.second);
+//    if( hltData.isDerived ){
+//        std::for_each(
+//            derivedPtCuts.begin(), derivedPtCuts.end(),
+//            [&, hltCont, oniaCont](auto&& cut) mutable {
+//                hltCont = filterHltData(hltCont, cut);
+//                auto _pair_oniaCont = matchedData( oniaCont, hltCont, false);
+//				fillDerivedHist(_pair_oniaCont.first, _pair_oniaCont.second, cut );
+//			}
+//			);
+//	}
 	return;
 
 };
@@ -487,11 +489,12 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 					if( !passdPt2 ) passdPt2 = dPt2 < cutdPt;
 					if( sendParcel )objT.parcelEntry( evtFlatDimu{hpt, heta, hphi, base["dbmu"].mu, base["dbmu"].mu2, base["dbmu"].dmu, dR1, dR2, dPt1, dPt2,(int)( passdR1 && passdPt1) + 2*( (int) passdR2 && passdPt2)}); 
 //					std::cout << (int)( passdR1 && passdPt1) << std::endl;
-					if( (dR1 < cutdR && dPt1 < cutdPt) || (dR2 < cutdR && dPt2 < cutdPt) ){
+//					if( (( M1matchedWith != 1) && (dR1 < cutdR && dPt1 < cutdPt) ) || ( (M1matchedWith !=2) && (dR2 < cutdR && dPt2 < cutdPt )) ){
+					if( (( true) && (dR1 < cutdR && dPt1 < cutdPt) ) || ( (true) && (dR2 < cutdR && dPt2 < cutdPt )) ){
 						countN++;
 						if( countM1 == 0 ) posM1 = counter;
-						if(dR1 < cutdR && dPt1 < cutdPt) M1matchedWith = 1;
-						else M1matchedWith = 2;
+						if(dR1 < cutdR && dPt1 < cutdPt){ M1matchedWith = 1; countM1+=1; }
+						else{ M1matchedWith = 2; countM2+=1;}
 						if( countM1 !=0 ){ 
 							if( M1matchedWith == 1 && dR2 < cutdR && dPt2 < cutdPt) posM2 = counter;
 							else if( M1matchedWith == 2 && dR1 < cutdR && dPt1 < cutdPt) posM2 = counter;
@@ -499,11 +502,11 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 					}
 					counter ++;
 				}
-				if( countM1 != 0 ){ auto v = hlt.begin(); std::advance(v, posM1); hlt.erase(v);
-					if( countM2 != 0 &&( posM1 > posM2) ){ auto v = hlt.begin(); std::advance(v, posM2); hlt.erase(v);}
-					else if( countM2 != 0 &&( posM1 < posM2) ){ auto v = hlt.begin(); std::advance(v, posM2 -1); hlt.erase(v);}
-				}
-				else if( countM2 !=0 ){ auto v = hlt.begin(); std::advance(v, posM2); hlt.erase(v);} 
+			//	if( countM2 !=0 && countM1 != 0 ){ auto v = hlt.begin(); std::advance(v, posM1); hlt.erase(v);
+			//		if( ( posM1 > posM2) ){ auto v = hlt.begin(); std::advance(v, posM2); hlt.erase(v);}
+			//		else if( ( posM1 < posM2) ){ auto v = hlt.begin(); std::advance(v, posM2 -1); hlt.erase(v);}
+			//	}
+				//else if( countM2 !=0 ){ auto v = hlt.begin(); std::advance(v, posM2); hlt.erase(v);} 
 
 			}
 			if(cuthltrange){

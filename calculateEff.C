@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "config2.h"
 static int UseNCores = 160;
 //static int UseNCores = 1;
 
@@ -105,34 +105,63 @@ void calculateEff(){
 //		{ "HLT_HIL3DoubleMuOpen_v", ""}, 
 //		{ "HLT_HIL3DoubleMuOpen_v", ""}, 
 //		{ "HLT_HIL3Mu12_v", ""},
+{"HLT_HIL1DoubleMu0_Open_v"								,	"HLT_HIL1DoubleMu0_Open"},
+{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_Open"},
+{"HLT_HIL2DoubleMu0_M1to6p5_Open_v"                     ,    "HLT_HIL2DoubleMu0_M1to6p5_Open"},
+{"HLT_HIL2DoubleMu0_M6p5to16_Open_v"                    ,    "HLT_HIL2DoubleMu0_M6p5to16_Open"},
+{"HLT_HIL2DoubleMu0_M1to16_Open_v"                      ,    "HLT_HIL2DoubleMu0_M1to16_Open"},
+{"HLT_HIL2DoubleMu4_Open_v"                             ,    "HLT_HIL2DoubleMu4_Open"},
+{"HLT_HIL2SingleMu3_Open_v"                             ,    "HLT_HIL2SingleMu3_Open"},
+{"HLT_HIL2SingleMu5_Open_v"                             ,    "HLT_HIL2SingleMu5_Open"},
+{"HLT_HIL2SingleMu7_Open_v"                             ,    "HLT_HIL2SingleMu7_Open"},
+{"HLT_HIL3DoubleMuPre0_Open_v"                          ,    "HLT_HIL3DoubleMuPre0_Open"},
+{"HLT_HIL3DoubleMuPre3p8_Open_v"                        ,    "HLT_HIL3DoubleMuPre3p8_Open"},
+{"HLT_HIL3DoubleMuPre0_M2to4p5_Open_v"                  ,    "HLT_HIL3DoubleMuPre0_M2to4p5_Open"},
+{"HLT_HIL3DoubleMuPre0_M7to15_Open_v"                   ,    "HLT_HIL3DoubleMuPre0_M7to15_Open"},
+{"HLT_HIL3DoubleMu0_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu0_M2to4p5_Open"},
+{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_Open"},
+{"HLT_HIL3DoubleMu3p8_M0toInf_Open_v"                   ,    "HLT_HIL3DoubleMu3p8_M0toInf_Open"},
+{"HLT_HIL3DoubleMu0_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu0_M7to15_Open"},
+{"HLT_HIL3DoubleMu2_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu2_M7to15_Open"},
+{"HLT_HIL3DoubleMu1p5_M7to15_Open_v"                    ,    "HLT_HIL3DoubleMu1p5_M7to15_Open"},
+{"HLT_HIL3DoubleMu1_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu1_M7to15_Open"},
+{"HLT_HIL3DoubleMu0_Quarkonia_Open_v"                   ,    "HLT_HIL3DoubleMu0_Quarkonia_Open"},
+{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open_v"           ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open"},
+{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open_v" ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open"},
+{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open_v"   ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open"},
+{"HLT_HIL3DoubleMu2_Quarkonia_Open_v"                   ,    "HLT_HIL3DoubleMu2_Quarkonia_Open"},
+{"HLT_HIL3DoubleMu2_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu2_M2to4p5_Open"},
+{"HLT_HIL3DoubleMu1p5_M2to4p5_Open_v"                   ,    "HLT_HIL3DoubleMu1p5_M2to4p5_Open"},
+{"HLT_HIL3DoubleMu1_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu1_M2to4p5_Open"},
+{"HLT_HIL3SingleMu3_Open_v"                             ,    "HLT_HIL3SingleMu3_Open"},
+{"HLT_HIL3SingleMu5_Open_v"                             ,    "HLT_HIL3SingleMu5_Open"},
+{"HLT_HIL3SingleMu7_Open_v"                             ,    "HLT_HIL3SingleMu7_Open"},
 
-		{ "HLT_HIL3DoubleMu0_Cosmic_v", "L3DoubleMuCosmic_DoHLTCut_Mass"}, 
-		{ "HLT_HIL2DoubleMu0_Cosmic_v", "L2DoubleMuCosmic_DoHLTCut_Mass"}, 
-		{ "HLT_HIL3DoubleMu0_Cosmic_v"  , "L3DoubleMuCosmic"}, 
-		{ "HLT_HIL2DoubleMu0_Cosmic_v"  , "L2DoubleMuCosmic"}, 
-		{ "HLT_HIL1DoubleMu0_Cosmic_v", "L1DoubleMuCosmic"}, 
-		{ "HLT_HIL3DoubleMu0_Open_v"  , "L3DoubleMuOpen"}, 
-		{ "HLT_HIL2DoubleMu0_Open_v"  , "L2DoubleMuOpen"}, 
-		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
-
-		{ "HLT_HIL3DoubleMu2_M2to4p5_Open_v"  , "L3DoubleMuOpen2_M2to4p5"}, 
-		{ "HLT_HIL3DoubleMu1p5_M2to4p5_Open_v"  , "L3DoubleMuOpen1p5_M2to4p5"}, 
-		{ "HLT_HIL3DoubleMu1_M2to4p5_Open_v"  , "L3DoubleMuOpen1_M2to4p5"}, 
-		{ "HLT_HIL3DoubleMu0p5_M2to4p5_Open_v"  , "L3DoubleMuOpen0p5_M2to4p5"}, 
-		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_v"  , "L3DoubleMuOpen_M2to4p5"}, 
-		{ "HLT_HIL3DoubleMu0_M7to15_Open_v"  , "L3DoubleMuOpen_M7to15"}, 
-		{ "HLT_HIL3DoubleMu0_Quarkonia_Open_v"  , "L3DoubleMuOpen_Quarkonia"}, 
-		{ "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open_v"  , "L3DoubleMuOpen_Quarkonia_LowMpT2"}, 
-		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_v"  , "L2DoubleMuOpen_M1to6p5"}, 
-		{ "HLT_HIL2DoubleMu0_M6p5to16_Open_v"  , "L2DoubleMuOpen_M6p5to16"}, 
-		{ "HLT_HIL2DoubleMu0_M1to16_Open_v"  , "L2DoubleMuOpen_M1to16"}, 
-
-		{ "HLT_HIL2SingleMu3_Open_v", ""}, 
-		{ "HLT_HIL3SingleMu3_Open_v", ""}, 
-		{ "HLT_HIL2SingleMu5_Open_v", ""}, 
-		{ "HLT_HIL3SingleMu5_Open_v", ""}, 
-		{ "HLT_HIL2SingleMu7_Open_v", ""}, 
-		{ "HLT_HIL3SingleMu7_Open_v", ""}, 
+//		{ "HLT_HIL3DoubleMu0_Open_v"  , "L3DoubleMuOpen"}, 
+//		{ "HLT_HIL2DoubleMu0_Open_v"  , "L2DoubleMuOpen"}, 
+//		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
+//
+//		{ "HLT_HIL3DoubleMu2_M2to4p5_Open_v"  , "L3DoubleMuOpen2_M2to4p5"}, 
+//		{ "HLT_HIL3DoubleMu2_M2to4p5_Open_inDimuFilter_v"  , "L3DoubleMuOpen2_M2to4p5_inDimuFilter"}, 
+//		{ "HLT_HIL3DoubleMu1p5_M2to4p5_Open_v"  , "L3DoubleMuOpen1p5_M2to4p5"}, 
+//		{ "HLT_HIL3DoubleMu1_M2to4p5_Open_v"  , "L3DoubleMuOpen1_M2to4p5"}, 
+//		{ "HLT_HIL3DoubleMu0p5_M2to4p5_Open_v"  , "L3DoubleMuOpen0p5_M2to4p5"}, 
+//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_noL3Pre_v"  , "L3DoubleMuOpen0_M2to4p5_noL3Pre"}, 
+//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_v"  , "L3DoubleMuOpen_M2to4p5"}, 
+//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_minN1minNhits1_v"  , "L3DoubleMuOpen_M2to4p5_minNhits1"}, 
+//		{ "HLT_HIL3DoubleMu0_M7to15_Open_v"  , "L3DoubleMuOpen_M7to15"}, 
+//		{ "HLT_HIL3DoubleMu0_Quarkonia_Open_v"  , "L3DoubleMuOpen_Quarkonia"}, 
+//		{ "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open_v"  , "L3DoubleMuOpen_Quarkonia_LowMpT2"}, 
+//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_v"  , "L2DoubleMuOpen_M1to6p5"}, 
+//		{ "HLT_HIL2DoubleMu0_M6p5to16_Open_v"  , "L2DoubleMuOpen_M6p5to16"}, 
+//		{ "HLT_HIL2DoubleMu0_M1to16_Open_v"  , "L2DoubleMuOpen_M1to16"}, 
+//
+//		{ "HLT_HIL2SingleMu3_Open_v", ""}, 
+//		{ "HLT_HIL3SingleMu3_Open_v", ""}, 
+//		{ "HLT_HIL2SingleMu5_Open_v", ""}, 
+//		{ "HLT_HIL3SingleMu5_Open_v", ""}, 
+//		{ "HLT_HIL2SingleMu7_Open_v", ""}, 
+//		{ "HLT_HIL3SingleMu7_Open_v", ""}, 
 
 	};
 	std::vector<std::string> v_names2 = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
@@ -168,7 +197,7 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 1.0e+6;
+	long max_events = 2.0e+05;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia, dType );
