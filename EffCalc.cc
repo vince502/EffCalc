@@ -103,7 +103,8 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
 //	dRcut = (level == 3) ? 0.1 : 0.3;
-	dRcut = (level == 3) ? 999. : 999.3;
+	dRcut = (level == 3) ? 0.3 : 0.3;
+//	dRcut = (level == 3) ? 999. : 999.3;
 	dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
 //	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
 };
