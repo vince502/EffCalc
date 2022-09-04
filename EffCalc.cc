@@ -18,25 +18,71 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 	isL1 = _isL1;
 	rap = ( getDimu ) ? "y" : "eta" ;
 	std::cout << "initializing efficiencies" << std::endl;
+//	map_eff =  {
+//					{"pt", new TEfficiency("pt", "", pt_bins.size()-1, &pt_bins[0]) },
+//					//{rap.c_str(), new TEfficiency(rap.c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
+//					{rap.c_str(), new TEfficiency(rap.c_str(), "", 1, -2.4, 2.4) },
+//					{"cent", new TEfficiency("cent", "", cent_bins.size()-1, &cent_bins[0]) },
+//					{"hltpass", new TEfficiency("hltpass","", 1, 0,1) },
+//					{"hltfake", new TEfficiency("hltfake","", 1, 0,1) },
+//					{"hltmass", new TEfficiency("hltmass","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+//					{"hltpt", new TEfficiency("hltpt","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+//					{"hlteta", new TEfficiency("hlteta","", 24, -2.4, 2.4) },
+//					{"hltphi", new TEfficiency("hltphi","", 72, -2*TMath::Pi(), 2*TMath::Pi()) },
+//					{"passdr1", new TEfficiency("passdr","", 80, -2, 2) },
+//					{"passdr2", new TEfficiency("passdr","", 80, -2, 2) },
+//				};
 	map_eff =  {
-					{"pt", new TEfficiency("pt", "", pt_bins.size()-1, &pt_bins[0]) },
-					{rap.c_str(), new TEfficiency(rap.c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
-					{"cent", new TEfficiency("cent", "", cent_bins.size()-1, &cent_bins[0]) },
-					{"hltpass", new TEfficiency("hltpass","", 1, 0,1) },
-					{"hltfake", new TEfficiency("hltfake","", 1, 0,1) },
-					{"hltmass", new TEfficiency("hltmass","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
-					{"hltpt", new TEfficiency("hltpt","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
-					{"hlteta", new TEfficiency("hlteta","", 24, -2.4, 2.4) },
-					{"hltphi", new TEfficiency("hltphi","", 72, -2*TMath::Pi(), 2*TMath::Pi()) },
-					{"passdr1", new TEfficiency("passdr","", 80, -2, 2) },
-					{"passdr2", new TEfficiency("passdr","", 80, -2, 2) },
+//					{"pt",
+//					{rap.c_str(),
+//					{"cent",
+//					{"hltpass", 
+//					{"hltfake", 
+//					{"hltmass", 
+//					{"hltpt", 
+//					{"hlteta",
+//					{"hltphi",
+//					{"passdr1", 
+//					{"passdr2", 
+				};
+	map_hist[true] =  {
+					{"pt", new TH1D("pt_pass", "", pt_bins.size()-1, &pt_bins[0]) },
+					//{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
+					{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", 1, -2.4, 2.4) },
+					{"cent", new TH1D("cent_pass", "", cent_bins.size()-1, &cent_bins[0]) },
+					{"hltpass", new TH1D("hltpass_pass","", 1, 0,1) },
+					{"hltfake", new TH1D("hltfake_pass","", 1, 0,1) },
+					{"hltmass", new TH1D("hltmass_pass","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+					{"hltpt", new TH1D("hltpt_pass","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+					{"hlteta", new TH1D("hlteta_pass","", 24, -2.4, 2.4) },
+					{"hltphi", new TH1D("hltphi_pass","", 72, -2*TMath::Pi(), 2*TMath::Pi()) },
+					{"passdr1", new TH1D("passdr_pass","", 80, -2, 2) },
+					{"passdr2", new TH1D("passdr_pass","", 80, -2, 2) },
+				};
+	map_hist[false] =  {
+					{"pt", new TH1D("pt_fail", "", pt_bins.size()-1, &pt_bins[0]) },
+					//{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
+					{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", 1, -2.4, 2.4) },
+					{"cent", new TH1D("cent_fail", "", cent_bins.size()-1, &cent_bins[0]) },
+					{"hltpass", new TH1D("hltpass_fail","", 1, 0,1) },
+					{"hltfake", new TH1D("hltfake_fail","", 1, 0,1) },
+					{"hltmass", new TH1D("hltmass_fail","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+					{"hltpt", new TH1D("hltpt_fail","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
+					{"hlteta", new TH1D("hlteta_fail","", 24, -2.4, 2.4) },
+					{"hltphi", new TH1D("hltphi_fail","", 72, -2*TMath::Pi(), 2*TMath::Pi()) },
+					{"passdr1", new TH1D("passdr_fail","", 80, -2, 2) },
+					{"passdr2", new TH1D("passdr_fail","", 80, -2, 2) },
 				};
 	if (hltData.isDerived){
 		for( auto cut : derivedPtCuts ){
 			map_eff.insert({Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), new TEfficiency(Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
+			map_hist[true].insert({Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), new TH1D(Form("pt_pass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
+			map_hist[false].insert({Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), new TH1D(Form("pt_fail_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
 		}
 		for( auto cut : derivedMassCuts ){
 			map_eff.insert({Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), new TEfficiency(Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
+			map_hist[true].insert({Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), new TH1D(Form("pt_pass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
+			map_hist[false].insert({Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), new TH1D(Form("pt_fail_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut ))), "", pt_bins.size()-1, &pt_bins[0] ) });
 		}
 	}
 	objT.init( registered_trigger, getDimu, dataType );
@@ -56,10 +102,10 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
-	dRcut = (level == 3) ? 0.1 : 0.3;
-//	dRcut = (level == 3) ? 999. : 999.3;
-//	dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
-	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
+//	dRcut = (level == 3) ? 0.1 : 0.3;
+	dRcut = (level == 3) ? 999. : 999.3;
+	dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
+//	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
 };
 
 void EffCalc::setHltCustomMassFilter( std::pair<double, double> m ){
@@ -632,21 +678,35 @@ void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> 
 	auto vitF = oniaFail.begin();
 	auto vitP = oniaPass.begin();
 //	auto nColl = findNcoll((*vitF)["Centrality"].val);
-	auto nColl = getHiBinFromhiHF((*vitF)["SumET_HF"].val);
+	auto nColl = findNcoll(getHiBinFromhiHF((*vitF)["SumET_HF"].val));
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
-			map_eff["pt"]->Fill(pass, oniaObj["dbmu"].dmu.Pt(), nColl);
-			map_eff[rap]->Fill(pass, oniaObj["dbmu"].dmu.Rapidity(), nColl);
+			map_hist[pass]["pt"]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+			map_hist[pass][rap]->Fill(oniaObj["dbmu"].dmu.Rapidity(), nColl);
+			//fill total histo
+			if( pass ){
+				map_hist[false]["pt"]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+				map_hist[false][rap]->Fill(oniaObj["dbmu"].dmu.Rapidity(), nColl);
+			}
 		}
 		if(!getDimu){
-			map_eff["pt"]->Fill(pass, oniaObj["mu"].mu.Pt(), nColl);
-			map_eff[rap]->Fill(pass, oniaObj["mu"].mu.Eta(), nColl);
+			map_hist[pass]["pt"]->Fill(oniaObj["mu"].mu.Pt(), nColl);
+			map_hist[pass][rap]->Fill(oniaObj["mu"].mu.Eta(), nColl);
+			if( pass ){
+				map_hist[false]["pt"]->Fill(oniaObj["mu"].mu.Pt(), nColl);
+				map_hist[false][rap]->Fill(oniaObj["mu"].mu.Eta(), nColl);
+			}
 		}
 		return;
 	};
 
-	if( oniaFail.size() > 1 ){ map_eff["cent"]->Fill(false, (*vitF)["Centrality"].val, nColl); }
-	if( oniaPass.size() > 1 ){ map_eff["cent"]->Fill(true, (*vitP)["Centrality"].val, nColl); }
+	if( oniaFail.size() > 1 ){ 
+			map_hist[false]["cent"]->Fill(getHiBinFromhiHF((*vitF)["SumET_HF"].val), nColl); 
+	}
+	if( oniaPass.size() > 1 ){ 
+			map_hist[true]["cent"]->Fill(getHiBinFromhiHF((*vitF)["SumET_HF"].val), nColl);
+			map_hist[false]["cent"]->Fill(getHiBinFromhiHF((*vitF)["SumET_HF"].val), nColl);
+	}
 	vitF++;
 	vitP++;
 	while( vitF != oniaFail.end()){
@@ -684,10 +744,16 @@ void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<Even
 	auto nColl = findNcoll((*vitF)["Centrality"].val);
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
-			map_eff[Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(pass, oniaObj["dbmu"].dmu.Pt(), nColl);
+			map_hist[pass][Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+			if( pass ){
+				map_hist[false][Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+			}
 		}
 		if(!getDimu){
-			map_eff[Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(pass, oniaObj["mu"].mu.Pt(), nColl);
+			map_hist[pass][Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["mu"].mu.Pt(), nColl);
+			if ( pass ){
+				map_hist[false][Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["mu"].mu.Pt(), nColl);
+			}
 		}
 		return;
 	};
@@ -711,10 +777,16 @@ void EffCalc::fillDerivedMassHist( std::vector<EventData> oniaPass, std::vector<
 	auto nColl = findNcoll((*vitF)["Centrality"].val);
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
-			map_eff[Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(pass, oniaObj["dbmu"].dmu.Pt(), nColl);
+			map_hist[pass][Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+			if( pass ){
+				map_hist[pass][Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+			}
 		}
 		if(!getDimu){
-			map_eff[Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(pass, oniaObj["mu"].mu.Pt(), nColl);
+			map_hist[pass][Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["mu"].mu.Pt(), nColl);
+			if( pass ){
+				map_hist[pass][Form("mass_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["mu"].mu.Pt(), nColl);
+			}
 		}
 		return;
 	};
@@ -759,6 +831,10 @@ void EffCalc::fillDerivedMassHist( std::vector<EventData> oniaPass, std::vector<
 //}
 
 std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > EffCalc::getEfficiencies(){
+	for( auto item_pair : map_hist[true]){
+		map_eff[item_pair.first] = new TEfficiency(*item_pair.second, *(map_hist[false][item_pair.first]) );
+		map_eff[item_pair.first]->SetName(item_pair.first.c_str());
+	}
 	return std::move(std::make_pair(std::move(registered_trigger), std::move(map_eff) ));
 };
 

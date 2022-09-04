@@ -51,6 +51,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		
 //		void check;
 		std::unordered_map<std::string, TEfficiency*> map_eff;
+		std::map<bool, std::unordered_map<std::string, TH1D*> >map_hist;
 		std::string registered_trigger;
 		std::vector<std::pair<long, long> >vec_idx;
 //	protected :
