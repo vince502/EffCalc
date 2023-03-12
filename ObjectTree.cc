@@ -10,9 +10,9 @@ void objectTree::init( std::string _trig, bool _isDimu, unsigned int dataType){
 	fout = new TFile(Form("MatchTree/%s/outputMatchTree_%s_SampleType%u_%s_v2.root", subdir.c_str(), trig.c_str(), dataType, file_tag.c_str() ), "recreate");
 
 	fullTree = new TTree("fullTree", "hlt vs. onia full matched tree");
-	fullTree->SetAutoSave(-300000);
+	fullTree->SetAutoSave(-30000);
 	oniaTree = new TTree("oniaTree", "per onia entry tree");
-	oniaTree->SetAutoSave(-300000);
+	oniaTree->SetAutoSave(-30000);
 	
 	fullTree->Branch( "evtNb", &nevt, "eventNb/D");
 	fullTree->Branch( "cent", &cent, "centrality/D");
@@ -98,6 +98,7 @@ void objectTree::parcelEntry( evtFlatSimu parcel ){
 
 
 void objectTree::flush(){
+	evtCount++;
 	bool hasGoodHLT; 
 	bool getNext;
 	tdr1 = 10;
@@ -155,6 +156,14 @@ void objectTree::flush(){
 	}
 	eventMatrix.clear();
 	oniaCount = 0;
+    if (evtCount%5000 == 1){
+        std::cout << "Passing event " << evtCount << std::endl;
+    	if (evtCount%20000 == 1){
+    	    fullTree->AutoSave("SaveSelf");
+    	    oniaTree->AutoSave("SaveSelf");
+    	    std::cout << "AutoSaving until event " << evtCount << std::endl;
+    	}
+	}
 };
 
 

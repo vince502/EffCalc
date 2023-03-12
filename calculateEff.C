@@ -1,7 +1,7 @@
 #pragma once
 
-#include "config2.h"
-static int UseNCores = 160;
+#include "config2023PbPb_1.h"
+static int UseNCores = 20;
 //static int UseNCores = 1;
 
 #include "TGraph.h"
@@ -107,32 +107,38 @@ void calculateEff(){
 //		{ "HLT_HIL3Mu12_v", ""},
 {"HLT_HIL1DoubleMu0_Open_v"								,	"HLT_HIL1DoubleMu0_Open"},
 {"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_Open"},
+//{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_DoONIACut_Open"},
+//{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_DoHLTCut_Narrow_Open"},
+//{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_DoHLTCutPT_Narrow_Open"},
 {"HLT_HIL2DoubleMu0_M1to6p5_Open_v"                     ,    "HLT_HIL2DoubleMu0_M1to6p5_Open"},
-{"HLT_HIL2DoubleMu0_M6p5to16_Open_v"                    ,    "HLT_HIL2DoubleMu0_M6p5to16_Open"},
-{"HLT_HIL2DoubleMu0_M1to16_Open_v"                      ,    "HLT_HIL2DoubleMu0_M1to16_Open"},
-{"HLT_HIL2DoubleMu4_Open_v"                             ,    "HLT_HIL2DoubleMu4_Open"},
+//{"HLT_HIL2DoubleMu0_M6p5to16_Open_v"                    ,    "HLT_HIL2DoubleMu0_M6p5to16_Open"},
+//{"HLT_HIL2DoubleMu0_M1to16_Open_v"                      ,    "HLT_HIL2DoubleMu0_M1to16_Open"},
+//{"HLT_HIL2DoubleMu4_Open_v"                             ,    "HLT_HIL2DoubleMu4_Open"},
 {"HLT_HIL2SingleMu3_Open_v"                             ,    "HLT_HIL2SingleMu3_Open"},
 {"HLT_HIL2SingleMu5_Open_v"                             ,    "HLT_HIL2SingleMu5_Open"},
 {"HLT_HIL2SingleMu7_Open_v"                             ,    "HLT_HIL2SingleMu7_Open"},
-{"HLT_HIL3DoubleMuPre0_Open_v"                          ,    "HLT_HIL3DoubleMuPre0_Open"},
-{"HLT_HIL3DoubleMuPre3p8_Open_v"                        ,    "HLT_HIL3DoubleMuPre3p8_Open"},
-{"HLT_HIL3DoubleMuPre0_M2to4p5_Open_v"                  ,    "HLT_HIL3DoubleMuPre0_M2to4p5_Open"},
-{"HLT_HIL3DoubleMuPre0_M7to15_Open_v"                   ,    "HLT_HIL3DoubleMuPre0_M7to15_Open"},
+//{"HLT_HIL3DoubleMuPre0_Open_v"                          ,    "HLT_HIL3DoubleMuPre0_Open"},
+//{"HLT_HIL3DoubleMuPre3p8_Open_v"                        ,    "HLT_HIL3DoubleMuPre3p8_Open"},
+//{"HLT_HIL3DoubleMuPre0_M2to4p5_Open_v"                  ,    "HLT_HIL3DoubleMuPre0_M2to4p5_Open"},
+//{"HLT_HIL3DoubleMuPre0_M7to15_Open_v"                   ,    "HLT_HIL3DoubleMuPre0_M7to15_Open"},
 {"HLT_HIL3DoubleMu0_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu0_M2to4p5_Open"},
 {"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_Open"},
-{"HLT_HIL3DoubleMu3p8_M0toInf_Open_v"                   ,    "HLT_HIL3DoubleMu3p8_M0toInf_Open"},
+//{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_DoONIACut_Open"},
+//{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_DoHLTCut_Narrow_Open"},
+//{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_DoHLTCutPT_Narrow_Open"},
+//{"HLT_HIL3DoubleMu3p8_M0toInf_Open_v"                   ,    "HLT_HIL3DoubleMu3p8_M0toInf_Open"},
 {"HLT_HIL3DoubleMu0_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu0_M7to15_Open"},
 {"HLT_HIL3DoubleMu2_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu2_M7to15_Open"},
-{"HLT_HIL3DoubleMu1p5_M7to15_Open_v"                    ,    "HLT_HIL3DoubleMu1p5_M7to15_Open"},
-{"HLT_HIL3DoubleMu1_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu1_M7to15_Open"},
+//{"HLT_HIL3DoubleMu1p5_M7to15_Open_v"                    ,    "HLT_HIL3DoubleMu1p5_M7to15_Open"},
+//{"HLT_HIL3DoubleMu1_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu1_M7to15_Open"},
 {"HLT_HIL3DoubleMu0_Quarkonia_Open_v"                   ,    "HLT_HIL3DoubleMu0_Quarkonia_Open"},
-{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open_v"           ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open"},
-{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open_v" ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open"},
-{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open_v"   ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open"},
+//{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open_v"           ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open"},
+//{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open_v" ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open"},
+//{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open_v"   ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open"},
 {"HLT_HIL3DoubleMu2_Quarkonia_Open_v"                   ,    "HLT_HIL3DoubleMu2_Quarkonia_Open"},
 {"HLT_HIL3DoubleMu2_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu2_M2to4p5_Open"},
-{"HLT_HIL3DoubleMu1p5_M2to4p5_Open_v"                   ,    "HLT_HIL3DoubleMu1p5_M2to4p5_Open"},
-{"HLT_HIL3DoubleMu1_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu1_M2to4p5_Open"},
+//{"HLT_HIL3DoubleMu1p5_M2to4p5_Open_v"                   ,    "HLT_HIL3DoubleMu1p5_M2to4p5_Open"},
+//{"HLT_HIL3DoubleMu1_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu1_M2to4p5_Open"},
 {"HLT_HIL3SingleMu3_Open_v"                             ,    "HLT_HIL3SingleMu3_Open"},
 {"HLT_HIL3SingleMu5_Open_v"                             ,    "HLT_HIL3SingleMu5_Open"},
 {"HLT_HIL3SingleMu7_Open_v"                             ,    "HLT_HIL3SingleMu7_Open"},
@@ -197,7 +203,7 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 1.0e+06;
+	long max_events = 1.0e+12;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia, dType );
@@ -207,8 +213,18 @@ void calculateEff(){
 		calc.init(trigAttr(idx));
 		if(v_names[idx].second.find("DoHLTCut") != std::string::npos ){
 			calc.setHltCustomMassFilter((const std::pair<double, double>) hltFilter.at(trigLvl(idx)));
+			if(v_names[idx].second.find("PT") != std::string::npos ){
+				calc.setHltCustomPtFilter( hltPtFilter[trigLvl(idx)] );
+			}
 		}
-		calc.setOniaCustomFilter(oniaFilter);
+
+		if(v_names[idx].second.find("DoONIACut") != std::string::npos ){
+			calc.setOniaCustomFilter(oniaFilter);
+		}
+		if(v_names[idx].second.find("DoONIACut") == std::string::npos ){
+			if( dType == kMCJP )	calc.setOniaCustomFilter(oniaFilterJPsi);
+			if( dType == kMCUp )	calc.setOniaCustomFilter(oniaFilterUpsilon);
+		}
 		calc.evalAll(max_events);
 		std::cout << Form("Done trigger [%s]", v_names[idx].first.c_str()) << std::endl;
 		return std::move(calc.getEfficiencies());

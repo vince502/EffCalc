@@ -31,6 +31,7 @@ class objectTree {
 		int oniaCount =0;
 	private :
 
+		int evtCount = 0;
 		std::string trig;
 		std::string file_tag = "";
 		bool isDimu;

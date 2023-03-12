@@ -2,7 +2,7 @@
 #include "Reader.h"
 
 readerBase::readerBase( std::string name_file ){
-	file = TFile::Open(name_file.c_str());
+	file = TFile::Open(name_file.c_str(), "", "", ROOT::CompressionSettings(ROOT::kLZMA, 9));
 };
 
 readerBase::~readerBase(){
@@ -24,7 +24,7 @@ readerHlt::readerHlt( std::string name_file ) : base( name_file) {
 	base.map_tree["HltTree"]->SetBranchStatus("*",0);
 	base.map_tree["HltTree"]->SetBranchStatus("Run",1);
 	base.map_tree["HltTree"]->SetBranchStatus("Event",1);
-	base.map_tree["HltTree"]->SetBranchAddress("Run", &runNb);
+//	base.map_tree["HltTree"]->SetBranchAddress("Run", &runNb);
 	base.map_tree["HltTree"]->SetBranchAddress("Event", &eventNb);
 //	vec_idx = getIndexVector();
 	pts = new std::vector<Float_t>;

@@ -47,8 +47,8 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 				};
 	map_hist[true] =  {
 					{"pt", new TH1D("pt_pass", "", pt_bins.size()-1, &pt_bins[0]) },
-					//{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
-					{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", 1, -2.4, 2.4) },
+					{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
+//					{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", 1, -2.4, 2.4) },
 					{"cent", new TH1D("cent_pass", "", cent_bins.size()-1, &cent_bins[0]) },
 					{"hltpass", new TH1D("hltpass_pass","", 1, 0,1) },
 					{"hltfake", new TH1D("hltfake_pass","", 1, 0,1) },
@@ -61,8 +61,8 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 				};
 	map_hist[false] =  {
 					{"pt", new TH1D("pt_fail", "", pt_bins.size()-1, &pt_bins[0]) },
-					//{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
-					{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", 1, -2.4, 2.4) },
+					{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
+					//{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", 1, -2.4, 2.4) },
 					{"cent", new TH1D("cent_fail", "", cent_bins.size()-1, &cent_bins[0]) },
 					{"hltpass", new TH1D("hltpass_fail","", 1, 0,1) },
 					{"hltfake", new TH1D("hltfake_fail","", 1, 0,1) },
@@ -102,16 +102,21 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
-//	dRcut = (level == 3) ? 0.1 : 0.3;
-	dRcut = (level == 3) ? 0.3 : 0.3;
+	dRcut = (level == 3) ? 0.1 : 0.3;
+//	dRcut = (level == 3) ? 0.3 : 0.3;
 //	dRcut = (level == 3) ? 999. : 999.3;
-	dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
-//	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
+//	dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
+	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
 };
 
 void EffCalc::setHltCustomMassFilter( std::pair<double, double> m ){
 	hlt_m_low = m.first;
 	hlt_m_high = m.second;
+};
+
+void EffCalc::setHltCustomPtFilter( std::pair<double, double> m ){
+	hlt_pt_1 = m.first;
+	hlt_pt_2 = m.second;
 };
 
 void EffCalc::eval(int idx){
@@ -572,6 +577,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 						double heta2 = hltcont2["mu"].mu.Eta();
 						double hphi2 = hltcont2["mu"].mu.Phi();
 						double hpt2 = hltcont2["mu"].mu.Pt();
+						if ( !( hpt1 > hlt_pt_1 &&  hpt2 > hlt_pt_2  )) continue;
 						double dR1 = sqrt(pow(fabs(oeta1 -heta1 ) ,2) +  pow( std::min( fabs(ophi1 - hphi1), fabs( 2.*TMath::Pi() - ophi1 + hphi1 ) ), 2));
 						double dR2 = sqrt(pow(fabs(oeta2 -heta2 ) ,2) +  pow( std::min( fabs(ophi2 - hphi2), fabs( 2.*TMath::Pi() - ophi2 + hphi2 ) ), 2));
 						double dPt1 = (fabs(hpt1 - opt1) / opt1);

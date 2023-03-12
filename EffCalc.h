@@ -48,6 +48,7 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > getEfficiencies();
 		void setOniaCustomFilter( std::map<string, std::pair<double, double> > m );
 		void setHltCustomMassFilter( std::pair<double, double> m );
+		void setHltCustomPtFilter( std::pair<double, double> m );
 		
 //		void check;
 		std::unordered_map<std::string, TEfficiency*> map_eff;
@@ -78,6 +79,8 @@ class EffCalc : public readerHlt, readerOnia, objectTree
 		unsigned int dataType;
 		double dRcut, dPtcut;
 		double hlt_m_low, hlt_m_high;
+		double hlt_pt_1 = -1.;
+		double hlt_pt_2 = -1.;
 		std::string rap;
 		std::map<std::string, std::pair<double, double> > map_oniafilter_limit{
 			{"m", {0., 999.}},
