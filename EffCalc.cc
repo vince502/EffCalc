@@ -18,20 +18,6 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 	isL1 = _isL1;
 	rap = ( getDimu ) ? "y" : "eta" ;
 	std::cout << "initializing efficiencies" << std::endl;
-//	map_eff =  {
-//					{"pt", new TEfficiency("pt", "", pt_bins.size()-1, &pt_bins[0]) },
-//					//{rap.c_str(), new TEfficiency(rap.c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
-//					{rap.c_str(), new TEfficiency(rap.c_str(), "", 1, -2.4, 2.4) },
-//					{"cent", new TEfficiency("cent", "", cent_bins.size()-1, &cent_bins[0]) },
-//					{"hltpass", new TEfficiency("hltpass","", 1, 0,1) },
-//					{"hltfake", new TEfficiency("hltfake","", 1, 0,1) },
-//					{"hltmass", new TEfficiency("hltmass","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
-//					{"hltpt", new TEfficiency("hltpt","", pt_bins_fine.size()-1, &pt_bins_fine[0]) },
-//					{"hlteta", new TEfficiency("hlteta","", 24, -2.4, 2.4) },
-//					{"hltphi", new TEfficiency("hltphi","", 72, -2*TMath::Pi(), 2*TMath::Pi()) },
-//					{"passdr1", new TEfficiency("passdr","", 80, -2, 2) },
-//					{"passdr2", new TEfficiency("passdr","", 80, -2, 2) },
-//				};
 	map_eff =  {
 //					{"pt",
 //					{rap.c_str(),
@@ -47,6 +33,7 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 				};
 	map_hist[true] =  {
 					{"pt", new TH1D("pt_pass", "", pt_bins.size()-1, &pt_bins[0]) },
+					{"phi", new TH1D("phi_pass", "", phi_bins.size()-1, &phi_bins[0]) },
 					{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
 //					{rap.c_str(), new TH1D((rap + "_pass").c_str(), "", 1, -2.4, 2.4) },
 					{"cent", new TH1D("cent_pass", "", cent_bins.size()-1, &cent_bins[0]) },
@@ -61,6 +48,7 @@ void EffCalc::init(bool _getDimu, bool _isL1){
 				};
 	map_hist[false] =  {
 					{"pt", new TH1D("pt_fail", "", pt_bins.size()-1, &pt_bins[0]) },
+					{"phi", new TH1D("phi_fail", "", phi_bins.size()-1, &phi_bins[0]) },
 					{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", rap_bins.size()-1, &rap_bins[0]) },
 					//{rap.c_str(), new TH1D((rap + "_fail").c_str(), "", 1, -2.4, 2.4) },
 					{"cent", new TH1D("cent_fail", "", cent_bins.size()-1, &cent_bins[0]) },
@@ -102,11 +90,11 @@ void EffCalc::setTrigger( std::string name_trig, std::string name_base_trig = ""
 
 void EffCalc::setTriggerLvl( int lvl ){
 	level = lvl;
-	dRcut = (level == 3) ? 0.1 : 0.3;
-//	dRcut = (level == 3) ? 0.3 : 0.3;
-//	dRcut = (level == 3) ? 999. : 999.3;
-//	dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
-	dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
+	// dRcut = (level == 3) ? 0.1 : 0.3;
+	//dRcut = (level == 3) ? 0.1 : 0.1;
+	 dRcut = (level == 3) ? 999. : 999.3;
+	 dPtcut = (level == 3) ? 999. : 9999.;; // Only for this version!
+	//dPtcut = (level == 3) ? 0.5 : 9999.;; // Only for this version!
 };
 
 void EffCalc::setHltCustomMassFilter( std::pair<double, double> m ){
@@ -135,7 +123,7 @@ void EffCalc::eval(int idx){
 	auto oniaCont = filterOniaData(oniaData.getEventContent( getDimu, isL1 ));
 //	if( oniaCont[0]["Reco_mu_size"].val != 2 && dataType == kMCJP) return;
 	for( auto base : oniaCont ) {
-//		if( base["front"].val==1 ) continue;
+		if( base["front"].val==1 ) continue;
 //		std::cout << "Debug : dimuon Y : " << base["dbmu"].dmu.Rapidity() << std::endl;
 	}
 	objT.setEventWideContent( oniaCont[0] );
@@ -152,7 +140,9 @@ void EffCalc::eval(int idx){
 	}
 //	/* 3 */v_end.push_back(std::chrono::steady_clock::now());
 	auto hltCont = hltData.getEventContent();
+//	std::cout << "Debug : Pair size             : " << oniaCont.size() << ", " << hltCont.size() << std::endl;
 	auto pair_oniaCont = matchedData( oniaCont, hltCont , true);
+//	std::cout << "Debug : Pass : " << pair_oniaCont.first.size() << ", Fail : " << pair_oniaCont.second.size() << std::endl;
 	objT.flush();
 	fillHist(pair_oniaCont.first, pair_oniaCont.second);
 //	/* 4 */v_end.push_back(std::chrono::steady_clock::now());
@@ -327,21 +317,43 @@ std::vector<EventData> EffCalc::filterHltDataMass( std::vector<EventData> hltCon
 
 std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont ){
 	auto passQuality = [=](EventData d){
-		return (
-			(( static_cast<int>(d["Sel1"].val) & ((int)pow(2,1)) ) &&
-			( static_cast<int>(d["Sel1"].val) & ((int)pow(2,3)) ) &&
-			((int) d["Pix1"].val) > 0 &&
-			((int) d["Trk1"].val) > 5 &&
-			d["dxy1"].val < 0.3 &&
-			d["dz1"].val  < 20) && 
-			( !(getDimu) || 
-			(( static_cast<int>(d["Sel2"].val) & ((int)pow(2,1)) ) &&
-			( static_cast<int>(d["Sel2"].val) & ((int)pow(2,3)) ) &&
-			((int) d["Pix2"].val) > 0 &&
-			((int) d["Trk2"].val) > 5 &&
-			d["dxy2"].val < 0.3 &&
-			d["dz2"].val  < 20)  )
-		);
+		if(offlineSel == kHybridSoft){
+			return (
+				(( static_cast<int>(d["Sel1"].val) & ((int)pow(2,1)) ) &&
+				( static_cast<int>(d["Sel1"].val) & ((int)pow(2,3)) ) &&
+				((int) d["Pix1"].val) > 0 &&
+				((int) d["Trk1"].val) > 5 &&
+				d["dxy1"].val < 0.3 &&
+				d["dz1"].val  < 20) && 
+				( !(getDimu) || 
+				(( static_cast<int>(d["Sel2"].val) & ((int)pow(2,1)) ) &&
+				( static_cast<int>(d["Sel2"].val) & ((int)pow(2,3)) ) &&
+				((int) d["Pix2"].val) > 0 &&
+				((int) d["Trk2"].val) > 5 &&
+				d["dxy2"].val < 0.3 &&
+				d["dz2"].val  < 20)  )
+			);
+		}
+		if(offlineSel == kSoft){
+			return (
+				(( static_cast<int>(d["Sel1"].val) & ((int)pow(2,1)) ) &&
+				( static_cast<int>(d["Sel1"].val) & ((int)pow(2,3)) ) &&
+				((int) d["Pix1"].val) > 0 &&
+				( d["TMOne1"].val) > 0.1  &&
+				d["dxy1"].val < 0.3 &&
+				d["dz1"].val  < 20) && 
+				( !(getDimu) || 
+				(( static_cast<int>(d["Sel2"].val) & ((int)pow(2,1)) ) &&
+				( static_cast<int>(d["Sel2"].val) & ((int)pow(2,3)) ) &&
+				((int) d["Pix2"].val) > 0 &&
+				( d["TMOne2"].val) > 0.1  &&
+				d["dxy2"].val < 0.3 &&
+				d["dz2"].val  < 20)  )
+			);
+		}
+		else{
+			return true;
+		}
 	};
 	auto passAcceptance = [=](EventData d){
 		auto accPass = [=](TLorentzVector mu1){
@@ -352,6 +364,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 						(fabs(mu1.Eta()) > 2.1 && fabs(mu1.Eta()) < 2.4 && mu1.Pt() > 1.5) ||
 						(fabs(mu1.Eta()) < 1.2 && mu1.Pt() > 3.5)
 					)
+//					&& ( mu1.Pt() > 3.5)
 				);
 				if(dataType == kMCUp) return(
 					fabs(mu1.Eta()) < 2.4 &&
@@ -457,6 +470,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 //				std::cout << "Debug onia qual pass Custom: " << passCustomFilter(*vit) << std::endl;
 //				std::cout << "Debug onia qual pass ID : "    << passQuality(*vit) << std::endl;
 			if( false || !(passGenMatching(*vit) && passAcceptance(*vit) && passCustomFilter(*vit) && (passQuality(*vit))) ){
+			//if( false || !(passAcceptance(*vit))   ){
 				vit = oniaCont.erase(vit);
 //				std::cout << "fail onia" << std::endl;
 			}
@@ -473,6 +487,7 @@ std::vector<EventData> EffCalc::filterOniaData( std::vector<EventData> oniaCont 
 std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData( std::vector<EventData> onia, std::vector<EventData> hlt, bool sendParcel){
 	std::vector<EventData> d_cpy_pass = {onia[0]};
 	std::vector<EventData> d_cpy_fail = {onia[0]};
+	// std::cout << " cpy pass : " << d_cpy_pass.size() << ", fail : " << d_cpy_fail.size() << std::endl;
 //	auto match_dR = [=](EventData base, double cut){
 //		if( getDimu ){
 //			double oeta1 = base["dbmu"].mu.Eta();
@@ -610,7 +625,7 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 					}
 				}
 			}
-			return ( (countN>1) &&passdR1 && passdR2 && passdPt1 && passdPt2);
+			return ( false || ((countN>0) &&passdR1 && passdR2 && passdPt1 && passdPt2));
 		}
 		if( !getDimu ){
 			double oeta1 = base["mu"].mu.Eta();
@@ -684,20 +699,22 @@ std::pair<std::vector<EventData>, std::vector<EventData> > EffCalc::matchedData(
 void EffCalc::fillHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaFail){
 	auto vitF = oniaFail.begin();
 	auto vitP = oniaPass.begin();
-//	auto nColl = findNcoll((*vitF)["Centrality"].val);
-	auto nColl = findNcoll(getHiBinFromhiHF((*vitF)["SumET_HF"].val));
+	auto nColl = (useNColl) ? findNcoll(getHiBinFromhiHF((*vitF)["SumET_HF"].val)) : (double) 1.;
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
 			map_hist[pass]["pt"]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+			map_hist[pass]["phi"]->Fill(oniaObj["dbmu"].dmu.Phi(), nColl);
 			map_hist[pass][rap]->Fill(oniaObj["dbmu"].dmu.Rapidity(), nColl);
 			//fill total histo
 			if( pass ){
 				map_hist[false]["pt"]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
+				map_hist[false]["phi"]->Fill(oniaObj["dbmu"].dmu.Phi(), nColl);
 				map_hist[false][rap]->Fill(oniaObj["dbmu"].dmu.Rapidity(), nColl);
 			}
 		}
 		if(!getDimu){
 			map_hist[pass]["pt"]->Fill(oniaObj["mu"].mu.Pt(), nColl);
+			map_hist[pass]["phi"]->Fill(oniaObj["mu"].mu.Phi(), nColl);
 			map_hist[pass][rap]->Fill(oniaObj["mu"].mu.Eta(), nColl);
 			if( pass ){
 				map_hist[false]["pt"]->Fill(oniaObj["mu"].mu.Pt(), nColl);
@@ -748,9 +765,11 @@ void EffCalc::fillHLTHist( std::vector<EventData> hlt){
 void EffCalc::fillDerivedHist( std::vector<EventData> oniaPass, std::vector<EventData> oniaFail, double cut){
 	auto vitF = oniaFail.begin();
 	auto vitP = oniaPass.begin();
-	auto nColl = findNcoll((*vitF)["Centrality"].val);
+	auto nColl = (useNColl) ? findNcoll((*vitF)["Centrality"].val) : (double) 1. ;
+	std::cout << "nColl : " << nColl << std::endl;
 	auto fn_fill = [&](bool pass, EventData oniaObj){
 		if(getDimu){
+				std::cout << "pt : " << oniaObj["dbmu"].dmu.Pt() << std::endl;
 			map_hist[pass][Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
 			if( pass ){
 				map_hist[false][Form("pt_%dp%ld", (int) cut, std::lround(10 * (cut - (int) cut )))]->Fill(oniaObj["dbmu"].dmu.Pt(), nColl);
@@ -839,6 +858,13 @@ void EffCalc::fillDerivedMassHist( std::vector<EventData> oniaPass, std::vector<
 
 std::pair<std::string, std::unordered_map<std::string, TEfficiency*> > EffCalc::getEfficiencies(){
 	for( auto item_pair : map_hist[true]){
+		std::cout << item_pair.first << std::endl;
+		for( auto i : ROOT::TSeqI(((*item_pair.second).GetNbinsX()))){
+			std::cout << "Pass : " << (*item_pair.second).GetBinContent(i+1) << " Total : " << (*(map_hist[false][item_pair.first])).GetBinContent(i+1) << std::endl;
+			if( (*(map_hist[false][item_pair.first])).GetBinContent(i+1) == 0 ){
+				(*(map_hist[false][item_pair.first])).SetBinContent(i+1, 1 );
+			}
+		}
 		map_eff[item_pair.first] = new TEfficiency(*item_pair.second, *(map_hist[false][item_pair.first]) );
 		map_eff[item_pair.first]->SetName(item_pair.first.c_str());
 	}

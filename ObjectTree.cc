@@ -7,6 +7,7 @@ void objectTree::init( std::string _trig, bool _isDimu, unsigned int dataType){
 	isDimu = _isDimu;
 	string subdir = "";
 	subdir = string(SUBDIR);
+	system(Form("mkdir -p %s", subdir.c_str()));
 	fout = new TFile(Form("MatchTree/%s/outputMatchTree_%s_SampleType%u_%s_v2.root", subdir.c_str(), trig.c_str(), dataType, file_tag.c_str() ), "recreate");
 
 	fullTree = new TTree("fullTree", "hlt vs. onia full matched tree");

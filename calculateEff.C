@@ -1,7 +1,7 @@
 #pragma once
 
 #include "config2023PbPb_1.h"
-static int UseNCores = 20;
+static int UseNCores = 40;
 //static int UseNCores = 1;
 
 #include "TGraph.h"
@@ -14,7 +14,7 @@ static int UseNCores = 20;
 #include <chrono>
 
 void calculateEff(){
-	system(Form("mkdir /home/vince402/RunPrep_2022/EffCalc/MatchTree/%s", SUBDIR.c_str()));
+	system(Form("mkdir -p /home/vince402/RunPrep_2022/EffCalc/MatchTree/%s", SUBDIR.c_str()));
 
 //	string file_name_hlt = INPUT_HLT;
 //	string file_name_onia = INPUT_ONIA;
@@ -25,149 +25,84 @@ void calculateEff(){
 
 	std::vector<std::pair<std::string, std::string> > v_names = { 
 //trigger of menu v12
-//		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
+// {"HLT_HIL1SingleMu0_Open_v","HLT_HIL1SingleMu0_Open_v"},
+// {"HLT_HIL1SingleMu0_Cosmic_v","HLT_HIL1SingleMu0_Cosmic_v"},
+// {"HLT_HIL1SingleMu0_v","HLT_HIL1SingleMu0_v"},
+// {"HLT_HIL1SingleMu3_v","HLT_HIL1SingleMu3_v"},
+// {"HLT_HIL1SingleMu5_v","HLT_HIL1SingleMu5_v"},
+// {"HLT_HIL1SingleMu7_v","HLT_HIL1SingleMu7_v"},
+// {"HLT_HIL2SingleMu3_Open_v","HLT_HIL2SingleMu3_Open_v"},
+// {"HLT_HIL2SingleMu5_Open_v","HLT_HIL2SingleMu5_Open_v"},
+// {"HLT_HIL2SingleMu7_Open_v","HLT_HIL2SingleMu7_Open_v"},
+// {"HLT_HIL3SingleMu3_Open_v","HLT_HIL3SingleMu3_Open_v"},
+// {"HLT_HIL3SingleMu5_Open_v","HLT_HIL3SingleMu5_Open_v"},
+// {"HLT_HIL3SingleMu7_Open_v","HLT_HIL3SingleMu7_Open_v"},
+// {"HLT_HIL3SingleMu12_Open_v","HLT_HIL3SingleMu12_Open_v"},
+// {"HLT_HIL3SingleMu12_Open_v","HLT_HIL3DoubleMuLikeMu12_Open_v"},
+// {"HLT_HIL2DoubleMu0_Open_v","HLT_HIL2DoubleMu0_Open_v"},
+// {"HLT_HIL1DoubleMu0_MaxDr3p5_Open_v","HLT_HIL1DoubleMu0_MaxDr3p5_Open_v"},
+// {"HLT_HIL1DoubleMu0_Zero_v","HLT_HIL1DoubleMu0_Zero_v"},
+// {"HLT_HIL1DoubleMu0_SQ_v","HLT_HIL1DoubleMu0_SQ_v"},
+// {"HLT_HIL3DoubleMu0_M0toInf_Open_v","HLT_HIL3DoubleMu0_M0toInf_Open_v"},
+// {"HLT_HIL3DoubleMu0_Quarkonia_Open_v","HLT_HIL3DoubleMu0_Quarkonia_Open_v"},
+// {"HLT_HIL3DoubleMu2_Quarkonia_Open_v","HLT_HIL3DoubleMu2_Quarkonia_Open_v"},
+// {"HLT_HIL2DoubleMu0_M1p5to6_Open_v","HLT_HIL2DoubleMu0_M1p5to6_Open_v"},
+// {"HLT_HIL2DoubleMu2p8_M1p5to6_Open_v","HLT_HIL2DoubleMu2p8_M1p5to6_Open_v"},
+// {"HLT_HIL2DoubleMu0_M7to15_Open_v","HLT_HIL2DoubleMu0_M7to15_Open_v"},
+// {"HLT_HIL2DoubleMu3_M7to15_Open_v","HLT_HIL2DoubleMu3_M7to15_Open_v"},
+// {"HLT_HIL3DoubleMu0_M2to4p5_Open_v","HLT_HIL3DoubleMu0_M2to4p5_Open_v"},
+// {"HLT_HIL3DoubleMu2_M2to4p5_Open_v","HLT_HIL3DoubleMu2_M2to4p5_Open_v"},
+// {"HLT_HIL3DoubleMu0_M7to15_Open_v","HLT_HIL3DoubleMu0_M7to15_Open_v"},
+// {"HLT_HIL3DoubleMu2_M7to15_Open_v","HLT_HIL3DoubleMu2_M7to15_Open_v"},
+		
+//		{"HLT_HIL1DoubleMu0_Open_v", "HLT_HIL1DoubleMu0_Open_v"},
+//		{"HLT_HIL1DoubleMu0_Zero_v", "HLT_HIL1DoubleMu0_Zero_v"},
+//		{"HLT_HIL1DoubleMu0_SQ_v", "HLT_HIL1DoubleMu0_SQ_v"},
+//		{"HLT_HIL1SingleMu0_Open_v", "HLT_HIL1SingleMu0_Open_v"},
+//		{"HLT_HIL1SingleMu0_Cosmic_v", "HLT_HIL1SingleMu0_Cosmic_v"},
+//		{"HLT_HIL1SingleMu0_v", "HLT_HIL1SingleMu0_v"},
+//		{"HLT_HIL2DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v"},
+//		{"HLT_HIL3DoubleMu0_M0toInf_Open_v", "HLT_HIL3DoubleMu0_M0toInf_Open_v"},
+//		{"HLT_HIL3DoubleMu0_Quarkonia_Open_v", "HLT_HIL3DoubleMu0_Quarkonia_Open_v"},
+//		{"HLT_HIL3DoubleMu2_Quarkonia_Open_v", "HLT_HIL3DoubleMu2_Quarkonia_Open_v"},
+//		{"HLT_HIL2SingleMu3_Open_v", "HLT_HIL2SingleMu3_Open_v"},
+//		{"HLT_HIL2SingleMu5_Open_v", "HLT_HIL2SingleMu5_Open_v"},
+//		{"HLT_HIL2SingleMu7_Open_v", "HLT_HIL2SingleMu7_Open_v"},
+//		{"HLT_HIL3SingleMu3_Open_v", "HLT_HIL3SingleMu3_Open_v"},
+//		{"HLT_HIL3SingleMu5_Open_v", "HLT_HIL3SingleMu5_Open_v"},
+//		{"HLT_HIL3SingleMu7_Open_v", "HLT_HIL3SingleMu7_Open_v"},
+//		{"HLT_HIL3SingleMu12_Open_v", "HLT_HIL3SingleMu12_Open_v"},
+//	{"HLT_HIL2DoubleMu0_M1to6p5_Open_v", "HLT_HIL2DoubleMu0_M1to6p5_Open_v"},
+//	{"HLT_HIL2DoubleMu2p8_M1to6p5_Open_v", "HLT_HIL2DoubleMu2p8_M1to6p5_Open_v"},
+//	{"HLT_HIL2DoubleMu0_M6p5to16_Open_v", "HLT_HIL2DoubleMu0_M6p5to16_Open_v"},
+//	{"HLT_HIL2DoubleMu3_M6p5to16_Open_v", "HLT_HIL2DoubleMu3_M6p5to16_Open_v"},
+//	{"HLT_HIL3DoubleMu0_M2to4p5_Open_v", "HLT_HIL3DoubleMu0_M2to4p5_Open_v"},
+//	{"HLT_HIL3DoubleMu2_M2to4p5_Open_v", "HLT_HIL3DoubleMu2_M2to4p5_Open_v"},
+//	{"HLT_HIL3DoubleMu0_M7to15_Open_v", "HLT_HIL3DoubleMu0_M7to15_Open_v"},
+//	{"HLT_HIL3DoubleMu2_M7to15_Open_v", "HLT_HIL3DoubleMu2_M7to15_Open_v"},
+//		{"HLT_HIL3DoubleMu0_MuPt2p5_M7to15_Open_v", "HLT_HIL3DoubleMu0_MuPt2p5_M7to15_Open_v"},
+//		{"HLT_HIL3DoubleMu0_MuPt3_M7to15_Open_v","HLT_HIL3DoubleMu0_MuPt3_M7to15_Open_v"},
+//		{"HLT_HIL3DoubleMu0_OneMuPt3_M7to15_Open_v","HLT_HIL3DoubleMu0_OneMuPt3_M7to15_Open_v"}
 
-//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Zero_v", "L1DoubleMuOpen_drMax3p5_Zero"}, 
-//		{ "HLT_HIL1DoubleMu0_dRMax3p5_Open_v", "L1DoubleMuOpen_drMax3p5_Open"}, 
-//		{ "HLT_HIL1DoubleMu0_dRMax3p5M0to7_Open_v", "L1DoubleMuOpen_drMax3p5M0to7_Open"}, 
+		
+		{"HLT_PPRefL1SingleMu0_Cosmics_v","HLT_PPRefL1SingleMu0_Cosmics_v"},
+		{"HLT_PPRefL1DoubleMu0_Open_v","HLT_PPRefL1DoubleMu0_Open_v"},
+		{"HLT_PPRefL2DoubleMu0_Open_v","HLT_PPRefL2DoubleMu0_Open_v"},
+		{"HLT_PPRefL3DoubleMu0_Open_v","HLT_PPRefL3DoubleMu0_Open_v"},
+		{"HLT_PPRefL1DoubleMu0_v","HLT_PPRefL1DoubleMu0_v"},
+		{"HLT_PPRefL2DoubleMu0_v","HLT_PPRefL2DoubleMu0_v"},
+		{"HLT_PPRefL3DoubleMu0_v","HLT_PPRefL3DoubleMu0_v"},
+		{"HLT_PPRefL2SingleMu7_v","HLT_PPRefL2SingleMu7_v"},
+		{"HLT_PPRefL2SingleMu12_v","HLT_PPRefL2SingleMu12_v"},
+		{"HLT_PPRefL2SingleMu15_v","HLT_PPRefL2SingleMu15_v"},
+		{"HLT_PPRefL2SingleMu20_v","HLT_PPRefL2SingleMu20_v"},
+		{"HLT_PPRefL3SingleMu3_v","HLT_PPRefL3SingleMu3_v"},
+		{"HLT_PPRefL3SingleMu5_v","HLT_PPRefL3SingleMu5_v"},
+		{"HLT_PPRefL3SingleMu7_v","HLT_PPRefL3SingleMu7_v"},
+		{"HLT_PPRefL3SingleMu12_v","HLT_PPRefL3SingleMu12_v"},
+		{"HLT_PPRefL3SingleMu15_v","HLT_PPRefL3SingleMu15_v"},
+		{"HLT_PPRefL3SingleMu20_v","HLT_PPRefL3SingleMu20_v"},
 
-//		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen"}, 
-//		{ "HLT_HIL2DoubleMu0_dRMax3p5M0to7_Open_v", "L2DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-//		{ "HLT_HIL2DoubleMu0_Zero_v", "L2DoubleMuZero"}, 
-//		{ "HLT_HIL2DoubleMu0_SQ_v"  , "L2DoubleMuSQ"}, 
-//		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen"}, 
-//		{ "HLT_HIL3DoubleMu0_Cosmic_v", "L3DoubleMuCosmic"}, 
-  	
-//		{ "HLT_HIL2DoubleMu0_Open_v", "L2DoubleMuOpen_DoHLTCut_Mass"}, 
-
-//		{ "HLT_HIL2DoubleMu0_SQ_v", "L2DoubleMuSQ_DoHLTCut_Mass"}, 
-//		{ "HLT_HIL3DoubleMu0_Open_v", "L3DoubleMuOpen_DoHLTCut_Mass"}, 
-
-//		{ "HLT_HIL3DoubleMu0_SQ_v", "L3DoubleMuSQ_DoHLTCut_Mass"}, 
-
-//		{ "HLT_HIL3DoubleMu0_dRMax3p5M0to7_Open_v", "L3DoubleMuOpen_drMax3p5_M0to7_Open"}, 
-//		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open"}, 
-//		{ "HLT_HIL3DoubleMu0_dRMax3p5M2p2to4p4_Open_Vtx_v", "L3DoubleMuOpen_drMax3p5_M2p2to4p4_Open_Vtx"}, 
-//		{ "HLT_HIL3DoubleMu0_Zero_v", "L3DoubleMuZero"}, 
-//		{ "HLT_HIL3DoubleMu0_SQ_v"  , "L3DoubleMuSQ"}, 
-//		{ "HLT_HIL1Mu0_v", ""}, 
-//		{ "HLT_HIL2Mu0_v", ""}, 
-//		{ "HLT_HIL3Mu0_v", ""}, 
-
-
-//		{ "HLT_HIL2DoubleMu0_M1to6p5Acop1toPiAlphamiPito1_Open_v", "HLT_HIL2DoubleMu0_M1to6p5Acop1toPiAlphamiPito1Open_v"},
-//		{ "HLT_HIL2DoubleMu0_M1to6p5Acop1toPi_Open_v", "HLT_HIL2DoubleMu0_M1to6p5Acop1toPiOpen_v"},
-//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_v", "HLT_HIL2DoubleMu0_M1to6p5Open_DoHLTCut_Mass"},
-//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_v", "HLT_HIL2DoubleMu0_M1to6p5Open_v"},
-//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_wL2F_v", "HLT_HIL2DoubleMu0_M1to6p5OpenwL2F_v"},
-//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_NoChmb_v", "HLT_HIL2DoubleMu0_M1to6p5OpenNoChmb_v"},
-//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_OneChmb_v", "HLT_HIL2DoubleMu0_M1to6p5OpenOneChmb_v"},
-//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_NoChmb_OneStn_v", "HLT_HIL2DoubleMu0_M1to6p5OpenNoChmbOneStn_v"},
-//		{ "HLT_HIL2DoubleMu0_MmiInftoInf_Open_v", "HLT_HIL2DoubleMu0_MmiInftoInfOpen_v"},
-//		{ "HLT_HIL2DoubleMu0_MmiInftoInf_Open_NoChmb_v", "HLT_HIL2DoubleMu0_MmiInfotoInfOpenNoChmb_v"},
-//		{ "HLT_HIL2DoubleMu0_MmiInftoInf_Open_OneChmb_v", "HLT_HIL2DoubleMu0_MmiInfotoInfOpenOneChmb_v"},
-//		{ "HLT_HIL2DoubleMu0_MmiInftoInf_Open_NoChmb_OneStn_v", "HLT_HIL2DoubleMu0_MmiInfotoInfOpenNoChmbOneStn_v"},
-//		{ "HLT_HIL2DoubleMu0_MmiInftoInf_Open_v", "HLT_HIL2DoubleMu0_MmiInftoInfOpen_DoHLTCut_Mass_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5Acop1p2toPi_Open_v", "HLT_HIL3DoubleMu0_M2to4p5Acop1p2toPiOpen_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_v", "HLT_HIL3DoubleMu0_M2to4p5Open_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_OneMu_v", "HLT_HIL3DoubleMu0_M2to4p5OpenOneMu_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_NoMu_v", "HLT_HIL3DoubleMu0_M2to4p5OpenNoMu_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_OneMu_NoSG_v", "HLT_HIL3DoubleMu0_M2to4p5OpenOneMuNoSG_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_v", "HLT_HIL3DoubleMu0_M2to4p5Open_DoHLTCut_Mass_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5NoL3Pre_Open_v", "HLT_HIL3DoubleMu0_M2to4p5NoL3PreOpen_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5NoL3PreFast_Open_v", "HLT_HIL3DoubleMu0_M2to4p5NoL3PreFastOpen_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5NoL3PreFast_Open_v", "HLT_HIL3DoubleMu0_M2to4p5NoL3PreFastOpen_DoHLTCut_Mass_v"},
-//		{ "HLT_HIL3DoubleMu0_M2to4p5AND8to12_Open_v", "HLT_HIL3DoubleMu0_M2to4p5AND8to12Open_v"},
-//		{ "HLT_HIL1Mu0_v", "L1DoubleMuOpen_fake"}, 
-//		{ "HLT_HIL2Mu0_v", "L2DoubleMuOpen_fake"}, 
-//		{ "HLT_HIL3Mu0_v", "L3DoubleMuOpen_fake"}, 
-		//{ "HLT_HIL1DoubleMu0_Open_v", ""}, 
-		//{ "HLT_HIL1DoubleMu0_Zero_v", ""}, 
-		//{ "HLT_HIL1DoubleMu0_SQ_v"  , ""}, 
-		//{ "HLT_HIL2DoubleMu0_Open_v", ""}, 
-		//{ "HLT_HIL2DoubleMu0_Zero_v", ""}, 
-		//{ "HLT_HIL2DoubleMu0_SQ_v"  , ""}, 
-		//{ "HLT_HIL3DoubleMu0_Open_v", ""}, 
-		//{ "HLT_HIL3DoubleMu0_Zero_v", ""}, 
-		//{ "HLT_HIL3DoubleMu0_SQ_v"  , ""}, 
-//trigger of menu v9
-//		{ "HLT_HIL1DoubleMuOpen_v", "L1DoubleMuOpen"}, 
-//		{ "HLT_HIL2Mu0_L1DoubleMuOpen_v", "L2DoubleMuOpen"}, 
-//		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", "L3DoubleMuOpen"}, 
-//		{ "HLT_HIL3Mu0_L1DoubleMuOpen_v", ""}, 
-//		{ "HLT_HIL3Mu0L1SingleMuOpen_v", "L1SingleMuOpen"}, 
-//		{"HLT_HIL1DoubleMuOpen_v", ""},
-//		{"HLT_HIL2Mu0_L1DoubleMu0_v", ""},
-//		{"HLT_Mu12_v", ""},
-//trigger of run2 legacy menu
-//		{ "HLT_HIL1DoubleMuOpen_v", ""}, 
-//		{ "HLT_HIL2DoubleMuOpen_v", ""}, 
-//		{ "HLT_HIL3DoubleMuOpen_v", ""}, 
-//		{ "HLT_HIL3DoubleMuOpen_v", ""}, 
-//		{ "HLT_HIL3Mu12_v", ""},
-{"HLT_HIL1DoubleMu0_Open_v"								,	"HLT_HIL1DoubleMu0_Open"},
-{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_Open"},
-//{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_DoONIACut_Open"},
-//{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_DoHLTCut_Narrow_Open"},
-//{"HLT_HIL2DoubleMu0_Open_v"                             ,    "HLT_HIL2DoubleMu0_DoHLTCutPT_Narrow_Open"},
-{"HLT_HIL2DoubleMu0_M1to6p5_Open_v"                     ,    "HLT_HIL2DoubleMu0_M1to6p5_Open"},
-//{"HLT_HIL2DoubleMu0_M6p5to16_Open_v"                    ,    "HLT_HIL2DoubleMu0_M6p5to16_Open"},
-//{"HLT_HIL2DoubleMu0_M1to16_Open_v"                      ,    "HLT_HIL2DoubleMu0_M1to16_Open"},
-//{"HLT_HIL2DoubleMu4_Open_v"                             ,    "HLT_HIL2DoubleMu4_Open"},
-{"HLT_HIL2SingleMu3_Open_v"                             ,    "HLT_HIL2SingleMu3_Open"},
-{"HLT_HIL2SingleMu5_Open_v"                             ,    "HLT_HIL2SingleMu5_Open"},
-{"HLT_HIL2SingleMu7_Open_v"                             ,    "HLT_HIL2SingleMu7_Open"},
-//{"HLT_HIL3DoubleMuPre0_Open_v"                          ,    "HLT_HIL3DoubleMuPre0_Open"},
-//{"HLT_HIL3DoubleMuPre3p8_Open_v"                        ,    "HLT_HIL3DoubleMuPre3p8_Open"},
-//{"HLT_HIL3DoubleMuPre0_M2to4p5_Open_v"                  ,    "HLT_HIL3DoubleMuPre0_M2to4p5_Open"},
-//{"HLT_HIL3DoubleMuPre0_M7to15_Open_v"                   ,    "HLT_HIL3DoubleMuPre0_M7to15_Open"},
-{"HLT_HIL3DoubleMu0_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu0_M2to4p5_Open"},
-{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_Open"},
-//{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_DoONIACut_Open"},
-//{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_DoHLTCut_Narrow_Open"},
-//{"HLT_HIL3DoubleMu0_M0toInf_Open_v"                     ,    "HLT_HIL3DoubleMu0_M0toInf_DoHLTCutPT_Narrow_Open"},
-//{"HLT_HIL3DoubleMu3p8_M0toInf_Open_v"                   ,    "HLT_HIL3DoubleMu3p8_M0toInf_Open"},
-{"HLT_HIL3DoubleMu0_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu0_M7to15_Open"},
-{"HLT_HIL3DoubleMu2_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu2_M7to15_Open"},
-//{"HLT_HIL3DoubleMu1p5_M7to15_Open_v"                    ,    "HLT_HIL3DoubleMu1p5_M7to15_Open"},
-//{"HLT_HIL3DoubleMu1_M7to15_Open_v"                      ,    "HLT_HIL3DoubleMu1_M7to15_Open"},
-{"HLT_HIL3DoubleMu0_Quarkonia_Open_v"                   ,    "HLT_HIL3DoubleMu0_Quarkonia_Open"},
-//{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open_v"           ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open"},
-//{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open_v" ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1p5_Open"},
-//{"HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open_v"   ,    "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2HighMpT1_Open"},
-{"HLT_HIL3DoubleMu2_Quarkonia_Open_v"                   ,    "HLT_HIL3DoubleMu2_Quarkonia_Open"},
-{"HLT_HIL3DoubleMu2_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu2_M2to4p5_Open"},
-//{"HLT_HIL3DoubleMu1p5_M2to4p5_Open_v"                   ,    "HLT_HIL3DoubleMu1p5_M2to4p5_Open"},
-//{"HLT_HIL3DoubleMu1_M2to4p5_Open_v"                     ,    "HLT_HIL3DoubleMu1_M2to4p5_Open"},
-{"HLT_HIL3SingleMu3_Open_v"                             ,    "HLT_HIL3SingleMu3_Open"},
-{"HLT_HIL3SingleMu5_Open_v"                             ,    "HLT_HIL3SingleMu5_Open"},
-{"HLT_HIL3SingleMu7_Open_v"                             ,    "HLT_HIL3SingleMu7_Open"},
-
-//		{ "HLT_HIL3DoubleMu0_Open_v"  , "L3DoubleMuOpen"}, 
-//		{ "HLT_HIL2DoubleMu0_Open_v"  , "L2DoubleMuOpen"}, 
-//		{ "HLT_HIL1DoubleMu0_Open_v", "L1DoubleMuOpen"}, 
-//
-//		{ "HLT_HIL3DoubleMu2_M2to4p5_Open_v"  , "L3DoubleMuOpen2_M2to4p5"}, 
-//		{ "HLT_HIL3DoubleMu2_M2to4p5_Open_inDimuFilter_v"  , "L3DoubleMuOpen2_M2to4p5_inDimuFilter"}, 
-//		{ "HLT_HIL3DoubleMu1p5_M2to4p5_Open_v"  , "L3DoubleMuOpen1p5_M2to4p5"}, 
-//		{ "HLT_HIL3DoubleMu1_M2to4p5_Open_v"  , "L3DoubleMuOpen1_M2to4p5"}, 
-//		{ "HLT_HIL3DoubleMu0p5_M2to4p5_Open_v"  , "L3DoubleMuOpen0p5_M2to4p5"}, 
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_noL3Pre_v"  , "L3DoubleMuOpen0_M2to4p5_noL3Pre"}, 
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_v"  , "L3DoubleMuOpen_M2to4p5"}, 
-//		{ "HLT_HIL3DoubleMu0_M2to4p5_Open_minN1minNhits1_v"  , "L3DoubleMuOpen_M2to4p5_minNhits1"}, 
-//		{ "HLT_HIL3DoubleMu0_M7to15_Open_v"  , "L3DoubleMuOpen_M7to15"}, 
-//		{ "HLT_HIL3DoubleMu0_Quarkonia_Open_v"  , "L3DoubleMuOpen_Quarkonia"}, 
-//		{ "HLT_HIL3DoubleMu0_Quarkonia_LowMpT2_Open_v"  , "L3DoubleMuOpen_Quarkonia_LowMpT2"}, 
-//		{ "HLT_HIL2DoubleMu0_M1to6p5_Open_v"  , "L2DoubleMuOpen_M1to6p5"}, 
-//		{ "HLT_HIL2DoubleMu0_M6p5to16_Open_v"  , "L2DoubleMuOpen_M6p5to16"}, 
-//		{ "HLT_HIL2DoubleMu0_M1to16_Open_v"  , "L2DoubleMuOpen_M1to16"}, 
-//
-//		{ "HLT_HIL2SingleMu3_Open_v", ""}, 
-//		{ "HLT_HIL3SingleMu3_Open_v", ""}, 
-//		{ "HLT_HIL2SingleMu5_Open_v", ""}, 
-//		{ "HLT_HIL3SingleMu5_Open_v", ""}, 
-//		{ "HLT_HIL2SingleMu7_Open_v", ""}, 
-//		{ "HLT_HIL3SingleMu7_Open_v", ""}, 
 
 	};
 	std::vector<std::string> v_names2 = { "HLT_HIL1DoubleMu0_Open_v", "HLT_HIL2DoubleMu0_Open_v", "HLT_HIL3DoubleMu0_Open_v"};
@@ -181,6 +116,9 @@ void calculateEff(){
 		if( _trig.find("HIL1") != std::string::npos){ l1 = true; level = 1; } 
 		if( _trig.find("HIL2") != std::string::npos) level = 2;
 		if( _trig.find("HIL3") != std::string::npos) level = 3;
+		if( _trig.find("PPRefL1") != std::string::npos){ l1 = true; level = 1; } // Does not work until L1 prop objects available on Onia 
+		if( _trig.find("PPRefL2") != std::string::npos) level = 2;
+		if( _trig.find("PPRefL3") != std::string::npos) level = 3;
 		return std::make_pair(dmu, l1);
 	};
 	auto trigLvl = [v_names](int idx){
@@ -189,11 +127,15 @@ void calculateEff(){
 		if( _trig.find("HIL1") != std::string::npos) level = 1; 
 		if( _trig.find("HIL2") != std::string::npos) level = 2;
 		if( _trig.find("HIL3") != std::string::npos) level = 3;
+		if( _trig.find("PPRefL1") != std::string::npos) level = 1; 
+		if( _trig.find("PPRefL2") != std::string::npos) level = 2;
+		if( _trig.find("PPRefL3") != std::string::npos) level = 3;
 		return level;
 	};
 	
 	//Enable MultiThreading, the thread executor creates threads per trigger and make use of the available CPU cores
 //	ROOT::EnableImplicitMT(80);
+	// TO DO : separate files
 	ROOT::TThreadExecutor mpe(UseNCores);
 
 	//Define cuts
@@ -203,7 +145,7 @@ void calculateEff(){
 	}
 
 	//Run calculator
-	long max_events = 1.0e+12;
+	long max_events = -1;
 	TH1::AddDirectory(false);
 	auto extractEffs = [=](int idx){
 		EffCalc calc = EffCalc( file_name_hlt, file_name_onia, dType );

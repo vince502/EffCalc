@@ -118,6 +118,7 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_L1_4mom", 1);
 	base.map_tree["myTree"]->SetBranchStatus("Reco_QQ_4mom", 1);
+	base.map_tree["myTree"]->SetBranchStatus("Reco_mu_TMOneStaTight", 1);
 
 
 	base.map_tree["myTree"]->SetBranchAddress("eventNb", &eventNb);
@@ -135,6 +136,7 @@ readerOnia::readerOnia( std::string name_file ) : base( name_file ){
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_dz", &Reco_mu_dz);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_VtxProb", &Reco_QQ_VtxProb);
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_4mom", &(Reco_mu_4mom));
+	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_TMOneStaTight", &(Reco_mu_TMOneStaTight));
 
 	base.map_tree["myTree"]->SetBranchAddress("Reco_mu_L1_4mom", &(Reco_mu_L1_4mom));
 	base.map_tree["myTree"]->SetBranchAddress("Reco_QQ_4mom", &(Reco_QQ_4mom));
@@ -199,6 +201,8 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 				{"Pix2", content{static_cast<double>(std::move(Reco_mu_nPixWMea[Reco_QQ_mumi_idx[idx]]))}}, 
 				{"Sel1", content{static_cast<double>(std::move(Reco_mu_SelectionType[Reco_QQ_mupl_idx[idx]]))}}, 
 				{"Sel2", content{static_cast<double>(std::move(Reco_mu_SelectionType[Reco_QQ_mumi_idx[idx]]))}}, 
+				{"TMOne1", content{static_cast<double>(std::move(Reco_mu_TMOneStaTight[Reco_QQ_mupl_idx[idx]]))}},
+				{"TMOne2", content{static_cast<double>(std::move(Reco_mu_TMOneStaTight[Reco_QQ_mumi_idx[idx]]))}},
 				{"dxy1", content{std::move(Reco_mu_dxy[Reco_QQ_mupl_idx[idx]])}}, 
 				{"dxy2", content{std::move(Reco_mu_dxy[Reco_QQ_mumi_idx[idx]])}}, 
 				{"dz1", content{std::move(Reco_mu_dz[Reco_QQ_mupl_idx[idx]])}}, 
@@ -220,6 +224,7 @@ std::vector<EventData> readerOnia::getMuonsContent( bool getDimu, bool isL1){
 				{"Trk1", content{static_cast<double>(std::move(Reco_mu_nTrkWMea[idx]))}},
 				{"Pix1", content{static_cast<double>(std::move(Reco_mu_nPixWMea[idx]))}},
 				{"Sel1", content{static_cast<double>(std::move(Reco_mu_SelectionType[idx]))}},
+				{"TMOne1", content{static_cast<double>(std::move(Reco_mu_TMOneStaTight[idx]))}},
 				{"dxy1", content{Reco_mu_dxy[idx]}},
 				{"dz1", content{Reco_mu_dz[idx]}},
 				{"QQisGen", content{static_cast<double>( ( dType == 0 ) ? 0 : std::move(Reco_mu_whichGen[idx]))}} 

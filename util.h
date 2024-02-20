@@ -9,3 +9,9 @@ namespace Events
 	std::vector<EventData> reduce( std::vector<EventData> &data, std::string expr);
 	double get(EventData &data);
 };
+
+
+enum offlineSelection{
+	kSoft = 0,
+	kHybridSoft =1,
+};

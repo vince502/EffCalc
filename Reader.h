@@ -132,6 +132,7 @@ class readerOnia : public readerBase
 		Int_t Reco_mu_SelectionType[maxArraySize];
 		Float_t Reco_mu_dxy[maxArraySize];
 		Float_t Reco_mu_dz[maxArraySize];
+		Bool_t Reco_mu_TMOneStaTight[maxArraySize];
 		Float_t Reco_QQ_VtxProb[maxArraySize];
 
 		TClonesArray* Reco_QQ_4mom;
